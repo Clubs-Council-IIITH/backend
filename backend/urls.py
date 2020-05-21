@@ -20,6 +20,6 @@ import cas.views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('auth/login/', cas.views.login, name='login'),
+    path('auth/login/', cas.views.login, {"next_page": "http://localhost:8000/"}, name='login'),
     path('auth/logout/', cas.views.logout, name='logout'),
 ]
