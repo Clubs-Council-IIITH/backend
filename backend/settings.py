@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "cas",
     "base",
+    "organizers",
 ]
 
 MIDDLEWARE = [
@@ -124,4 +125,4 @@ CAS_PROVIDE_URL_TO_LOGOUT = True
 
 STATIC_URL = "/static/"
 
-CORS_ORIGIN_WHITELIST = ["localhost:3000/"]
+CORS_ORIGIN_WHITELIST = ["https://localhost:3000"]
