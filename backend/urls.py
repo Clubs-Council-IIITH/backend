@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 from organizers import views
-from base.auth import get_token
+from base.views import get_token
 
 import cas.views
 
