@@ -22,7 +22,7 @@ EVENT_STATE_LIST = [
 
 class Event(models.Model):
     name = models.CharField(max_length=250)
-    club = models.CharField(max_length=250)
+    user = models.CharField(max_length=250)
     date = models.DateField()
     time = models.TimeField()
     venue = models.TextField()
