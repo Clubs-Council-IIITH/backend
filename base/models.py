@@ -17,6 +17,8 @@ EVENT_STATE_LIST = [
     ["approved", "APPROVED"],
     ["published", "PUBLISHED"],
     ["scheduled", "SCHEDULED"],
+    ["completed", "COMPLETED"],
+    ["deleted", "DELETED"],
 ]
 
 
