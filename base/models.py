@@ -1,5 +1,4 @@
 from django.db import models
-from multiselectfield import MultiSelectField
 
 AUDIENCE_LIST = [
     ["none", "-"],
@@ -28,5 +27,5 @@ class Event(models.Model):
     datetime = models.DateTimeField()
     venue = models.TextField()
     creator = models.CharField(max_length=250)
-    # audience = MultiSelectField(choices=AUDIENCE_LIST)
+    audience = models.TextField()
     state = models.CharField(max_length=50, choices=EVENT_STATE_LIST)
