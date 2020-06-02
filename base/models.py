@@ -25,9 +25,8 @@ EVENT_STATE_LIST = [
 class Event(models.Model):
     name = models.CharField(max_length=250)
     user = models.CharField(max_length=250)
-    date = models.DateField()
-    time = models.TimeField()
+    datetime = models.DateTimeField()
     venue = models.TextField()
-    created_by = models.CharField(max_length=250)
-    audience = MultiSelectField(choices=AUDIENCE_LIST)
+    creator = models.CharField(max_length=250)
+    # audience = MultiSelectField(choices=AUDIENCE_LIST)
     state = models.CharField(max_length=50, choices=EVENT_STATE_LIST)
