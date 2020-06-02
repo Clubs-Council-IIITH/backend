@@ -28,3 +28,11 @@ def events_new(request):
         serializer.save()
         return Response(serializer.data)
     return Response(serializer.errors)
+
+
+@permission_classes([IsAuthenticated])
+@api_view(["DELETE"])
+def events_delete(request, id):
+    event = Event.objects.get(id=id)
+    event.delete()
+    return Response("Deleted Successfully")
