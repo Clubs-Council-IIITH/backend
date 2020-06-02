@@ -18,7 +18,9 @@ def events(request):
 
 @api_view(["POST"])
 def events_new(request):
-    serializer = EventSerializer(data=request.data)
+    context = {"request": request}
+    serializer = EventSerializer(data=request.data, context=context)
     if serializer.is_valid():
         serializer.save()
-    return Response(serializer.data)
+        return Response(serializer.data)
+    return Response(serializer.errors)
