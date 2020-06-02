@@ -4,7 +4,6 @@ from django.utils import timezone
 
 
 class EventSerializer(serializers.ModelSerializer):
-    # audience = fields.MultipleChoiceField(choices=AUDIENCE_LIST)
     state = fields.ChoiceField(choices=EVENT_STATE_LIST, default="created")
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
@@ -16,6 +15,13 @@ class EventSerializer(serializers.ModelSerializer):
     def validate_datetime(self, value):
         if value < timezone.now():
             raise serializers.ValidationError("Event can not be in the past!")
+        return value
+
+    def validate_audience(self, value):
+        key_list = set(row[0] for row in AUDIENCE_LIST)
+        val_list = set(value.split(","))
+        if not val_list.issubset(key_list):
+            raise serializers.ValidationError("Invalid audience!")
         return value
 
     def validate_venue(self, value):
