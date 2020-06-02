@@ -15,19 +15,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework import routers
 from organizers import views
 from base.views import get_token
 
 import cas.views
 
-router = routers.DefaultRouter()
-router.register(r"events", views.EventView, "event")
-
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("token/", get_token),
     path("accounts/login/", cas.views.login, name="login"),
     path("accounts/logout/", cas.views.logout, name="logout"),
-    path("api/", include(router.urls)),
-    path("token/", get_token),
+    path("api/", include("organizers.urls")),
 ]
