@@ -46,15 +46,19 @@ def events_delete(request, id):
 
 
 @permission_classes([IsAuthenticated])
-@api_view(["POST"])
+@api_view(["GET", "POST"])
 @allowed_groups(allowed_roles=["organizers"])
 def events_edit(request, id):
     event = Event.objects.get(id=id)
     if request.user.username != event.user:
         return Response("Unauthorized!")
-    context = {"request": request}
-    serializer = EventSerializer(instance=event, data=request.data, context=context)
-    if serializer.is_valid():
-        serializer.save()
+    if request.method == "POST":
+        context = {"request": request}
+        serializer = EventSerializer(instance=event, data=request.data, context=context)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors)
+    else:
+        serializer = EventSerializer(event)
         return Response(serializer.data)
-    return Response(serializer.errors)
