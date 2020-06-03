@@ -31,8 +31,9 @@ def events_new(request):
 
 
 @permission_classes([IsAuthenticated])
-@api_view(["DELETE"])
+@api_view(["POST"])
 def events_delete(request, id):
     event = Event.objects.get(id=id)
-    event.delete()
+    event.state = "deleted"
+    event.save()
     return Response("Deleted Successfully")
