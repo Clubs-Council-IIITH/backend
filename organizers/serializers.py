@@ -34,6 +34,17 @@ class EventSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Creator can not be blank!")
         return value
 
+    def update(self, instance, validated_data):
+        user = self.context["request"].user
+        instance.name = validated_data.get("name")
+        instance.datetime = validated_data.get("datetime")
+        instance.audience = validated_data.get("audience")
+        instance.venue = validated_data.get("venue")
+        instance.creator = validated_data.get("creator")
+        instance.state = validated_data.get("state")
+        instance.save()
+        return instance
+
     class Meta:
         model = Event
         fields = "__all__"
