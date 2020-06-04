@@ -1,3 +1,4 @@
+from auditlog.registry import auditlog
 from django.db import models
 
 AUDIENCE_LIST = [
@@ -29,3 +30,6 @@ class Event(models.Model):
     creator = models.CharField(max_length=250)
     audience = models.TextField()
     state = models.CharField(max_length=50, choices=EVENT_STATE_LIST)
+
+
+auditlog.register(Event)
