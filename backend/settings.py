@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "base",
     "organizers",
     "auditlog",
+    "cc_admins",
 ]
 
 MIDDLEWARE = [
@@ -56,6 +57,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "cas.middleware.CASMiddleware",
+    "auditlog.middleware.AuditlogMiddleware",
 ]
 
 ROOT_URLCONF = "backend.urls"
