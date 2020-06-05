@@ -25,5 +25,6 @@ urlpatterns = [
     path("token/", get_token),
     path("accounts/login/", cas.views.login, name="login"),
     path("accounts/logout/", cas.views.logout, name="logout"),
-    path("api/", include("organizers.urls")),
+    path("api/organizers/", include("organizers.urls")),
+    path("api/cc_admins/", include("cc_admins.urls")),
 ]
