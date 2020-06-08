@@ -2,7 +2,7 @@ from django.shortcuts import render
 from .serializers import LogSerializer, ClubSerializer
 from auditlog.models import LogEntry
 from base.decorators import allowed_groups
-from .models import Club
+from base.models import Club
 
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.authentication import TokenAuthentication

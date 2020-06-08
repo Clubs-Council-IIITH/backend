@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from auditlog.models import LogEntry
-from .models import Club
+from base.models import Club
 
 
 class LogSerializer(serializers.ModelSerializer):
