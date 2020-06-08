@@ -67,3 +67,13 @@ def coordinators(request):
     return Response(serializer.data)
 
 
+@permission_classes([IsAuthenticated])
+@api_view(["POST"])
+@allowed_groups(allowed_roles=["cc_admins"])
+def coordinators_new(request):
+    context = {"request": request}
+    serializer = CoordinatorSerializer(data=request.data, context=context)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    return Response(serializer.errors)
