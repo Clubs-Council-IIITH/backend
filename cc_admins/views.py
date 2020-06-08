@@ -77,3 +77,20 @@ def coordinators_new(request):
         serializer.save()
         return Response(serializer.data)
     return Response(serializer.errors)
+
+
+@permission_classes([IsAuthenticated])
+@api_view(["GET", "POST"])
+@allowed_groups(allowed_roles=["cc_admins"])
+def coordinators_edit(request, id):
+    coordinator = Coordinator.objects.get(id=id)
+    if request.method == "POST":
+        context = {"request": request}
+        serializer = CoordinatorSerializer(instance=coordinator, data=request.data, context=context)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors)
+    else:
+        serializer = ClubSerializer(coordinator)
+        return Response(serializer.data)
