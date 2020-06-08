@@ -37,4 +37,10 @@ class Club(models.Model):
     mail = models.EmailField()
 
 
+class Coordinator(models.Model):
+    name = models.CharField(max_length=250)
+    mail = models.EmailField()
+    mobile = models.CharField(max_length=20)
+
+
 auditlog.register(Event)
