@@ -32,16 +32,17 @@ class Event(models.Model):
     state = models.CharField(max_length=50, choices=EVENT_STATE_LIST)
 
 
-class Club(models.Model):
-    name = models.CharField(max_length=250)
-    mail = models.EmailField()
-
-
 class Coordinator(models.Model):
     img = models.ImageField(upload_to="imgs/", blank=True)
     name = models.CharField(max_length=250)
     mail = models.EmailField()
     mobile = models.CharField(max_length=20)
+
+
+class Club(models.Model):
+    name = models.CharField(max_length=250)
+    mail = models.EmailField()
+    coordinators = models.ManyToManyField(Coordinator)
 
 
 auditlog.register(Event)
