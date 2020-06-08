@@ -35,6 +35,7 @@ class Event(models.Model):
 class Coordinator(models.Model):
     img = models.ImageField(upload_to="imgs/", blank=True)
     name = models.CharField(max_length=250)
+    role = models.CharField(max_length=250, default="Coordinator")
     mail = models.EmailField()
     mobile = models.CharField(max_length=20)
 
