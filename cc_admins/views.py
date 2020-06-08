@@ -1,8 +1,8 @@
 from django.shortcuts import render
-from .serializers import LogSerializer, ClubSerializer
+from .serializers import LogSerializer, ClubSerializer, CoordinatorSerializer
 from auditlog.models import LogEntry
 from base.decorators import allowed_groups
-from base.models import Club
+from base.models import Club, Coordinator
 
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.authentication import TokenAuthentication
@@ -56,3 +56,14 @@ def clubs_edit(request, id):
     else:
         serializer = ClubSerializer(club)
         return Response(serializer.data)
+
+
+@permission_classes([IsAuthenticated])
+@api_view(["GET"])
+@allowed_groups(allowed_roles=["cc_admins"])
+def coordinators(request):
+    coordinators = Coordinator.objects.all()
+    serializer = CoordinatorSerializer(coordinators, many=True)
+    return Response(serializer.data)
+
+
