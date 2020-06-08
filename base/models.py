@@ -38,6 +38,7 @@ class Club(models.Model):
 
 
 class Coordinator(models.Model):
+    img = models.ImageField(upload_to="imgs/", blank=True)
     name = models.CharField(max_length=250)
     mail = models.EmailField()
     mobile = models.CharField(max_length=20)
