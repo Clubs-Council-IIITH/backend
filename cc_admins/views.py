@@ -59,6 +59,17 @@ def clubs_edit(request, id):
 
 
 @permission_classes([IsAuthenticated])
+@api_view(["POST"])
+@allowed_groups(allowed_roles=["cc_admins"])
+def clubs_delete(request, id):
+    club = Club.objects.get(id=id)
+    club.coordinators.set([])
+    club.state = "deleted"
+    club.save()
+    return Response("Deleted Successfully")
+
+
+@permission_classes([IsAuthenticated])
 @api_view(["GET"])
 @allowed_groups(allowed_roles=["cc_admins"])
 def coordinators(request):
