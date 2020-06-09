@@ -21,6 +21,8 @@ EVENT_STATE_LIST = [
     ["deleted", "DELETED"],
 ]
 
+CLUB_STATE_LIST = [["active", "ACTIVE"], ["deleted", "DELETED"]]
+
 
 class Event(models.Model):
     name = models.CharField(max_length=250)
@@ -29,7 +31,7 @@ class Event(models.Model):
     venue = models.TextField()
     creator = models.CharField(max_length=250)
     audience = models.TextField()
-    state = models.CharField(max_length=50, choices=EVENT_STATE_LIST)
+    state = models.CharField(max_length=50, choices=EVENT_STATE_LIST, default="created")
 
 
 class Coordinator(models.Model):
@@ -44,6 +46,7 @@ class Club(models.Model):
     name = models.CharField(max_length=250)
     mail = models.EmailField()
     coordinators = models.ManyToManyField(Coordinator)
+    state = models.CharField(max_length=50, choices=CLUB_STATE_LIST, default="active")
 
 
 auditlog.register(Event)
