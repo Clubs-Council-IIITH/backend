@@ -12,8 +12,8 @@ from rest_framework.response import Response
 
 @permission_classes([IsAuthenticated])
 @api_view(["GET"])
-@allowed_groups(allowed_roles=["organizers"])
-def events(request):
+@allowed_groups(allowed_roles=["organizer", "cc_admin"])
+def events_filter(request):
     token = request.headers.get("Authorization")[6:]
     user = Token.objects.get(key=token).user
     events = Event.objects.filter(user=user)
@@ -23,7 +23,7 @@ def events(request):
 
 @permission_classes([IsAuthenticated])
 @api_view(["POST"])
-@allowed_groups(allowed_roles=["organizers"])
+@allowed_groups(allowed_roles=["organizer"])
 def events_new(request):
     context = {"request": request}
     serializer = EventSerializer(data=request.data, context=context)
@@ -35,7 +35,7 @@ def events_new(request):
 
 @permission_classes([IsAuthenticated])
 @api_view(["POST"])
-@allowed_groups(allowed_roles=["organizers"])
+@allowed_groups(allowed_roles=["organizer"])
 def events_delete(request, id):
     event = Event.objects.get(id=id)
     if request.user.username != event.user:
@@ -47,10 +47,13 @@ def events_delete(request, id):
 
 @permission_classes([IsAuthenticated])
 @api_view(["GET", "POST"])
-@allowed_groups(allowed_roles=["organizers"])
+@allowed_groups(allowed_roles=["organizer", "cc_admin"])
 def events_edit(request, id):
     event = Event.objects.get(id=id)
-    if request.user.username != event.user:
+    if (
+        "cc_admin" not in [group.name for group in request.user.groups.all()]
+        and request.user.username != event.user
+    ):
         return Response("Unauthorized!")
     if request.method == "POST":
         context = {"request": request}

@@ -35,7 +35,7 @@ class EventSerializer(serializers.ModelSerializer):
         return value
 
     def update(self, instance, validated_data):
-        user = self.context["request"].user
+        instance.user = self.context["request"].user.username
         instance.name = validated_data.get("name")
         instance.datetime = validated_data.get("datetime")
         instance.audience = validated_data.get("audience")
