@@ -8,7 +8,7 @@ class LogSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = LogEntry
-        fields = ["id", "actor", "action", "timestamp"]
+        fields = ["id", "object_pk", "actor", "action", "changes", "timestamp"]
 
 
 class CoordinatorSerializer(serializers.ModelSerializer):
