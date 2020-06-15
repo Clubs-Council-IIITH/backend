@@ -1,6 +1,12 @@
 from django.shortcuts import render
-from rest_framework.authtoken.models import Token
 from django.contrib.auth.decorators import login_required
+from cc_admins.serializers import ClubSerializer
+from organizers.serializers import EventSerializer
+from .models import Club, Event
+
+from rest_framework.authtoken.models import Token
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 
 @login_required
@@ -12,3 +18,17 @@ def get_token(request):
     token, created = Token.objects.get_or_create(user=user)
     context = {"token": token.key, "usergroup": usergroup}
     return render(request, "login_redirect.html", context)
+
+
+@api_view(["GET"])
+def events(request):
+    events = Event.objects.all()
+    serializer = EventSerializer(events, many=True)
+    return Response(serializer.data)
+
+
+@api_view(["GET"])
+def clubs(request):
+    clubs = Club.objects.all()
+    serializer = ClubSerializer(clubs, many=True)
+    return Response(serializer.data)

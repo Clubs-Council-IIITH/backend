@@ -1,8 +1,8 @@
 from django.shortcuts import render
-from .serializers import LogSerializer, ClubSerializer, CoordinatorSerializer
 from auditlog.models import LogEntry
-from base.decorators import allowed_groups
 from base.models import Club, Coordinator
+from base.decorators import allowed_groups
+from .serializers import LogSerializer, ClubSerializer, CoordinatorSerializer
 
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.authentication import TokenAuthentication
@@ -13,7 +13,7 @@ from rest_framework.response import Response
 
 @permission_classes([IsAuthenticated])
 @api_view(["GET"])
-@allowed_groups(allowed_roles=["cc_admins"])
+@allowed_groups(allowed_roles=["cc_admin"])
 def logs(request):
     logs = LogEntry.objects.all()
     serializer = LogSerializer(logs, many=True)
@@ -21,17 +21,8 @@ def logs(request):
 
 
 @permission_classes([IsAuthenticated])
-@api_view(["GET"])
-@allowed_groups(allowed_roles=["cc_admins"])
-def clubs(request):
-    clubs = Club.objects.all()
-    serializer = ClubSerializer(clubs, many=True)
-    return Response(serializer.data)
-
-
-@permission_classes([IsAuthenticated])
 @api_view(["POST"])
-@allowed_groups(allowed_roles=["cc_admins"])
+@allowed_groups(allowed_roles=["cc_admin"])
 def clubs_new(request):
     context = {"request": request}
     serializer = ClubSerializer(data=request.data, context=context)
@@ -43,7 +34,7 @@ def clubs_new(request):
 
 @permission_classes([IsAuthenticated])
 @api_view(["GET", "POST"])
-@allowed_groups(allowed_roles=["cc_admins"])
+@allowed_groups(allowed_roles=["cc_admin"])
 def clubs_edit(request, id):
     club = Club.objects.get(id=id)
     if request.method == "POST":
@@ -60,7 +51,7 @@ def clubs_edit(request, id):
 
 @permission_classes([IsAuthenticated])
 @api_view(["POST"])
-@allowed_groups(allowed_roles=["cc_admins"])
+@allowed_groups(allowed_roles=["cc_admin"])
 def clubs_delete(request, id):
     club = Club.objects.get(id=id)
     club.coordinators.set([])
@@ -71,7 +62,7 @@ def clubs_delete(request, id):
 
 @permission_classes([IsAuthenticated])
 @api_view(["GET"])
-@allowed_groups(allowed_roles=["cc_admins"])
+@allowed_groups(allowed_roles=["cc_admin"])
 def coordinators(request):
     coordinators = Coordinator.objects.all()
     serializer = CoordinatorSerializer(coordinators, many=True)
@@ -80,7 +71,7 @@ def coordinators(request):
 
 @permission_classes([IsAuthenticated])
 @api_view(["POST"])
-@allowed_groups(allowed_roles=["cc_admins"])
+@allowed_groups(allowed_roles=["cc_admin"])
 def coordinators_new(request):
     context = {"request": request}
     serializer = CoordinatorSerializer(data=request.data, context=context)
@@ -92,7 +83,7 @@ def coordinators_new(request):
 
 @permission_classes([IsAuthenticated])
 @api_view(["GET", "POST"])
-@allowed_groups(allowed_roles=["cc_admins"])
+@allowed_groups(allowed_roles=["cc_admin"])
 def coordinators_edit(request, id):
     coordinator = Coordinator.objects.get(id=id)
     if request.method == "POST":
