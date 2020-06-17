@@ -15,8 +15,8 @@ from rest_framework.response import Response
 @allowed_groups(allowed_roles=["organizer", "cc_admin"])
 def events_filter(request):
     token = request.headers.get("Authorization")[6:]
-    user = Token.objects.get(key=token).user
-    events = Event.objects.filter(user=user)
+    club = Token.objects.get(key=token).user
+    events = Event.objects.filter(club=club)
     serializer = EventSerializer(events, many=True)
     return Response(serializer.data)
 
