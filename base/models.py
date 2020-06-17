@@ -26,6 +26,7 @@ CLUB_STATE_LIST = [["active", "ACTIVE"], ["deleted", "DELETED"]]
 
 class Event(models.Model):
     name = models.CharField(max_length=250)
+    club = models.CharField(max_length=250)
     user = models.CharField(max_length=250)
     datetime = models.DateTimeField()
     venue = models.TextField()
