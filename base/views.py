@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from cc_admins.serializers import ClubSerializer
 from organizers.serializers import EventSerializer
 from .models import Club, Event
+from django.utils import timezone
 
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view
@@ -23,6 +24,10 @@ def get_token(request):
 @api_view(["GET"])
 def events(request):
     events = Event.objects.all()
+    for event in events:
+        if event.datetime < timezone.now() and event.state != "deleted":
+            event.state = "completed"
+            event.save()
     serializer = EventSerializer(events, many=True)
     return Response(serializer.data)
 
