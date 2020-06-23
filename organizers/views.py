@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .serializers import EventSerializer
 from base.models import Event
 from base.decorators import allowed_groups
+from django.utils import timezone
 
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.authentication import TokenAuthentication
@@ -17,6 +18,10 @@ def events_filter(request):
     token = request.headers.get("Authorization")[6:]
     club = Token.objects.get(key=token).user
     events = Event.objects.filter(club=club)
+    for event in events:
+        if event.datetime < timezone.now() and event.state != "deleted":
+            event.state = "completed"
+            event.save()
     serializer = EventSerializer(events, many=True)
     return Response(serializer.data)
 
