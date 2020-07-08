@@ -34,6 +34,9 @@ def events(request):
 
 @api_view(["GET"])
 def clubs(request):
+    club_id = request.query_params.get("id", None)
     clubs = Club.objects.all()
+    if club_id is not None:
+        clubs = clubs.filter(id=club_id)
     serializer = ClubSerializer(clubs, many=True)
     return Response(serializer.data)
