@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from auditlog.models import LogEntry
-from base.models import Club, Coordinator
+from base.models import Club, Coordinator, Event
 from base.decorators import allowed_groups
 from .serializers import LogSerializer, ClubSerializer, CoordinatorSerializer
 
@@ -15,6 +15,8 @@ from rest_framework.response import Response
 @api_view(["GET"])
 @allowed_groups(allowed_roles=["cc_admin"])
 def logs(request):
+    club_id = request.query_params.get("id", None)
+    club = Club.objects.values_list("mail").filter(id=club_id)
     logs = LogEntry.objects.all()
     serializer = LogSerializer(logs, many=True)
     return Response(serializer.data)

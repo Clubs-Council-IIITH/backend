@@ -1,14 +1,30 @@
 from rest_framework import serializers
 from auditlog.models import LogEntry
-from base.models import Club, Coordinator
+from base.models import Event, Club, Coordinator
 
 
 class LogSerializer(serializers.ModelSerializer):
     actor = serializers.ReadOnlyField(source="actor.username")
+    event = serializers.SerializerMethodField()
 
     class Meta:
         model = LogEntry
-        fields = ["id", "object_pk", "actor", "action", "changes", "timestamp"]
+        fields = ["id", "object_pk", "event", "actor", "action", "changes", "timestamp"]
+
+    def get_event(self, obj):
+        event = [
+            {
+                "name": event.name,
+                "club": event.club,
+                "state": event.state,
+                "datetime": event.datetime,
+                "venue": event.venue,
+                "creator": event.creator,
+                "audience": event.audience,
+            }
+            for event in Event.objects.filter(id=int(obj.object_pk))
+        ]
+        return event
 
 
 class CoordinatorSerializer(serializers.ModelSerializer):
