@@ -23,11 +23,17 @@ def get_token(request):
 
 @api_view(["GET"])
 def events(request):
+    token = request.headers.get("Authorization", None)
     events = Event.objects.all()
     for event in events:
         if event.datetime < timezone.now() and event.state != "deleted":
             event.state = "completed"
             event.save()
+    if token:
+        mail = Token.objects.get(key=token[6:]).user
+        club = Club.objects.filter(mail=mail).first()
+        if club:
+            events = events.filter(club=club)
     serializer = EventSerializer(events, many=True)
     return Response(serializer.data)
 
