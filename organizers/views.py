@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .serializers import EventSerializer
-from base.models import Event
+from base.models import Event, Club
 from base.decorators import allowed_groups
 from django.utils import timezone
 
@@ -12,27 +12,13 @@ from rest_framework.response import Response
 
 
 @permission_classes([IsAuthenticated])
-@api_view(["GET"])
-@allowed_groups(allowed_roles=["organizer", "cc_admin"])
-def events_filter(request):
-    token = request.headers.get("Authorization")[6:]
-    club = Token.objects.get(key=token).user
-    events = Event.objects.filter(club=club)
-    for event in events:
-        if event.datetime < timezone.now() and event.state != "deleted":
-            event.state = "completed"
-            event.save()
-    serializer = EventSerializer(events, many=True)
-    return Response(serializer.data)
-
-
-@permission_classes([IsAuthenticated])
 @api_view(["POST"])
 @allowed_groups(allowed_roles=["organizer"])
 def events_new(request):
     context = {"request": request}
     serializer = EventSerializer(data=request.data, context=context)
     if serializer.is_valid():
+        serializer.validated_data["club"] = Club.objects.filter(mail=request.user.username).first()
         serializer.save()
         return Response(serializer.data)
     return Response(serializer.errors)
