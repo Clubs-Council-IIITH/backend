@@ -24,17 +24,6 @@ EVENT_STATE_LIST = [
 CLUB_STATE_LIST = [["active", "ACTIVE"], ["deleted", "DELETED"]]
 
 
-class Event(models.Model):
-    name = models.CharField(max_length=250)
-    club = models.CharField(max_length=250)
-    user = models.CharField(max_length=250)
-    datetime = models.DateTimeField()
-    venue = models.TextField()
-    creator = models.CharField(max_length=250)
-    audience = models.TextField()
-    state = models.CharField(max_length=50, choices=EVENT_STATE_LIST, default="created")
-
-
 class Coordinator(models.Model):
     img = models.ImageField(upload_to="imgs/", blank=True)
     name = models.CharField(max_length=250)
@@ -48,6 +37,17 @@ class Club(models.Model):
     mail = models.EmailField()
     coordinators = models.ManyToManyField(Coordinator)
     state = models.CharField(max_length=50, choices=CLUB_STATE_LIST, default="active")
+
+
+class Event(models.Model):
+    name = models.CharField(max_length=250)
+    last_edited_by = models.CharField(max_length=250)
+    club = models.ForeignKey(Club, on_delete=models.CASCADE, blank=True, null=True)
+    datetime = models.DateTimeField()
+    venue = models.TextField()
+    creator = models.CharField(max_length=250)
+    audience = models.TextField()
+    state = models.CharField(max_length=50, choices=EVENT_STATE_LIST, default="created")
 
 
 auditlog.register(Event)
