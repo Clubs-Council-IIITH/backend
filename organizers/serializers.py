@@ -1,12 +1,12 @@
 from rest_framework import fields, serializers
-from base.models import Event, AUDIENCE_LIST, EVENT_STATE_LIST
+from base.models import Event, Club, AUDIENCE_LIST, EVENT_STATE_LIST
+from cc_admins.serializers import ClubSerializer
 from django.utils import timezone
 
 
 class EventSerializer(serializers.ModelSerializer):
     state = fields.ChoiceField(choices=EVENT_STATE_LIST, default="created")
-    club = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    last_edited_by = serializers.CharField(default=serializers.CurrentUserDefault())
 
     def validate_name(self, value):
         if not value:
@@ -36,7 +36,7 @@ class EventSerializer(serializers.ModelSerializer):
         return value
 
     def update(self, instance, validated_data):
-        instance.user = self.context["request"].user.username
+        instance.last_edited_by = self.context["request"].user.username
         instance.name = validated_data.get("name")
         instance.datetime = validated_data.get("datetime")
         instance.audience = validated_data.get("audience")
