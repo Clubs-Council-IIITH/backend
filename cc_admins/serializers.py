@@ -15,7 +15,7 @@ class LogSerializer(serializers.ModelSerializer):
         event = [
             {
                 "name": event.name,
-                "club": event.club,
+                "club": event.club.mail,
                 "state": event.state,
                 "datetime": event.datetime,
                 "venue": event.venue,

@@ -6,6 +6,7 @@ from django.utils import timezone
 
 class EventSerializer(serializers.ModelSerializer):
     state = fields.ChoiceField(choices=EVENT_STATE_LIST, default="created")
+    club = ClubSerializer()
     last_edited_by = serializers.CharField(default=serializers.CurrentUserDefault())
 
     def validate_name(self, value):

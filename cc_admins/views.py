@@ -15,8 +15,6 @@ from rest_framework.response import Response
 @api_view(["GET"])
 @allowed_groups(allowed_roles=["cc_admin"])
 def logs(request):
-    club_id = request.query_params.get("id", None)
-    club = Club.objects.values_list("mail").filter(id=club_id)
     logs = LogEntry.objects.all()
     serializer = LogSerializer(logs, many=True)
     return Response(serializer.data)
