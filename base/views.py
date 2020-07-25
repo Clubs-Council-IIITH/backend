@@ -1,9 +1,10 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from .models import Club, Event
 from cc_admins.serializers import ClubSerializer
 from organizers.serializers import EventSerializer
-from .models import Club, Event
 from django.utils import timezone
+from django.http import JsonResponse
 
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view
@@ -19,6 +20,16 @@ def get_token(request):
     token, created = Token.objects.get_or_create(user=user)
     context = {"token": token.key, "usergroup": usergroup}
     return render(request, "login_redirect.html", context)
+
+
+@api_view(["GET"])
+def get_session(request):
+    session = {}
+    try:
+        session["usergroup"] = str(request.user.groups.all()[0])
+    except:
+        session["usergroup"] = None
+    return JsonResponse(session)
 
 
 @api_view(["GET"])

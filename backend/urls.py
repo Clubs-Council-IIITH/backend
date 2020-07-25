@@ -16,13 +16,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from organizers import views
-from base.views import get_token
+from base.views import get_token, get_session
 
 import cas.views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("token/", get_token),
+    path("session/", get_session),
     path("accounts/login/", cas.views.login, name="login"),
     path("accounts/logout/", cas.views.logout, name="logout"),
     path("api/", include("base.urls")),
