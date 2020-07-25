@@ -11,6 +11,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 
 
+# Events CUD
 @permission_classes([IsAuthenticated])
 @api_view(["POST"])
 @allowed_groups(allowed_roles=["organizer"])
@@ -22,18 +23,6 @@ def events_new(request):
         serializer.save()
         return Response(serializer.data)
     return Response(serializer.errors)
-
-
-@permission_classes([IsAuthenticated])
-@api_view(["POST"])
-@allowed_groups(allowed_roles=["organizer"])
-def events_delete(request, id):
-    event = Event.objects.get(id=id)
-    if event.user != Club.objects.filter(mail=request.user.username).first():
-        return Response("Unauthorized!")
-    event.state = "deleted"
-    event.save()
-    return Response("Deleted Successfully")
 
 
 @permission_classes([IsAuthenticated])
@@ -56,3 +45,16 @@ def events_edit(request, id):
     else:
         serializer = EventSerializer(event)
         return Response(serializer.data)
+
+
+@permission_classes([IsAuthenticated])
+@api_view(["POST"])
+@allowed_groups(allowed_roles=["organizer"])
+def events_delete(request, id):
+    event = Event.objects.get(id=id)
+    if event.user != Club.objects.filter(mail=request.user.username).first():
+        return Response("Unauthorized!")
+    event.state = "deleted"
+    event.save()
+    return Response("Deleted Successfully")
+

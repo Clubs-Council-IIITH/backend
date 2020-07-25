@@ -11,6 +11,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 
 
+# Auditlog R
 @permission_classes([IsAuthenticated])
 @api_view(["GET"])
 @allowed_groups(allowed_roles=["cc_admin"])
@@ -20,6 +21,7 @@ def logs(request):
     return Response(serializer.data)
 
 
+# Clubs CUD
 @permission_classes([IsAuthenticated])
 @api_view(["POST"])
 @allowed_groups(allowed_roles=["cc_admin"])
@@ -60,15 +62,7 @@ def clubs_delete(request, id):
     return Response("Deleted Successfully")
 
 
-@permission_classes([IsAuthenticated])
-@api_view(["GET"])
-@allowed_groups(allowed_roles=["cc_admin"])
-def coordinators(request):
-    coordinators = Coordinator.objects.all()
-    serializer = CoordinatorSerializer(coordinators, many=True)
-    return Response(serializer.data)
-
-
+# Coordinator CUD
 @permission_classes([IsAuthenticated])
 @api_view(["POST"])
 @allowed_groups(allowed_roles=["cc_admin"])

@@ -11,6 +11,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 
+# Authentication
 @login_required
 def get_token(request):
     user = request.user
@@ -32,8 +33,10 @@ def get_session(request):
     return JsonResponse(session)
 
 
+# Events R
 @api_view(["GET"])
 def events(request):
+    event_id = request.query_params.get("id", None)
     token = request.headers.get("Authorization", None)
     events = Event.objects.all()
     for event in events:
@@ -45,10 +48,13 @@ def events(request):
         club = Club.objects.filter(mail=mail).first()
         if club:
             events = events.filter(club=club)
+    if event_id is not None:
+        events = events.filter(id=event_id)
     serializer = EventSerializer(events, many=True)
     return Response(serializer.data)
 
 
+# Clubs R
 @api_view(["GET"])
 def clubs(request):
     club_id = request.query_params.get("id", None)
@@ -56,4 +62,15 @@ def clubs(request):
     if club_id is not None:
         clubs = clubs.filter(id=club_id)
     serializer = ClubSerializer(clubs, many=True)
+    return Response(serializer.data)
+
+
+# Coordinators R
+@api_view(["GET"])
+def coordinators(request):
+    coordinator_id = request.query_params.get("id", None)
+    coordinators = Coordinator.objects.all()
+    if coordinator_id is not None:
+        coordinators = coordinators.filter(id=coordinator_id)
+    serializer = CoordinatorSerializer(coordinators, many=True)
     return Response(serializer.data)
