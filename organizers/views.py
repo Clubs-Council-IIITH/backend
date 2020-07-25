@@ -26,7 +26,7 @@ def events_new(request):
 
 
 @permission_classes([IsAuthenticated])
-@api_view(["GET", "POST"])
+@api_view(["POST"])
 @allowed_groups(allowed_roles=["organizer", "cc_admin"])
 def events_edit(request, id):
     event = Event.objects.get(id=id)
@@ -35,16 +35,12 @@ def events_edit(request, id):
         and event.club != Club.objects.filter(mail=request.user.username).first()
     ):
         return Response("Unauthorized!")
-    if request.method == "POST":
-        context = {"request": request}
-        serializer = EventSerializer(instance=event, data=request.data, context=context)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors)
-    else:
-        serializer = EventSerializer(event)
+    context = {"request": request}
+    serializer = EventSerializer(instance=event, data=request.data, context=context)
+    if serializer.is_valid():
+        serializer.save()
         return Response(serializer.data)
+    return Response(serializer.errors)
 
 
 @permission_classes([IsAuthenticated])
@@ -52,7 +48,7 @@ def events_edit(request, id):
 @allowed_groups(allowed_roles=["organizer"])
 def events_delete(request, id):
     event = Event.objects.get(id=id)
-    if event.user != Club.objects.filter(mail=request.user.username).first():
+    if event.club != Club.objects.filter(mail=request.user.username).first():
         return Response("Unauthorized!")
     event.state = "deleted"
     event.save()
