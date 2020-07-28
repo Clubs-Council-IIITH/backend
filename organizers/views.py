@@ -45,7 +45,7 @@ def events_edit(request, id):
 
 @permission_classes([IsAuthenticated])
 @api_view(["POST"])
-@allowed_groups(allowed_roles=["organizer"])
+@allowed_groups(allowed_roles=["organizer", "cc_admin"])
 def events_delete(request, id):
     event = Event.objects.get(id=id)
     if event.club != Club.objects.filter(mail=request.user.username).first():
