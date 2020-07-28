@@ -22,11 +22,13 @@ def get_token(request):
 
 @api_view(["GET"])
 def get_session(request):
-    session = {}
-    try:
-        session["usergroup"] = str(request.user.groups.all()[0])
-    except:
-        session["usergroup"] = None
+    session = {"usergroup": None, "is_authenticated": False}
+    if not request.user.is_anonymous:
+        try:
+            session["usergroup"] = str(request.user.groups.all()[0])
+        except:
+            pass
+        session["is_authenticated"] = True
     return JsonResponse(session)
 
 
