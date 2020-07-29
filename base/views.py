@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from .models import Club, Event
-from cc_admins.serializers import ClubSerializer
+from .models import Club, Event, Coordinator
+from cc_admins.serializers import ClubSerializer, CoordinatorSerializer
 from organizers.serializers import EventSerializer
 from django.utils import timezone
 from django.http import JsonResponse
