@@ -27,7 +27,7 @@ CLUB_STATE_LIST = [["active", "ACTIVE"], ["deleted", "DELETED"]]
 class Coordinator(models.Model):
     img = models.ImageField(upload_to="imgs/", blank=True)
     name = models.CharField(max_length=250)
-    role = models.CharField(max_length=250, default="Coordinator")
+    roles = models.TextField()
     mail = models.EmailField()
     mobile = models.CharField(max_length=20)
 

@@ -36,8 +36,23 @@ class LogSerializer(serializers.ModelSerializer):
         return event
 
 
+# Serializes club-wise roles for each Coordinator
+# > Representation: [["club_id1", "role1"], ["club_id2", "role2"], ...]
+# > Internal Value: "club_id1$role1,club_id2$role2, ..."
+class RoleSerializer(serializers.Field):
+    def to_representation(self, obj):
+        return [o.split("$") for o in obj.split(",")]
+
+    def to_internal_value(self, data):
+        strs = data.replace("[", "").split("],")
+        lsts = [list(map(str, s.replace("]", "").split(","))) for s in strs]
+        iv = ["$".join(map(str.strip, lst)) for lst in lsts]
+        return ",".join(iv)
+
+
 class CoordinatorSerializer(serializers.ModelSerializer):
     clubs = serializers.SerializerMethodField()
+    roles = RoleSerializer()
 
     class Meta:
         model = Coordinator
