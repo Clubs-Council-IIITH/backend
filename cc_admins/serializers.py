@@ -44,7 +44,7 @@ class CoordinatorSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def get_clubs(self, obj):
-        clubs = [club.name for club in Club.objects.filter(coordinators=obj.pk)]
+        clubs = [club.id for club in Club.objects.filter(coordinators=obj.pk)]
         return clubs
 
 
