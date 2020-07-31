@@ -36,19 +36,29 @@ def get_session(request):
 @api_view(["GET"])
 def events(request):
     event_id = request.query_params.get("id", None)
+    club = request.query_params.get("club", None)
     token = request.headers.get("Authorization", None)
     events = Event.objects.all()
+
+    # Mark past events as Completed
     for event in events:
         if event.datetime < timezone.now() and event.state != "deleted":
             event.state = "completed"
             event.save()
+
+    # Filter by club
+    if club is not None:
+        events = events.filter(club=club)
     if token:
         mail = Token.objects.get(key=token[6:]).user
         club = Club.objects.filter(mail=mail).first()
         if club:
             events = events.filter(club=club)
+
+    # Filter by event ID
     if event_id is not None:
         events = events.filter(id=event_id)
+
     serializer = EventSerializer(events, many=True)
     return Response(serializer.data)
 
