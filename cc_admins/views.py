@@ -16,7 +16,10 @@ from rest_framework.response import Response
 @api_view(["GET"])
 @allowed_groups(allowed_roles=["cc_admin"])
 def logs(request):
+    events = request.query_params.get("events", None)
     logs = LogEntry.objects.all()
+    if events is not None:
+        logs = logs.filter(object_pk__in=events.split(","))
     serializer = LogSerializer(logs, many=True)
     return Response(serializer.data)
 
