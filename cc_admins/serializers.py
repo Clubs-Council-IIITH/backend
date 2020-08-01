@@ -51,21 +51,15 @@ class RoleSerializer(serializers.Field):
 
 
 class CoordinatorSerializer(serializers.ModelSerializer):
-    clubs = serializers.SerializerMethodField()
-    roles = RoleSerializer()
+    roles = RoleSerializer(required=False)
 
     class Meta:
         model = Coordinator
         fields = "__all__"
 
-    def get_clubs(self, obj):
-        clubs = [club.id for club in Club.objects.filter(coordinators=obj.pk)]
-        return clubs
-
 
 class ClubSerializer(serializers.ModelSerializer):
-    coordinators = CoordinatorSerializer(read_only=True, many=True)
-
     class Meta:
         model = Club
         fields = "__all__"
+

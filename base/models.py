@@ -27,7 +27,7 @@ CLUB_STATE_LIST = [["active", "ACTIVE"], ["deleted", "DELETED"]]
 class Coordinator(models.Model):
     img = models.ImageField(upload_to="imgs/", blank=True)
     name = models.CharField(max_length=250)
-    roles = models.TextField()
+    roles = models.TextField(blank=True, null=True)
     mail = models.EmailField()
     mobile = models.CharField(max_length=20)
 
@@ -35,7 +35,6 @@ class Coordinator(models.Model):
 class Club(models.Model):
     name = models.CharField(max_length=250)
     mail = models.EmailField()
-    coordinators = models.ManyToManyField(Coordinator)
     state = models.CharField(max_length=50, choices=CLUB_STATE_LIST, default="active")
 
 

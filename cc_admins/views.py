@@ -42,16 +42,12 @@ def clubs_new(request):
 @allowed_groups(allowed_roles=["cc_admin"])
 def clubs_edit(request, id):
     club = Club.objects.get(id=id)
-    if request.method == "POST":
-        context = {"request": request}
-        serializer = ClubSerializer(instance=club, data=request.data, context=context)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors)
-    else:
-        serializer = ClubSerializer(club)
+    context = {"request": request}
+    serializer = ClubSerializer(instance=club, data=request.data, context=context)
+    if serializer.is_valid():
+        serializer.save()
         return Response(serializer.data)
+    return Response(serializer.errors)
 
 
 @permission_classes([IsAuthenticated])
@@ -59,7 +55,6 @@ def clubs_edit(request, id):
 @allowed_groups(allowed_roles=["cc_admin"])
 def clubs_delete(request, id):
     club = Club.objects.get(id=id)
-    club.coordinators.set([])
     club.state = "deleted"
     club.save()
     return Response("Deleted Successfully")
