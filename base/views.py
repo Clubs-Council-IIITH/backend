@@ -5,6 +5,7 @@ from cc_admins.serializers import ClubSerializer, CoordinatorSerializer
 from organizers.serializers import EventSerializer
 from django.utils import timezone
 from django.http import JsonResponse
+from re import split
 
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view
@@ -78,7 +79,10 @@ def clubs(request):
 @api_view(["GET"])
 def coordinators(request):
     coordinator_id = request.query_params.get("id", None)
+    club = request.query_params.get("club", None)
     coordinators = Coordinator.objects.all()
+    if club is not None:
+        coordinators = [obj for obj in coordinators if club in split("\$|\,", obj.roles)]
     if coordinator_id is not None:
         coordinators = coordinators.filter(id=coordinator_id)
     serializer = CoordinatorSerializer(coordinators, many=True)
