@@ -82,7 +82,7 @@ def coordinators(request):
     club = request.query_params.get("club", None)
     coordinators = Coordinator.objects.all()
     if club is not None:
-        coordinators = [obj for obj in coordinators if club in split("\$|\,", obj.roles)]
+        coordinators = [obj for obj in coordinators if club in split("\$|\,", obj.roles or "")]
     if coordinator_id is not None:
         coordinators = coordinators.filter(id=coordinator_id)
     serializer = CoordinatorSerializer(coordinators, many=True)
