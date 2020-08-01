@@ -15,6 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 from organizers import views
 from base.views import get_token, get_session
 
@@ -29,4 +31,4 @@ urlpatterns = [
     path("api/", include("base.urls")),
     path("api/", include("organizers.urls")),
     path("api/", include("cc_admins.urls")),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
