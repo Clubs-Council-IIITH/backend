@@ -47,7 +47,7 @@ class RoleSerializer(serializers.Field):
         strs = data.replace("[", "").split("],")
         lsts = [list(map(str, s.replace("]", "").split(","))) for s in strs]
         iv = ["$".join(map(str.strip, lst)) for lst in lsts]
-        return ",".join(iv)
+        return ",".join(iv).replace('"', "")
 
 
 class CoordinatorSerializer(serializers.ModelSerializer):
