@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from auditlog.models import LogEntry
-from base.models import Club, Coordinator, Event
 from base.decorators import allowed_groups
+from base.models import Club, Coordinator, Event
+from django.contrib.auth.models import User, Group
 from .serializers import LogSerializer, ClubSerializer, CoordinatorSerializer
 
 from rest_framework.decorators import api_view, permission_classes
@@ -33,6 +34,8 @@ def clubs_new(request):
     serializer = ClubSerializer(data=request.data, context=context)
     if serializer.is_valid():
         serializer.save()
+        user = User.objects.create_user(str(serializer.data["mail"]))
+        Group.objects.get(name="organizer").user_set.add(user)
         return Response(serializer.data)
     return Response(serializer.errors)
 
