@@ -44,6 +44,7 @@ class EventSerializer(serializers.ModelSerializer):
         instance.venue = validated_data.get("venue")
         instance.creator = validated_data.get("creator")
         instance.state = validated_data.get("state")
+        instance.link = validated_data.get("link")
         instance.save()
         return instance
 
