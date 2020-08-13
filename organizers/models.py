@@ -1,9 +1,11 @@
 from django.db import models
+from django.utils import timezone
 from base.models import Club
 
 
 class BudgetProposal(models.Model):
     club = models.ForeignKey(Club, on_delete=models.CASCADE, blank=True, null=True)
+    datetime = models.DateTimeField(default=timezone.now, blank=True, null=True)
     link = models.TextField(blank=True, null=True)
     pdf = models.FileField(blank=True, null=True)
 
