@@ -47,7 +47,6 @@ class Event(models.Model):
     creator = models.CharField(max_length=250)
     audience = models.TextField()
     state = models.CharField(max_length=50, choices=EVENT_STATE_LIST, default="created")
-    link = models.CharField(max_length=100, blank=True, null=True)
     duration = models.CharField(max_length=100, blank=True, null=True)
 
 
