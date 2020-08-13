@@ -1,5 +1,6 @@
 from rest_framework import fields, serializers
 from base.models import Event, Club, AUDIENCE_LIST, EVENT_STATE_LIST
+from .models import BudgetProposal
 from cc_admins.serializers import ClubSerializer
 from django.utils import timezone
 
@@ -50,4 +51,10 @@ class EventSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Event
+        fields = "__all__"
+
+
+class BudgetProposalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BudgetProposal
         fields = "__all__"
