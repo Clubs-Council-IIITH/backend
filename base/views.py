@@ -1,16 +1,18 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from django.db.models.functions import Lower
+from django.utils import timezone
+from django.http import JsonResponse
+
 from .models import Club, Event, Coordinator
 from cc_admins.serializers import ClubSerializer, CoordinatorSerializer
 from organizers.serializers import EventSerializer
-from django.utils import timezone
-from django.http import JsonResponse
-from re import split
 
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+from re import split
 
 # Authentication
 @login_required
@@ -39,7 +41,7 @@ def events(request):
     event_id = request.query_params.get("id", None)
     club = request.query_params.get("club", None)
     token = request.headers.get("Authorization", None)
-    events = Event.objects.all()
+    events = Event.objects.all().order_by("datetime")
 
     # Mark past events as Completed
     for event in events:
@@ -68,7 +70,7 @@ def events(request):
 @api_view(["GET"])
 def clubs(request):
     club_id = request.query_params.get("id", None)
-    clubs = Club.objects.all()
+    clubs = Club.objects.all().order_by(Lower("name"))
     if club_id is not None:
         clubs = clubs.filter(id=club_id)
     serializer = ClubSerializer(clubs, many=True)
@@ -80,7 +82,7 @@ def clubs(request):
 def coordinators(request):
     coordinator_id = request.query_params.get("id", None)
     club = request.query_params.get("club", None)
-    coordinators = Coordinator.objects.all()
+    coordinators = Coordinator.objects.all().order_by(Lower("name"))
     if club is not None:
         coordinators = [obj for obj in coordinators if club in split("\$|\,", obj.roles or "")]
     if coordinator_id is not None:
