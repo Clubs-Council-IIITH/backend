@@ -64,7 +64,7 @@ def events_delete(request, id):
 def proposals(request):
     club = request.query_params.get("club", None)
     token = request.headers.get("Authorization", None)
-    proposals = BudgetProposal.objects.all()
+    proposals = BudgetProposal.objects.all().order_by("-datetime")
 
     # Filter by club
     if club is not None:
