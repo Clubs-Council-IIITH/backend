@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User, Group
 
 # CC Admin account ID
-mail = ""
+mail = "clubs@iiit.ac.in"
 
 # Create all required usergroups
 usergroups = ["organizer", "cc_admin"]
