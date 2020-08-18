@@ -52,10 +52,16 @@ def clubs_new(request):
 @allowed_groups(allowed_roles=["cc_admin"])
 def clubs_edit(request, id):
     club = Club.objects.get(id=id)
+    Group.objects.get(name="organizer").user_set.remove(User.objects.get(username=club.mail))
     context = {"request": request}
     serializer = ClubSerializer(instance=club, data=request.data, context=context)
     if serializer.is_valid():
         serializer.save()
+        try:
+            user = User.objects.create_user(str(serializer.data["mail"]))
+        except IntegrityError:
+            user = User.objects.get(username=str(serializer.data["mail"]))
+        Group.objects.get(name="organizer").user_set.add(user)
         return Response(serializer.data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -65,6 +71,7 @@ def clubs_edit(request, id):
 @allowed_groups(allowed_roles=["cc_admin"])
 def clubs_delete(request, id):
     club = Club.objects.get(id=id)
+    Group.objects.get(name="organizer").user_set.remove(User.objects.get(username=club.mail))
     club.state = "deleted"
     club.save()
     return Response("Deleted Successfully")
