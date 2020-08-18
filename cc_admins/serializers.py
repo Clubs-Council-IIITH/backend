@@ -55,6 +55,11 @@ class RoleSerializer(serializers.Field):
 class CoordinatorSerializer(serializers.ModelSerializer):
     roles = RoleSerializer(required=False)
 
+    def validate_img(self, value):
+        if value.size > 1048576:
+            raise serializers.ValidationError("Image is too large! The maximum file size is 10MB.")
+        return value
+
     class Meta:
         model = Coordinator
         fields = "__all__"
