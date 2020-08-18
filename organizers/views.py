@@ -24,7 +24,7 @@ def events_new(request):
         serializer.validated_data["club"] = Club.objects.filter(mail=request.user.username).first()
         serializer.save()
         return Response(serializer.data)
-    return Response(serializer.errors)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @permission_classes([IsAuthenticated])
@@ -42,7 +42,7 @@ def events_edit(request, id):
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data)
-    return Response(serializer.errors)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @permission_classes([IsAuthenticated])
@@ -89,5 +89,5 @@ def proposals_new(request):
         serializer.validated_data["club"] = Club.objects.filter(mail=request.user.username).first()
         serializer.save()
         return Response(serializer.data)
-    return Response(serializer.errors)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

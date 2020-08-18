@@ -13,6 +13,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
+from rest_framework import status
 
 
 # Auditlog R
@@ -43,7 +44,7 @@ def clubs_new(request):
             user = User.objects.get(username=str(serializer.data["mail"]))
         Group.objects.get(name="organizer").user_set.add(user)
         return Response(serializer.data)
-    return Response(serializer.errors)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @permission_classes([IsAuthenticated])
@@ -56,7 +57,7 @@ def clubs_edit(request, id):
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data)
-    return Response(serializer.errors)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @permission_classes([IsAuthenticated])
@@ -79,7 +80,7 @@ def coordinators_new(request):
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data)
-    return Response(serializer.errors)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @permission_classes([IsAuthenticated])
@@ -93,7 +94,7 @@ def coordinators_edit(request, id):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
-        return Response(serializer.errors)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     else:
         serializer = ClubSerializer(coordinator)
         return Response(serializer.data)
