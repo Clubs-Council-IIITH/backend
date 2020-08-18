@@ -1,12 +1,12 @@
+from django.contrib.auth.models import User, Group
 from django.db import IntegrityError
 from django.shortcuts import render
-from django.contrib.auth.models import User, Group
-
-from auditlog.models import LogEntry
-from base.decorators import allowed_groups
-from base.models import Club, Coordinator, Event
 
 from .serializers import LogSerializer, ClubSerializer, CoordinatorSerializer
+
+from base.models import Club, Coordinator, Event
+from base.decorators import allowed_groups
+from auditlog.models import LogEntry
 
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.authentication import TokenAuthentication

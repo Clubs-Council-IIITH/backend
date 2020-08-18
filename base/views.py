@@ -1,10 +1,11 @@
-from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.db.models.functions import Lower
-from django.utils import timezone
 from django.http import JsonResponse
+from django.shortcuts import render
+from django.utils import timezone
 
 from .models import Club, Event, Coordinator
+
 from cc_admins.serializers import ClubSerializer, CoordinatorSerializer
 from organizers.serializers import EventSerializer
 

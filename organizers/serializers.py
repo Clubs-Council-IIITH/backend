@@ -1,8 +1,11 @@
-from rest_framework import fields, serializers
-from base.models import Event, Club, AUDIENCE_LIST, EVENT_STATE_LIST
-from .models import BudgetProposal
-from cc_admins.serializers import ClubSerializer
 from django.utils import timezone
+
+from .models import BudgetProposal
+
+from base.models import Event, Club, AUDIENCE_LIST, EVENT_STATE_LIST
+from cc_admins.serializers import ClubSerializer
+
+from rest_framework import fields, serializers
 
 
 class EventSerializer(serializers.ModelSerializer):
@@ -55,6 +58,11 @@ class EventSerializer(serializers.ModelSerializer):
 
 
 class BudgetProposalSerializer(serializers.ModelSerializer):
+    def validate_pdf(self, value):
+        if value.size > 20971520:
+            raise serializers.ValidationError("PDF is too large! The maximum file size is 20MB.")
+        return value
+
     class Meta:
         model = BudgetProposal
         fields = "__all__"

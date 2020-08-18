@@ -1,9 +1,11 @@
 from django.shortcuts import render
+from django.utils import timezone
+
 from .serializers import EventSerializer, BudgetProposalSerializer
 from .models import BudgetProposal
-from base.models import Event, Club
+
 from base.decorators import allowed_groups
-from django.utils import timezone
+from base.models import Event, Club
 
 from rest_framework.decorators import api_view, permission_classes, parser_classes
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -11,6 +13,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
+from rest_framework import status
 
 
 # Events CUD

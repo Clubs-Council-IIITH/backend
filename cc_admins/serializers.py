@@ -1,6 +1,8 @@
-from rest_framework import serializers
-from auditlog.models import LogEntry
 from base.models import Event, Club, Coordinator
+from auditlog.models import LogEntry
+
+from rest_framework import serializers
+
 from json import loads
 
 
