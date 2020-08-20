@@ -24,10 +24,10 @@ import cas.views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("token/", get_token),
-    path("session/", get_session),
     path("accounts/login/", cas.views.login, name="login"),
     path("accounts/logout/", cas.views.logout, name="logout"),
+    path("api/token/", get_token),
+    path("api/session/", get_session),
     path("api/", include("base.urls")),
     path("api/", include("organizers.urls")),
     path("api/", include("cc_admins.urls")),
