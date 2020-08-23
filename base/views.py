@@ -3,6 +3,7 @@ from django.db.models.functions import Lower
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.utils import timezone
+from django.conf import settings
 
 from .models import Club, Event, Coordinator
 
@@ -20,7 +21,7 @@ from re import split
 def get_token(request):
     user = request.user
     token, created = Token.objects.get_or_create(user=user)
-    context = {"token": token.key}
+    context = {"token": token.key, "redirect_url": settings.CAS_REDIRECT_URL}
     return render(request, "login_redirect.html", context)
 
 

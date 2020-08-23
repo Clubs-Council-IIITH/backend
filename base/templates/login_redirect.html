@@ -5,7 +5,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
    </head>
    <body onload="document.someform.submit()">
-      <form action="http://127.0.0.1:3000/loginRedirect" name="someform">
+       <form action="{{ redirect_url }}" name="someform">
          <input type="hidden" name="token" value="{{ token }}" />
       </form>
    </body>

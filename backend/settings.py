@@ -30,7 +30,7 @@ SECRET_KEY = "agk3sro1rs1yvye96pz6pa7i4^6vi94ln#%z$2j2h4zn8kv$^t"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['backend']
+ALLOWED_HOSTS = ["backend", "127.0.0.1", "localhost"]
 
 
 # Application definition
@@ -133,6 +133,7 @@ USE_L10N = True
 USE_TZ = True
 
 CAS_SERVER_URL = "https://login.iiit.ac.in/cas/"
+CAS_REDIRECT_URL = "http://127.0.0.1:3000/loginRedirect"
 CAS_LOGOUT_COMPLETELY = True
 CAS_PROVIDE_URL_TO_LOGOUT = True
 
