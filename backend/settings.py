@@ -133,7 +133,7 @@ USE_L10N = True
 USE_TZ = True
 
 CAS_SERVER_URL = "https://login.iiit.ac.in/cas/"
-CAS_REDIRECT_URL = "http://127.0.0.1:3000/loginRedirect"
+CAS_REDIRECT_URL = env("CAS_REDIRECT_URL")
 CAS_LOGOUT_COMPLETELY = True
 CAS_PROVIDE_URL_TO_LOGOUT = True
 
