@@ -53,7 +53,10 @@ def events_edit(request, id):
 @allowed_groups(allowed_roles=["organizer", "cc_admin"])
 def events_delete(request, id):
     event = Event.objects.get(id=id)
-    if event.club != Club.objects.filter(mail=request.user.username).first():
+    if (
+        "cc_admin" not in [group.name for group in request.user.groups.all()]
+        and event.club != Club.objects.filter(mail=request.user.username).first()
+    ):
         return Response("Unauthorized!")
     event.state = "deleted"
     event.save()
