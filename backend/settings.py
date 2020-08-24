@@ -30,7 +30,7 @@ SECRET_KEY = "agk3sro1rs1yvye96pz6pa7i4^6vi94ln#%z$2j2h4zn8kv$^t"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["backend", "127.0.0.1", "localhost"]
+ALLOWED_HOSTS = ["clubs.iiit.ac.in", "127.0.0.1", "localhost"]
 
 
 # Application definition
