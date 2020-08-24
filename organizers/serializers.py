@@ -59,8 +59,11 @@ class EventSerializer(serializers.ModelSerializer):
 
 class BudgetProposalSerializer(serializers.ModelSerializer):
     def validate_pdf(self, value):
-        if value.size > 20971520:
-            raise serializers.ValidationError("PDF is too large! The maximum file size is 20MB.")
+        if value:
+            if value.size > 20971520:
+                raise serializers.ValidationError(
+                    "PDF is too large! The maximum file size is 20MB."
+                )
         return value
 
     class Meta:
