@@ -18,7 +18,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from organizers import views
-from base.views import get_token, get_session
+from base.views import get_token, get_session, end_session
 
 import cas.views
 
@@ -28,6 +28,7 @@ urlpatterns = [
     path("accounts/logout/", cas.views.logout, name="logout"),
     path("api/token/", get_token),
     path("api/session/", get_session),
+    path("api/endsession/", end_session),
     path("api/", include("base.urls")),
     path("api/", include("organizers.urls")),
     path("api/", include("cc_admins.urls")),

@@ -37,6 +37,13 @@ def get_session(request):
     return JsonResponse(session)
 
 
+@api_view(["GET"])
+def end_session(request):
+    response = JsonResponse({"logout_url": settings.CAS_LOGOUT_URL})
+    response.delete_cookie("sessionid")
+    return response
+
+
 # Events R
 @api_view(["GET"])
 def events(request):
