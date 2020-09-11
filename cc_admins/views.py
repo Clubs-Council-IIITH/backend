@@ -3,10 +3,12 @@ from django.db import IntegrityError
 from django.shortcuts import render
 
 from .serializers import LogSerializer, ClubSerializer, CoordinatorSerializer
+from organizers.serializers import UpdateSerializer
 
 from base.models import Club, Coordinator, Event
 from base.decorators import allowed_groups
 from auditlog.models import LogEntry
+from organizers.models import Update
 
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.authentication import TokenAuthentication
@@ -105,3 +107,35 @@ def coordinators_edit(request, id):
     else:
         serializer = ClubSerializer(coordinator)
         return Response(serializer.data)
+
+
+@permission_classes([IsAuthenticated])
+@api_view(["POST"])
+@allowed_groups(allowed_roles=["cc_admin"])
+def updates_new(request):
+    serializer = UpdateSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Reponse(serializer.data)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@permission_classes([IsAuthenticated])
+@api_view(["POST"])
+@allowed_groups(allowed_roles=["cc_admin"])
+def updates_edit(request, id):
+    update = Update.objects.get(id=id)
+    serializer = UpdateSerializer(instance=update, data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@permission_classes([IsAuthenticated])
+@api_view(["POST"])
+@allowed_groups(allowed_roles=["cc_admin"])
+def updates_delete(request, id):
+    update = Update.objects.get(id=id)
+    update.delete()
+    return Response("Deleted Successfully")

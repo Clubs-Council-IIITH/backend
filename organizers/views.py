@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from django.utils import timezone
 
-from .serializers import EventSerializer, BudgetProposalSerializer
-from .models import BudgetProposal
+from .serializers import EventSerializer, BudgetProposalSerializer, UpdateSerializer
+from .models import BudgetProposal, Update
 
 from base.decorators import allowed_groups
 from base.models import Event, Club
@@ -63,6 +63,7 @@ def events_delete(request, id):
     return Response("Deleted Successfully")
 
 
+# Budget Proposals CR
 @permission_classes([IsAuthenticated])
 @api_view(["GET"])
 @parser_classes([MultiPartParser, FormParser])
@@ -96,4 +97,14 @@ def proposals_new(request):
         serializer.save()
         return Response(serializer.data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# Updates R
+@permission_classes([IsAuthenticated])
+@api_view(["GET"])
+@allowed_groups(allowed_roles=["organizer", "cc_admin"])
+def updates(request):
+    updates = Update.objects.all().order_by("-datetime")
+    serializer = UpdateSerializer(updates, many=True)
+    return Response(serializer.data)
 
