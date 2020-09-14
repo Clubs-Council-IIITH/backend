@@ -116,7 +116,7 @@ def updates_new(request):
     serializer = UpdateSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
-        return Reponse(serializer.data)
+        return Response(serializer.data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
