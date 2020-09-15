@@ -45,11 +45,12 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "rest_framework.authtoken",
-    "cas",
-    "base",
-    "organizers",
     "auditlog",
-    "cc_admins",
+    "cas",
+    #
+    "clubs",
+    "common",
+    "budget_manager",
 ]
 
 MIDDLEWARE = [

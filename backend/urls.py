@@ -17,8 +17,6 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from organizers import views
-from base.views import get_token, get_session, end_session
 
 import cas.views
 
@@ -26,10 +24,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("accounts/login/", cas.views.login, name="login"),
     path("accounts/logout/", cas.views.logout, name="logout"),
-    path("api/token/", get_token),
-    path("api/session/", get_session),
-    path("api/endsession/", end_session),
-    path("api/", include("base.urls")),
-    path("api/", include("organizers.urls")),
-    path("api/", include("cc_admins.urls")),
+    path("api/", include("common.urls")),
+    path("api/", include("clubs.urls")),
+    path("api/", include("budget_manager.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
