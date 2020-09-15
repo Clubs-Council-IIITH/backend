@@ -1,6 +1,5 @@
+from django.utils import timezone
 from django.db import models
-
-from auditlog.registry import auditlog
 
 AUDIENCE_LIST = [
     ["none", "-"],
@@ -40,10 +39,10 @@ class Club(models.Model):
 
 
 class Event(models.Model):
-    name = models.CharField(max_length=250)
-    last_edited_by = models.CharField(max_length=250)
     club = models.ForeignKey(Club, on_delete=models.CASCADE, blank=True, null=True)
     datetime = models.DateTimeField()
+    name = models.CharField(max_length=250)
+    last_edited_by = models.CharField(max_length=250)
     venue = models.TextField()
     creator = models.CharField(max_length=250)
     audience = models.TextField()
@@ -51,4 +50,27 @@ class Event(models.Model):
     duration = models.CharField(max_length=100)
 
 
-auditlog.register(Event)
+class EventLog(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    club = models.ForeignKey(Club, on_delete=models.CASCADE)
+    datetime = models.DateTimeField(default=timezone.now, blank=False, null=False)
+    actor = models.CharField(max_length=250)
+    action = models.IntegerField()
+
+    @classmethod
+    def create_event(cls, event):
+        print(event)
+        log = cls(event=event, club=event.club, actor=event.creator, action=0)
+        return log
+
+    @classmethod
+    def update_event(cls, event):
+        print(event)
+        log = cls(event=event, club=event.club, actor=event.creator, action=1)
+        return log
+
+    @classmethod
+    def delete_event(cls, event):
+        print(event)
+        log = cls(event=event, club=event.club, actor=event.creator, action=2)
+        return log

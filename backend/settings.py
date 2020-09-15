@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "rest_framework.authtoken",
-    "auditlog",
     "cas",
     #
     "clubs",
@@ -63,7 +62,6 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "cas.middleware.CASMiddleware",
-    "auditlog.middleware.AuditlogMiddleware",
 ]
 
 ROOT_URLCONF = "backend.urls"

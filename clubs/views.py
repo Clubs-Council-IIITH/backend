@@ -15,22 +15,21 @@ from rest_framework import status
 
 from common.decorators import allowed_groups
 
-from auditlog.models import LogEntry
-from .models import Club, Event, Coordinator
-from .serializers import LogSerializer, ClubSerializer, EventSerializer, CoordinatorSerializer
+from .models import Club, Event, EventLog, Coordinator
+from .serializers import ClubSerializer, EventSerializer, EventLogSerializer, CoordinatorSerializer
 
 from re import split
 
-# Auditlog R Endpoint {{{
+# EventLog R Endpoint {{{
 @permission_classes([IsAuthenticated])
 @api_view(["GET"])
 @allowed_groups(allowed_roles=["cc_admin"])
 def logs(request):
-    events = request.query_params.get("events", None)
-    logs = LogEntry.objects.all()
-    if events is not None:
-        logs = logs.filter(object_pk__in=events.split(","))
-    serializer = LogSerializer(logs, many=True)
+    club = request.query_params.get("club", None)
+    logs = EventLog.objects.all()
+    if club is not None:
+        logs = logs.filter(club=club).order_by("-datetime")
+    serializer = EventLogSerializer(logs, many=True)
     return Response(serializer.data)
 
 
@@ -75,7 +74,9 @@ def events_new(request):
     serializer = EventSerializer(data=request.data, context=context)
     if serializer.is_valid():
         serializer.validated_data["club"] = Club.objects.filter(mail=request.user.username).first()
-        serializer.save()
+        event = serializer.save()
+        log = EventLog.create_event(event)
+        log.save()
         return Response(serializer.data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -93,7 +94,9 @@ def events_edit(request, id):
     context = {"request": request}
     serializer = EventSerializer(instance=event, data=request.data, context=context)
     if serializer.is_valid():
-        serializer.save()
+        event = serializer.save()
+        log = EventLog.update_event(event)
+        log.save()
         return Response(serializer.data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -110,6 +113,8 @@ def events_delete(request, id):
         return Response("Unauthorized!")
     event.state = "deleted"
     event.save()
+    log = EventLog.delete_event(event)
+    log.save()
     return Response("Deleted Successfully")
 
 
