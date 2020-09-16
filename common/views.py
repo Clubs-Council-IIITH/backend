@@ -49,7 +49,10 @@ def end_session(request):
 @api_view(["GET"])
 @allowed_groups(allowed_roles=["organizer", "cc_admin"])
 def updates(request):
+    update_id = request.query_params.get("id", None)
     updates = Update.objects.all().order_by("-datetime")
+    if update_id is not None:
+        updates = updates.filter(id=update_id)
     serializer = UpdateSerializer(updates, many=True)
     return Response(serializer.data)
 
