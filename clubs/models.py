@@ -59,18 +59,15 @@ class EventLog(models.Model):
 
     @classmethod
     def create_event(cls, event):
-        print(event)
         log = cls(event=event, club=event.club, actor=event.creator, action=0)
         return log
 
     @classmethod
     def update_event(cls, event):
-        print(event)
         log = cls(event=event, club=event.club, actor=event.creator, action=1)
         return log
 
     @classmethod
     def delete_event(cls, event):
-        print(event)
         log = cls(event=event, club=event.club, actor=event.creator, action=2)
         return log

@@ -19,6 +19,7 @@ from .models import Club, Event, EventLog, Coordinator
 from .serializers import ClubSerializer, EventSerializer, EventLogSerializer, CoordinatorSerializer
 
 from re import split
+from json import loads
 
 # EventLog R Endpoint {{{
 @permission_classes([IsAuthenticated])
@@ -111,6 +112,7 @@ def events_delete(request, id):
         and event.club != Club.objects.filter(mail=request.user.username).first()
     ):
         return Response("Unauthorized!")
+    event.creator = loads(request.body)["creator"]
     event.state = "deleted"
     event.save()
     log = EventLog.delete_event(event)
