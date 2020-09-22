@@ -97,7 +97,6 @@ class EventLogSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def get_event(self, obj):
-        print(obj)
         event = [
             {
                 "name": event.name,
