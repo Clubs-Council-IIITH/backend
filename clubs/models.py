@@ -48,6 +48,7 @@ class Event(models.Model):
     audience = models.TextField()
     state = models.CharField(max_length=50, choices=EVENT_STATE_LIST, default="created")
     duration = models.CharField(max_length=100)
+    description = models.TextField(default="No description available.")
 
 
 class EventLog(models.Model):
