@@ -12,7 +12,9 @@ urlpatterns = [
     path("events/new/", views.events_new),
     path("events/edit/<str:id>/", views.events_edit),
     path("events/delete/<str:id>/", views.events_delete),
-    path("coordinators/", views.coordinators),
-    path("coordinators/new/", views.coordinators_new),
-    path("coordinators/edit/<str:id>/", views.coordinators_edit),
+    path("members/", views.members),
+    path("members/new/", views.members_new),
+    path("members/edit/<str:id>/", views.members_edit),
+    path("users/new/", views.users_new),
+    path("users/edit/<str:id>/", views.users_edit),
 ]

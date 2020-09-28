@@ -25,14 +25,15 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class MemberSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
-    club = ClubSerializer()
+    user_info = UserSerializer(source="user", read_only=True)
+    club_info = ClubSerializer(source="club", read_only=True)
 
     class Meta:
         model = Member
         fields = "__all__"
 
 
+# TODO: clean up this mess
 class EventSerializer(serializers.ModelSerializer):
     club = ClubSerializer()
     state = fields.ChoiceField(choices=EVENT_STATE_LIST, default="created")
