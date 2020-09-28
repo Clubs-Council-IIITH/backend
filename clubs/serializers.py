@@ -34,14 +34,9 @@ class MemberSerializer(serializers.ModelSerializer):
 
 
 class EventSerializer(serializers.ModelSerializer):
+    club = ClubSerializer()
     state = fields.ChoiceField(choices=EVENT_STATE_LIST, default="created")
-    club = ClubSerializer(required=False)
     last_edited_by = serializers.CharField(default=serializers.CurrentUserDefault())
-
-    def validate_name(self, value):
-        if not value:
-            raise serializers.ValidationError("Name can not be blank!")
-        return value
 
     def validate_datetime(self, value):
         if value < timezone.now():
@@ -53,16 +48,6 @@ class EventSerializer(serializers.ModelSerializer):
         val_list = set(value.split(","))
         if not val_list.issubset(key_list):
             raise serializers.ValidationError("Invalid audience!")
-        return value
-
-    def validate_venue(self, value):
-        if not value:
-            raise serializers.ValidationError("Venue can not be blank!")
-        return value
-
-    def validate_creator(self, value):
-        if not value:
-            raise serializers.ValidationError("Creator can not be blank!")
         return value
 
     def update(self, instance, validated_data):

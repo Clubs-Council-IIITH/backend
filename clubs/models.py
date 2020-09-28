@@ -29,14 +29,14 @@ def current_year():
 
 
 class Club(models.Model):
-    name = models.CharField(max_length=250)
-    mail = models.EmailField()
+    name = models.CharField(max_length=250, blank=False, null=False)
+    mail = models.EmailField(blank=False, null=False)
     state = models.CharField(max_length=50, choices=CLUB_STATE_LIST, default="active")
 
 
 class User(models.Model):
     img = models.ImageField(upload_to="imgs/", blank=True, default="/imgs/user_placeholder.png")
-    name = models.CharField(max_length=250)
+    name = models.CharField(max_length=250, blank=False, null=False)
     mail = models.EmailField()
     mobile = models.CharField(max_length=20)
 
@@ -49,13 +49,13 @@ class Member(models.Model):
 
 
 class Event(models.Model):
-    club = models.ForeignKey(Club, on_delete=models.CASCADE, blank=True, null=True)
+    club = models.ForeignKey(Club, on_delete=models.CASCADE, blank=False, null=False)
     datetime = models.DateTimeField()
-    name = models.CharField(max_length=250)
+    name = models.CharField(max_length=250, blank=False, null=False,)
     last_edited_by = models.CharField(max_length=250)
     venue = models.TextField()
-    creator = models.CharField(max_length=250)
-    audience = models.TextField()
+    creator = models.CharField(max_length=250, blank=False, null=False)
+    audience = models.TextField(blank=False, null=False)
     state = models.CharField(max_length=50, choices=EVENT_STATE_LIST, default="created")
     duration = models.CharField(max_length=100)
     description = models.TextField(default="No description available.")
