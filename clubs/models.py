@@ -24,6 +24,10 @@ EVENT_STATE_LIST = [
 CLUB_STATE_LIST = [["active", "ACTIVE"], ["deleted", "DELETED"]]
 
 
+def current_year():
+    return timezone.now().year
+
+
 class Club(models.Model):
     name = models.CharField(max_length=250)
     mail = models.EmailField()
@@ -41,6 +45,7 @@ class Member(models.Model):
     club = models.ForeignKey(Club, on_delete=models.CASCADE, blank=False, null=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, null=False)
     role = models.CharField(max_length=250, default="Coordinator")
+    active_year = models.IntegerField(default=current_year)
 
 
 class Event(models.Model):
@@ -57,8 +62,8 @@ class Event(models.Model):
 
 
 class EventLog(models.Model):
-    event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    club = models.ForeignKey(Club, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, blank=False, null=False)
+    club = models.ForeignKey(Club, on_delete=models.CASCADE, blank=False, null=False)
     datetime = models.DateTimeField(default=timezone.now, blank=False, null=False)
     actor = models.CharField(max_length=250)
     action = models.IntegerField()
