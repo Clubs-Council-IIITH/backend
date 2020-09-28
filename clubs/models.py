@@ -24,18 +24,23 @@ EVENT_STATE_LIST = [
 CLUB_STATE_LIST = [["active", "ACTIVE"], ["deleted", "DELETED"]]
 
 
-class Coordinator(models.Model):
-    img = models.ImageField(upload_to="imgs/", blank=True, default="/imgs/user_placeholder.png")
-    name = models.CharField(max_length=250)
-    roles = models.TextField(blank=True, null=True)
-    mail = models.EmailField()
-    mobile = models.CharField(max_length=20)
-
-
 class Club(models.Model):
     name = models.CharField(max_length=250)
     mail = models.EmailField()
     state = models.CharField(max_length=50, choices=CLUB_STATE_LIST, default="active")
+
+
+class User(models.Model):
+    img = models.ImageField(upload_to="imgs/", blank=True, default="/imgs/user_placeholder.png")
+    name = models.CharField(max_length=250)
+    mail = models.EmailField()
+    mobile = models.CharField(max_length=20)
+
+
+class Member(models.Model):
+    club = models.ForeignKey(Club, on_delete=models.CASCADE, blank=False, null=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, null=False)
+    role = models.CharField(max_length=250, default="Coordinator")
 
 
 class Event(models.Model):
