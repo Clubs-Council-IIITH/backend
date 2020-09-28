@@ -53,7 +53,7 @@ def events(request):
     # Filter by club
     if club is not None:
         events = events.filter(club=club)
-    if token:
+    elif token:
         mail = Token.objects.get(key=token[6:]).user
         club = Club.objects.filter(mail=mail).first()
         if club:
@@ -187,11 +187,24 @@ def clubs_delete(request, id):
 def coordinators(request):
     coordinator_id = request.query_params.get("id", None)
     club = request.query_params.get("club", None)
+    token = request.headers.get("Authorization", None)
     coordinators = Coordinator.objects.all().order_by(Lower("name"))
+
+    # Filter by club
     if club is not None:
         coordinators = [obj for obj in coordinators if club in split("\$|\,", obj.roles or "")]
+    elif token:
+        mail = Token.objects.get(key=token[6:]).user
+        club = Club.objects.filter(mail=mail).first()
+        if club:
+            coordinators = [
+                obj for obj in coordinators if str(club.id) in split("\$|\,", obj.roles or "")
+            ]
+
+    # Filter by coordinator ID
     if coordinator_id is not None:
         coordinators = coordinators.filter(id=coordinator_id)
+
     serializer = CoordinatorSerializer(coordinators, many=True)
     return Response(serializer.data)
 
