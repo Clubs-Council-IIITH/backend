@@ -26,7 +26,10 @@ class UserSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def get_roles(self, obj):
-        roles = [{"club": r.club.name, "role": r.role} for r in Member.objects.filter(user=obj.id)]
+        roles = [
+            {"active_year": r.active_year, "club": r.club.name, "role": r.role}
+            for r in Member.objects.filter(user=obj.id)
+        ]
         return roles
 
 
