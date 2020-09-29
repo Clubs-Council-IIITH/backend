@@ -14,6 +14,8 @@ class ClubSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    roles = serializers.SerializerMethodField(read_only=True)
+
     def validate_img(self, value):
         if value.size > 1048576:
             raise serializers.ValidationError("Image is too large! The maximum file size is 10MB.")
@@ -22,6 +24,10 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = "__all__"
+
+    def get_roles(self, obj):
+        roles = [{"club": r.club.name, "role": r.role} for r in Member.objects.filter(user=obj.id)]
+        return roles
 
 
 class MemberSerializer(serializers.ModelSerializer):

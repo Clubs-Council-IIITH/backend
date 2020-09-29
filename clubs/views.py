@@ -240,7 +240,22 @@ def members_edit(request, id):
 
 # }}}
 
-# Users CU Endpoints {{{
+# Users CRU Endpoints {{{
+@permission_classes([IsAuthenticated])
+@api_view(["GET"])
+@allowed_groups(allowed_roles=["cc_admin"])
+def users(request):
+    user_id = request.query_params.get("id", None)
+    users = User.objects.all()
+
+    # Filter by user ID
+    if user_id is not None:
+        users = users.filter(id=user_id)
+
+    serializer = UserSerializer(users, many=True)
+    return Response(serializer.data)
+
+
 @permission_classes([IsAuthenticated])
 @api_view(["POST"])
 @allowed_groups(allowed_roles=["cc_admin"])
