@@ -246,7 +246,7 @@ def members_edit(request, id):
 @allowed_groups(allowed_roles=["cc_admin"])
 def users(request):
     user_id = request.query_params.get("id", None)
-    users = User.objects.all()
+    users = User.objects.all().order_by(Lower("name"))
 
     # Filter by user ID
     if user_id is not None:
