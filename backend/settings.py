@@ -25,16 +25,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "agk3sro1rs1yvye96pz6pa7i4^6vi94ln#%z$2j2h4zn8kv$^t"
+SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
 ALLOWED_HOSTS = ["clubs.iiit.ac.in", "127.0.0.1", "localhost"]
 
 
 # Application definition
-
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -87,22 +85,20 @@ WSGI_APPLICATION = "backend.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
-
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
         "NAME": env("DB_NAME"),
         "USER": env("DB_USER"),
         "PASSWORD": env("DB_PASSWORD"),
-        "HOST": env("DB_HOST"),
-        "PORT": env("DB_PORT"),
+        "HOST": env("DB_HOST", default=""),
+        "PORT": env("DB_PORT", default=""),
     }
 }
 
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",},
@@ -118,29 +114,32 @@ AUTHENTICATION_BACKENDS = [
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": ["rest_framework.authentication.TokenAuthentication",],
 }
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
-
 LANGUAGE_CODE = "en-us"
-
 TIME_ZONE = "UTC"
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
-CAS_SERVER_URL = "https://login.iiit.ac.in/cas/"
-CAS_LOGOUT_URL = "https://login.iiit.ac.in/cas/logout" + env("CAS_LOGOUT_SERVICE")
-CAS_REDIRECT_URL = env("CAS_REDIRECT_URL")
+
+# CAS config
 CAS_LOGOUT_COMPLETELY = True
 CAS_PROVIDE_URL_TO_LOGOUT = True
+CAS_SERVER_URL = "https://login.iiit.ac.in/cas/"
+CAS_REDIRECT_URL = env("CAS_REDIRECT_URL", default="http://clubs.iiit.ac.in/loginRedirect")
+CAS_LOGOUT_URL = "https://login.iiit.ac.in/cas/logout" + env(
+    "CAS_LOGOUT_SERVICE", default="?service=http%3A%2F%2Fclubs.iiit.ac.in%2FlogoutRedirect"
+)
+
 
 # Static files (CSS, JavaScript)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATIC_URL = "/static/"
+
 
 # Media (Images, etc)
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
