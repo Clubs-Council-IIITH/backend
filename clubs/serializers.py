@@ -44,7 +44,7 @@ class MemberSerializer(serializers.ModelSerializer):
 
 # TODO: clean up this mess
 class EventSerializer(serializers.ModelSerializer):
-    club = ClubSerializer()
+    club = ClubSerializer(required=False)
     state = fields.ChoiceField(choices=EVENT_STATE_LIST, default="created")
     last_edited_by = serializers.CharField(default=serializers.CurrentUserDefault())
 
