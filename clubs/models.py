@@ -31,6 +31,7 @@ def current_year():
 class Club(models.Model):
     name = models.CharField(max_length=250, blank=False, null=False)
     mail = models.EmailField(blank=False, null=False)
+    website = models.CharField(max_length=500, blank=True, null=True)
     state = models.CharField(max_length=50, choices=CLUB_STATE_LIST, default="active")
 
 
