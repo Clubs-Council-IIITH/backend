@@ -54,7 +54,7 @@ class Event(models.Model):
     datetime = models.DateTimeField()
     name = models.CharField(max_length=250, blank=False, null=False,)
     last_edited_by = models.CharField(max_length=250)
-    venue = models.TextField()
+    venue = models.TextField(default="-")
     creator = models.CharField(max_length=250, blank=False, null=False)
     audience = models.TextField(blank=False, null=False)
     state = models.CharField(max_length=50, choices=EVENT_STATE_LIST, default="created")
