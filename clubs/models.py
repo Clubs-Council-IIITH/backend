@@ -60,6 +60,7 @@ class Event(models.Model):
     state = models.CharField(max_length=50, choices=EVENT_STATE_LIST, default="created")
     duration = models.CharField(max_length=100)
     description = models.TextField(default="No description available.")
+    financial_requirements = models.TextField(default="None.")
 
 
 class EventLog(models.Model):
