@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User as AuthUser, Group
 from django.db.models.functions import Lower
 from django.db import IntegrityError
 from django.shortcuts import render
@@ -15,10 +15,17 @@ from rest_framework import status
 
 from common.decorators import allowed_groups
 
-from .models import Club, Event, EventLog, Coordinator
-from .serializers import ClubSerializer, EventSerializer, EventLogSerializer, CoordinatorSerializer
+from .models import Club, User, Member, Event, EventLog
+from .serializers import (
+    ClubSerializer,
+    UserSerializer,
+    MemberSerializer,
+    EventSerializer,
+    EventLogSerializer,
+)
 
 from re import split
+from json import loads
 
 # EventLog R Endpoint {{{
 @permission_classes([IsAuthenticated])
@@ -52,7 +59,7 @@ def events(request):
     # Filter by club
     if club is not None:
         events = events.filter(club=club)
-    if token:
+    elif token:
         mail = Token.objects.get(key=token[6:]).user
         club = Club.objects.filter(mail=mail).first()
         if club:
@@ -111,6 +118,7 @@ def events_delete(request, id):
         and event.club != Club.objects.filter(mail=request.user.username).first()
     ):
         return Response("Unauthorized!")
+    event.creator = loads(request.body)["creator"]
     event.state = "deleted"
     event.save()
     log = EventLog.delete_event(event)
@@ -140,28 +148,28 @@ def clubs_new(request):
     if serializer.is_valid():
         serializer.save()
         try:
-            user = User.objects.create_user(str(serializer.data["mail"]))
+            user = AuthUser.objects.create_user(str(serializer.data["mail"]))
         except IntegrityError:
-            user = User.objects.get(username=str(serializer.data["mail"]))
+            user = AuthUser.objects.get(username=str(serializer.data["mail"]))
         Group.objects.get(name="organizer").user_set.add(user)
         return Response(serializer.data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @permission_classes([IsAuthenticated])
-@api_view(["GET", "POST"])
+@api_view(["POST"])
 @allowed_groups(allowed_roles=["cc_admin"])
 def clubs_edit(request, id):
     club = Club.objects.get(id=id)
-    Group.objects.get(name="organizer").user_set.remove(User.objects.get(username=club.mail))
+    Group.objects.get(name="organizer").user_set.remove(AuthUser.objects.get(username=club.mail))
     context = {"request": request}
     serializer = ClubSerializer(instance=club, data=request.data, context=context)
     if serializer.is_valid():
         serializer.save()
         try:
-            user = User.objects.create_user(str(serializer.data["mail"]))
+            user = AuthUser.objects.create_user(str(serializer.data["mail"]))
         except IntegrityError:
-            user = User.objects.get(username=str(serializer.data["mail"]))
+            user = AuthUser.objects.get(username=str(serializer.data["mail"]))
         Group.objects.get(name="organizer").user_set.add(user)
         return Response(serializer.data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -172,7 +180,7 @@ def clubs_edit(request, id):
 @allowed_groups(allowed_roles=["cc_admin"])
 def clubs_delete(request, id):
     club = Club.objects.get(id=id)
-    Group.objects.get(name="organizer").user_set.remove(User.objects.get(username=club.mail))
+    Group.objects.get(name="organizer").user_set.remove(AuthUser.objects.get(username=club.mail))
     club.state = "deleted"
     club.save()
     return Response("Deleted Successfully")
@@ -180,26 +188,37 @@ def clubs_delete(request, id):
 
 # }}}
 
-# Coordinators CRUD Endpoints {{{
+# Members CRU Endpoints {{{
 @api_view(["GET"])
-def coordinators(request):
-    coordinator_id = request.query_params.get("id", None)
+def members(request):
+    user_id = request.query_params.get("id", None)
     club = request.query_params.get("club", None)
-    coordinators = Coordinator.objects.all().order_by(Lower("name"))
+    token = request.headers.get("Authorization", None)
+    members = Member.objects.all()
+
+    # Filter by club
     if club is not None:
-        coordinators = [obj for obj in coordinators if club in split("\$|\,", obj.roles or "")]
-    if coordinator_id is not None:
-        coordinators = coordinators.filter(id=coordinator_id)
-    serializer = CoordinatorSerializer(coordinators, many=True)
+        members = members.filter(club=club)
+    elif token:
+        mail = Token.objects.get(key=token[6:]).user
+        club = Club.objects.filter(mail=mail).first()
+        if club:
+            members = members.filter(club=club)
+
+    # Filter by user ID
+    if user_id is not None:
+        members = members.filter(user=user_id)
+
+    serializer = MemberSerializer(members, many=True)
     return Response(serializer.data)
 
 
 @permission_classes([IsAuthenticated])
 @api_view(["POST"])
 @allowed_groups(allowed_roles=["cc_admin"])
-def coordinators_new(request):
+def members_new(request):
     context = {"request": request}
-    serializer = CoordinatorSerializer(data=request.data, context=context)
+    serializer = MemberSerializer(data=request.data, context=context)
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data)
@@ -207,20 +226,59 @@ def coordinators_new(request):
 
 
 @permission_classes([IsAuthenticated])
-@api_view(["GET", "POST"])
+@api_view(["POST"])
 @allowed_groups(allowed_roles=["cc_admin"])
-def coordinators_edit(request, id):
-    coordinator = Coordinator.objects.get(id=id)
-    if request.method == "POST":
-        context = {"request": request}
-        serializer = CoordinatorSerializer(instance=coordinator, data=request.data, context=context)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    else:
-        serializer = ClubSerializer(coordinator)
+def members_edit(request, id):
+    member = User.objects.get(id=id)
+    context = {"request": request}
+    serializer = MemberSerializer(instance=member, data=request.data, context=context)
+    if serializer.is_valid():
+        serializer.save()
         return Response(serializer.data)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# }}}
+
+# Users CRU Endpoints {{{
+@permission_classes([IsAuthenticated])
+@api_view(["GET"])
+@allowed_groups(allowed_roles=["cc_admin"])
+def users(request):
+    user_id = request.query_params.get("id", None)
+    users = User.objects.all().order_by(Lower("name"))
+
+    # Filter by user ID
+    if user_id is not None:
+        users = users.filter(id=user_id)
+
+    serializer = UserSerializer(users, many=True)
+    return Response(serializer.data)
+
+
+@permission_classes([IsAuthenticated])
+@api_view(["POST"])
+@allowed_groups(allowed_roles=["cc_admin"])
+def users_new(request):
+    context = {"request": request}
+    serializer = UserSerializer(data=request.data, context=context)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@permission_classes([IsAuthenticated])
+@api_view(["POST"])
+@allowed_groups(allowed_roles=["cc_admin"])
+def users_edit(request, id):
+    user = User.objects.get(id=id)
+    context = {"request": request}
+    serializer = UserSerializer(instance=user, data=request.data, context=context)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 # }}}

@@ -2,36 +2,9 @@ from django.utils import timezone
 
 from rest_framework import fields, serializers
 
-from .models import Event, Club, Coordinator, EventLog, AUDIENCE_LIST, EVENT_STATE_LIST
+from .models import Event, Club, User, Member, EventLog, AUDIENCE_LIST, EVENT_STATE_LIST
 
 from json import loads
-
-
-# Serializes club-wise roles for each Coordinator
-# > Representation: [["club_id1", "role1"], ["club_id2", "role2"], ...]
-# > Internal Value: "club_id1$role1,club_id2$role2, ..."
-class RoleSerializer(serializers.Field):
-    def to_representation(self, obj):
-        return [o.split("$") for o in obj.split(",")]
-
-    def to_internal_value(self, data):
-        strs = data.replace("[", "").split("],")
-        lsts = [list(map(str, s.replace("]", "").split(","))) for s in strs]
-        iv = ["$".join(map(str.strip, lst)) for lst in lsts]
-        return ",".join(iv).replace('"', "")
-
-
-class CoordinatorSerializer(serializers.ModelSerializer):
-    roles = RoleSerializer(required=False)
-
-    def validate_img(self, value):
-        if value.size > 1048576:
-            raise serializers.ValidationError("Image is too large! The maximum file size is 10MB.")
-        return value
-
-    class Meta:
-        model = Coordinator
-        fields = "__all__"
 
 
 class ClubSerializer(serializers.ModelSerializer):
@@ -40,15 +13,40 @@ class ClubSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class EventSerializer(serializers.ModelSerializer):
-    state = fields.ChoiceField(choices=EVENT_STATE_LIST, default="created")
-    club = ClubSerializer(required=False)
-    last_edited_by = serializers.CharField(default=serializers.CurrentUserDefault())
+class UserSerializer(serializers.ModelSerializer):
+    roles = serializers.SerializerMethodField(read_only=True)
 
-    def validate_name(self, value):
-        if not value:
-            raise serializers.ValidationError("Name can not be blank!")
+    def validate_img(self, value):
+        if value.size > 1048576:
+            raise serializers.ValidationError("Image is too large! The maximum file size is 10MB.")
         return value
+
+    class Meta:
+        model = User
+        fields = "__all__"
+
+    def get_roles(self, obj):
+        roles = [
+            {"active_year": r.active_year, "club": r.club.name, "role": r.role}
+            for r in Member.objects.filter(user=obj.id)
+        ]
+        return roles
+
+
+class MemberSerializer(serializers.ModelSerializer):
+    user_info = UserSerializer(source="user", read_only=True)
+    club_info = ClubSerializer(source="club", read_only=True)
+
+    class Meta:
+        model = Member
+        fields = "__all__"
+
+
+# TODO: clean up this mess
+class EventSerializer(serializers.ModelSerializer):
+    club = ClubSerializer(required=False)
+    state = fields.ChoiceField(choices=EVENT_STATE_LIST, default="created")
+    last_edited_by = serializers.CharField(default=serializers.CurrentUserDefault())
 
     def validate_datetime(self, value):
         if value < timezone.now():
@@ -60,16 +58,6 @@ class EventSerializer(serializers.ModelSerializer):
         val_list = set(value.split(","))
         if not val_list.issubset(key_list):
             raise serializers.ValidationError("Invalid audience!")
-        return value
-
-    def validate_venue(self, value):
-        if not value:
-            raise serializers.ValidationError("Venue can not be blank!")
-        return value
-
-    def validate_creator(self, value):
-        if not value:
-            raise serializers.ValidationError("Creator can not be blank!")
         return value
 
     def update(self, instance, validated_data):
@@ -90,24 +78,9 @@ class EventSerializer(serializers.ModelSerializer):
 
 
 class EventLogSerializer(serializers.ModelSerializer):
-    event = serializers.SerializerMethodField()
+    event = EventSerializer()
 
     class Meta:
         model = EventLog
         fields = "__all__"
-
-    def get_event(self, obj):
-        print(obj)
-        event = [
-            {
-                "name": event.name,
-                "club": event.club.mail,
-                "state": event.state,
-                "datetime": event.datetime,
-                "venue": event.venue,
-                "audience": event.audience,
-            }
-            for event in Event.objects.filter(id=int(obj.event.id))
-        ]
-        return event
 
