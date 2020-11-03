@@ -48,11 +48,6 @@ class EventSerializer(serializers.ModelSerializer):
     state = fields.ChoiceField(choices=EVENT_STATE_LIST, default="created")
     last_edited_by = serializers.CharField(default=serializers.CurrentUserDefault())
 
-    def validate_datetime(self, value):
-        if value < timezone.now():
-            raise serializers.ValidationError("Event can not be in the past!")
-        return value
-
     def validate_audience(self, value):
         key_list = set(row[0] for row in AUDIENCE_LIST)
         val_list = set(value.split(","))
