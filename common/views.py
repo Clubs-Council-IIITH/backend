@@ -25,10 +25,12 @@ def get_token(request):
 
 @api_view(["GET"])
 def get_session(request):
-    session = {"usergroup": None, "is_authenticated": False}
+    session = {"is_authenticated": False, "user": { "name": None, "group": None } }
     if not request.user.is_anonymous:
         try:
-            session["usergroup"] = str(request.user.groups.all()[0])
+            user = request.user
+            session["user"]["name"] = str(user.username)
+            session["user"]["group"] = str(user.groups.all()[0])
         except:
             pass
         session["is_authenticated"] = True
