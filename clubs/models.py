@@ -29,6 +29,7 @@ def current_year():
 
 
 class Club(models.Model):
+    img = models.ImageField(upload_to="imgs/clubs/", blank=True, default="/imgs/clubs/club_placeholder.jpg")
     name = models.CharField(max_length=250, blank=False, null=False)
     mail = models.EmailField(blank=False, null=False)
     website = models.CharField(max_length=500, blank=True, null=True)
@@ -36,7 +37,7 @@ class Club(models.Model):
 
 
 class User(models.Model):
-    img = models.ImageField(upload_to="imgs/", blank=True, default="/imgs/user_placeholder.png")
+    img = models.ImageField(upload_to="imgs/users/", blank=True, default="/imgs/users/user_placeholder.png")
     name = models.CharField(max_length=250, blank=False, null=False)
     mail = models.EmailField()
     mobile = models.CharField(max_length=20)
