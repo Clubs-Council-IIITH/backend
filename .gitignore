@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+
+.in
+.out
+.venv/
+
+.nvimrc
+.tmuxrc
+
+media/
+backend/.env
