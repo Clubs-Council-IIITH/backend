@@ -11,10 +11,13 @@ django-environ==0.4.5
 django-jsonfield==1.4.0
 django-multiselectfield==0.1.12
 djangorestframework==3.11.0
+greenlet==1.1.0
+gunicorn==20.1.0
 isort==4.3.21
 jedi==0.17.0
 lazy-object-proxy==1.4.3
 mccabe==0.6.1
+msgpack==1.0.2
 parso==0.7.0
 pathspec==0.8.0
 Pillow==7.1.2

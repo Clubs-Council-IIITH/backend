@@ -9,4 +9,5 @@ __pycache__/
 .tmuxrc
 
 media/
+django_static/
 backend/.env

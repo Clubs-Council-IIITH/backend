@@ -11,11 +11,6 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
-import environ
-
-# Read .env
-env = environ.Env()
-environ.Env.read_env()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -25,11 +20,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env("SECRET_KEY")
+SECRET_KEY = os.environ.get("SECRET_KEY", "debugkey")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-ALLOWED_HOSTS = ["clubs.iiit.ac.in", "127.0.0.1", "localhost"]
+DEBUG = os.environ.get("DJANGO_DEBUG")
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost 127.0.0.1").split()
 
 
 # Application definition
@@ -87,12 +82,12 @@ WSGI_APPLICATION = "backend.wsgi.application"
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": env("DB_NAME"),
-        "USER": env("DB_USER"),
-        "PASSWORD": env("DB_PASSWORD"),
-        "HOST": env("DB_HOST", default=""),
-        "PORT": env("DB_PORT", default=""),
+        "ENGINE": os.environ.get("DJANGO_DB_ENGINE", "django.db.backends.sqlite3"),
+        "NAME": os.environ.get("DJANGO_DB_NAME", os.path.join(BASE_DIR, "db.sqlite3")),
+        "USER": os.environ.get("DJANGO_DB_USER", "user"),
+        "PASSWORD": os.environ.get("DJANGO_DB_PASSWORD", "password"),
+        "HOST": os.environ.get("DJANGO_DB_HOST", "localhost"),
+        "PORT": os.environ.get("DJANGO_DB_PORT", "5432"),
     }
 }
 
@@ -129,20 +124,22 @@ USE_TZ = True
 CAS_LOGOUT_COMPLETELY = True
 CAS_PROVIDE_URL_TO_LOGOUT = True
 CAS_SERVER_URL = "https://login.iiit.ac.in/cas/"
-CAS_REDIRECT_URL = env("CAS_REDIRECT_URL", default="http://clubs.iiit.ac.in/loginRedirect")
-CAS_LOGOUT_URL = "https://login.iiit.ac.in/cas/logout" + env(
-    "CAS_LOGOUT_SERVICE", default="?service=http%3A%2F%2Fclubs.iiit.ac.in%2FlogoutRedirect"
-)
+# CAS_REDIRECT_URL = env("CAS_REDIRECT_URL", default="http://clubs.iiit.ac.in/loginRedirect")
+# CAS_LOGOUT_URL = "https://login.iiit.ac.in/cas/logout" + env(
+#     "CAS_LOGOUT_SERVICE", default="?service=http%3A%2F%2Fclubs.iiit.ac.in%2FlogoutRedirect"
+# )
+CAS_REDIRECT_URL = os.environ.get("DJANGO_CAS_REDIRECT_URL", "http://clubs.iiit.ac.in/loginRedirect")
+CAS_LOGOUT_URL = os.environ.get("DJANGO_CAS_LOGOUT_URL", "?service=http%3A%2F%2Fclubs.iiit.ac.in%2FlogoutRedirect")
 
 
 # Static files (CSS, JavaScript)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
-STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "django_static")
+STATIC_URL = "/django_static/"
 
 
 # Media (Images, etc)
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = "/media/"
 
-CORS_ORIGIN_WHITELIST = ["http://127.0.0.1:3000", "http://localhost:3000"]
+CORS_ORIGIN_WHITELIST = os.environ.get("DJANGO_CORS_ORIGIN_WHITELIST", "http://localhost http://127.0.0.1").split()
