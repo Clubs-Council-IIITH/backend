@@ -8,6 +8,5 @@ __pycache__/
 .nvimrc
 .tmuxrc
 
-media/
 django_static/
 backend/.env
