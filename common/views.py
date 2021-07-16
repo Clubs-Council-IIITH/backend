@@ -9,6 +9,8 @@ from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework import status
 
+from clubs.models import Club
+
 from .decorators import allowed_groups
 
 from .models import Update
@@ -25,12 +27,14 @@ def get_token(request):
 
 @api_view(["GET"])
 def get_session(request):
-    session = {"is_authenticated": False, "user": { "name": None, "group": None } }
+    session = {"is_authenticated": False, "user": { "name": None, "group": None, "club": None } }
     if not request.user.is_anonymous:
         try:
             user = request.user
             session["user"]["name"] = str(user.username)
             session["user"]["group"] = str(user.groups.all()[0])
+            if session["user"]["group"] == "organizer":
+                session["user"]["club"] = Club.objects.filter(mail=session["user"]["name"]).first().id
         except:
             pass
         session["is_authenticated"] = True
