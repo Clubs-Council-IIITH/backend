@@ -10,7 +10,9 @@ do
                 echo "Ref $ref received. Deploying ${BRANCH} branch to production..."
                 git --work-tree=$TARGET --git-dir=$GIT_DIR checkout -f $BRANCH
 
-                cd $TARGET && docker-compose up -d --build backend
+                cd $TARGET
+                docker-compose up -d --build backend
+                yes | docker system prune
 
                 echo "Successfully deployed backend!"
         else                                                                                                     
