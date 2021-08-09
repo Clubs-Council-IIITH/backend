@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -24,8 +25,15 @@ SECRET_KEY = "django-insecure-dk)$1t3s*rq$v8j!7n5q$202#4!)#$wayk@15&o1w)4)@*_3k+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost 127.0.0.1").split()
 
-ALLOWED_HOSTS = []
+
+# CORS Origin Whitelist
+CORS_ORIGIN_WHITELIST = os.environ.get(
+    "DJANGO_CORS_ORIGIN_WHITELIST", "http://localhost http://127.0.0.1"
+).split()
+
+CSRF_TRUSTED_ORIGINS = ["localhost:3000", "127.0.0.1:3000"]
 
 
 # Application definition
@@ -44,7 +52,8 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
+    # TODO: uncomment this and fix CSRF
+    # "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -104,19 +113,22 @@ TEST_RUNNER = "snapshottest.django.TestRunner"
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 LANGUAGE_CODE = "en-us"
-
 TIME_ZONE = "UTC"
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.2/howto/static-files/
-STATIC_URL = "/static/"
+# Static files (CSS, JavaScript)
+# https://docs.djangoproject.com/en/3.0/howto/static-files/
+STATIC_ROOT = os.path.join(BASE_DIR, "django_static")
+STATIC_URL = "/django_static/"
+
+
+# Media (Images, etc)
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = "/media/"
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
