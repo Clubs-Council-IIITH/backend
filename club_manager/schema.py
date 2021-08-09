@@ -22,4 +22,4 @@ class Mutation(graphene.ObjectType):
     delete_club = DeleteClub.Field()
 
 
-schema = graphene.Schema(query=Query)
+schema = graphene.Schema(query=Query, mutation=Mutation)
