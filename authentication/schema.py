@@ -1,5 +1,17 @@
 import graphene
 import graphql_jwt
+from graphene.types.generic import GenericScalar
+from graphql_jwt.utils import get_payload
+from graphql_jwt.decorators import ensure_token
+
+
+class Query(graphene.ObjectType):
+    payload = GenericScalar(required=True)
+
+    @classmethod
+    @ensure_token
+    def resolve_payload(cls, root, info, token, **kwargs):
+        return get_payload(token, info.context)
 
 
 class Mutation(graphene.ObjectType):
