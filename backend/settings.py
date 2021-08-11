@@ -30,7 +30,8 @@ ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost 127.0.0.1").sp
 
 # CORS Origin Whitelist
 CORS_ORIGIN_WHITELIST = os.environ.get(
-    "DJANGO_CORS_ORIGIN_WHITELIST", "http://localhost http://127.0.0.1"
+    "DJANGO_CORS_ORIGIN_WHITELIST",
+    "http://localhost http://127.0.0.1 http://localhost:3000 http://localhost:8000",
 ).split()
 
 CSRF_TRUSTED_ORIGINS = ["localhost:3000", "127.0.0.1:3000"]
@@ -44,7 +45,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_cas_ng",
     "graphene_django",
+    "authentication",
     "club_manager",
 ]
 
@@ -55,8 +58,15 @@ MIDDLEWARE = [
     # TODO: uncomment this and fix CSRF
     # "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django_cas_ng.middleware.CASMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+]
+
+AUTHENTICATION_BACKENDS = [
+    "graphql_jwt.backends.JSONWebTokenBackend",
+    "django.contrib.auth.backends.ModelBackend",
+    "django_cas_ng.backends.CASBackend",
 ]
 
 ROOT_URLCONF = "backend.urls"
@@ -103,7 +113,19 @@ AUTH_PASSWORD_VALIDATORS = [
 # Graphene Settings
 GRAPHENE = {
     "SCHEMA": "backend.schema.schema",
+    "MIDDLEWARE": [
+        "graphql_jwt.middleware.JSONWebTokenMiddleware",
+    ],
 }
+
+
+# CAS Configuration
+CAS_SERVER_URL = "https://login.iiit.ac.in/cas/"
+CAS_IGNORE_REFERER = True
+CAS_CHECK_NEXT = False
+CAS_REDIRECT_URL = "/accounts/jwt"
+CAS_CLIENT_URL = os.environ.get("DJANGO_CAS_CLIENT_URL", "http://localhost:3000")
+CAS_FORCE_CHANGE_USERNAME_CASE = "lower"
 
 
 # Snapshot Testing
