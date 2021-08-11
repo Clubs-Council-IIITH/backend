@@ -102,7 +102,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Graphene Settings
 GRAPHENE = {
-    "SCHEMA": "club_manager.schema.schema",
+    "SCHEMA": "backend.schema.schema",
 }
 
 

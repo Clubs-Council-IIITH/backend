@@ -1,7 +1,6 @@
 import graphene
 from club_manager.models import Club
 from club_manager.types import ClubType
-
 from club_manager.mutations import CreateClub, DeleteClub, UpdateClub
 
 
