@@ -1,5 +1,6 @@
 import graphene
 from graphene_file_upload.scalars import Upload
+from graphql_jwt.decorators import superuser_required
 
 from club_manager.models import Club
 from club_manager.types import ClubType
@@ -24,6 +25,7 @@ class CreateClub(graphene.Mutation):
     club = graphene.Field(ClubType)
 
     @classmethod
+    @superuser_required
     def mutate(cls, root, info, club_data=None):
         club_instance = Club(
             name=club_data.name,
@@ -52,6 +54,7 @@ class UpdateClub(graphene.Mutation):
     club = graphene.Field(ClubType)
 
     @classmethod
+    @superuser_required
     def mutate(cls, root, info, club_data=None):
         club_instance = Club.objects.get(pk=club_data.id)
 
@@ -81,6 +84,7 @@ class DeleteClub(graphene.Mutation):
     club = graphene.Field(ClubType)
 
     @classmethod
+    @superuser_required
     def mutate(cls, root, info, club_data=None):
         club_instance = Club.objects.get(pk=club_data.id)
 
