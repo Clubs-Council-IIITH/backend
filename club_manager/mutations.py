@@ -1,4 +1,6 @@
 import graphene
+from graphene_file_upload.scalars import Upload
+
 from club_manager.models import Club
 from club_manager.types import ClubType
 
@@ -11,6 +13,7 @@ class ClubInput(graphene.InputObjectType):
     website = graphene.String()
     category = graphene.String()
     state = graphene.String()
+    img = Upload(required=False)
 
 
 class CreateClub(graphene.Mutation):

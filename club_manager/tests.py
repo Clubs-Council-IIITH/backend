@@ -7,11 +7,14 @@ from club_manager.models import Club
 ALL_CLUBS_QUERY = """
 {
     clubs {
+        img
         name
         mail
         website
         category
         state
+        tagline
+        description
     }
 }
 """
@@ -19,11 +22,14 @@ ALL_CLUBS_QUERY = """
 SPECIFIC_CLUB_QUERY = """
 {
     club(clubId: $id) {
+        img
         name
         mail
         website
         category
         state
+        tagline
+        description
     }
 }
 """
