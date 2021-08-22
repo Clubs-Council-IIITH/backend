@@ -15,15 +15,13 @@ CLUB_STATE_LIST = [
 
 
 class Club(models.Model):
-    img = models.ImageField(
-        upload_to="imgs/clubs/", blank=True, default="imgs/clubs/club_placeholder.jpg"
-    )
+    img = models.ImageField(upload_to="imgs/clubs/", default="imgs/clubs/club_placeholder.jpg")
     name = models.CharField(max_length=250, blank=False, null=False)
     mail = models.EmailField(blank=False, null=False)
     website = models.CharField(max_length=500, blank=True, null=True)
     category = models.CharField(
-        max_length=50, choices=CLUB_CATEGORY_LIST, default="other", null=True
+        max_length=50, blank=False, null=False, choices=CLUB_CATEGORY_LIST, default="other"
     )
-    state = models.CharField(max_length=50, choices=CLUB_STATE_LIST, default="active", null=True)
-    tagline = models.CharField(max_length=500, blank=True, null=True, default="No tagline set.")
-    description = models.TextField(blank=True, null=True, default="No description provided.")
+    state = models.CharField(max_length=50, choices=CLUB_STATE_LIST, default="active")
+    tagline = models.CharField(max_length=500, default="No tagline set.")
+    description = models.TextField(default="No description provided.")
