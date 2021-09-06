@@ -2,6 +2,9 @@ import graphene
 from graphene_file_upload.scalars import Upload
 from graphql_jwt.decorators import superuser_required
 
+from django.db import IntegrityError
+from django.contrib.auth.models import User as AuthUser, Group
+
 from club_manager.models import Club
 from club_manager.types import ClubType
 
@@ -44,6 +47,13 @@ class CreateClub(graphene.Mutation):
             club_instance.description = club_data.description
 
         club_instance.save()
+
+        try:
+            user = AuthUser.objects.create_user(club_data.mail)
+        except IntegrityError:
+            user = AuthUser.objects.get(username=club_data.mail)
+        Group.objects.get(name="club").user_set.add(user)
+
         return CreateClub(club=club_instance)
 
 
