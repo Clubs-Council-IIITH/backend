@@ -1,6 +1,5 @@
 from django.db import models
 from club_manager.models import Club
-from multiselectfield import MultiSelectField
 
 # possible event audiences
 AUDIENCE_LIST = [
@@ -32,5 +31,5 @@ class Event(models.Model):
     name = models.CharField(max_length=250, blank=False, null=False)
     description = models.TextField(default="No description available.")
     venue = models.TextField(default="-")
-    audience = MultiSelectField(choices=AUDIENCE_LIST)
+    audience = models.TextField(default="none")
     state = models.CharField(max_length=50, choices=EVENT_STATE_LIST, default="created")

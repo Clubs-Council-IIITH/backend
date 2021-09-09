@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "graphene_django",
     "authentication",
     "club_manager",
+    "event_manager",
 ]
 
 MIDDLEWARE = [
