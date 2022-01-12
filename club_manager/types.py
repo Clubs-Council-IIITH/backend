@@ -9,4 +9,7 @@ class ClubType(DjangoObjectType):
         fields = "__all__"
 
     def resolve_img(self, info):
-        return f"http://localhost{settings.MEDIA_URL}{self.img}"
+        if self.img:
+            return info.context.build_absolute_uri(self.img.url)
+
+        return self.img
