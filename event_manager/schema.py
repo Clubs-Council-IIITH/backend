@@ -16,7 +16,7 @@ class Query(graphene.ObjectType):
     event = graphene.Field(EventType, event_id=graphene.Int())
 
     def resolve_all_events(self, info, **kwargs):
-        return Event.objects.filter(state__in=["published", "completed"]).order_by("start")
+        return Event.objects.filter(state__in=["published", "completed"]).order_by("datetimeStart")
 
     def resolve_club_events(self, info, club_id):
         user = info.context.user
@@ -28,7 +28,7 @@ class Query(graphene.ObjectType):
 
         return Event.objects.filter(
             club__pk=club_id, state__in=["published", "completed"]
-        ).order_by("start")
+        ).order_by("datetimeStart")
 
     def resolve_event(self, info, event_id):
         user = info.context.user
@@ -47,10 +47,10 @@ class Query(graphene.ObjectType):
 
     @superuser_required
     def resolve_admin_all_events(self, info, **kwargs):
-        return Event.objects.order_by("start")
+        return Event.objects.order_by("datetimeStart")
 
     def resolve_admin_club_events(self, info, club_id):
-        return Event.objects.filter(club__pk=club_id).order_by("start")
+        return Event.objects.filter(club__pk=club_id).order_by("datetimeStart")
 
 
 class Mutation(graphene.ObjectType):

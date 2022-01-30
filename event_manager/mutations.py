@@ -10,13 +10,13 @@ from club_manager.models import Club
 class EventInput(graphene.InputObjectType):
     id = graphene.ID()
     poster = Upload(required=False)
-    start = graphene.DateTime()
-    end = graphene.DateTime()
+    datetimeStart = graphene.DateTime()
+    datetimeEnd = graphene.DateTime()
     name = graphene.String()
     description = graphene.String()
     venue = graphene.String()
     audience = graphene.String()
-    last_edited_by = graphene.String()
+    lastEditedBy = graphene.String()
 
 
 class CreateEvent(graphene.Mutation):
@@ -33,12 +33,12 @@ class CreateEvent(graphene.Mutation):
         event_instance = Event(
             club=club,
             name=event_data.name,
-            start=event_data.start,
-            end=event_data.end,
+            datetimeStart=event_data.datetimeStart,
+            datetimeEnd=event_data.datetimeEnd,
             description=event_data.description,
             venue=event_data.venue,
             audience=event_data.audience,
-            last_edited_by=event_data.last_edited_by,
+            lastEditedBy=event_data.lastEditedBy,
         )
 
         # optional fields
