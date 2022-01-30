@@ -25,6 +25,7 @@ EVENT_STATE_LIST = [
 
 
 class Event(models.Model):
+    poster = models.ImageField(upload_to="imgs/events/", blank=True, null=True)
     club = models.ForeignKey(Club, on_delete=models.CASCADE, blank=False, null=False)
     start = models.DateTimeField()
     end = models.DateTimeField()
@@ -33,3 +34,4 @@ class Event(models.Model):
     venue = models.TextField(default="-")
     audience = models.TextField(default="none")
     state = models.CharField(max_length=50, choices=EVENT_STATE_LIST, default="created")
+    last_edited_by = models.CharField(max_length=250, blank=False, null=False)

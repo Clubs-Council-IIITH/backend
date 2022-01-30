@@ -1,9 +1,12 @@
 import graphene
 from graphql import GraphQLError
 from graphql_jwt.decorators import superuser_required
+
+from club_manager.models import Club
+
 from event_manager.models import Event
 from event_manager.types import EventType
-from club_manager.models import Club
+from event_manager.mutations import CreateEvent
 
 
 class Query(graphene.ObjectType):
@@ -50,4 +53,8 @@ class Query(graphene.ObjectType):
         return Event.objects.filter(club__pk=club_id).order_by("start")
 
 
-schema = graphene.Schema(query=Query)
+class Mutation(graphene.ObjectType):
+    create_event = CreateEvent.Field()
+
+
+schema = graphene.Schema(query=Query, mutation=Mutation)
