@@ -17,6 +17,7 @@ class EventInput(graphene.InputObjectType):
     venue = graphene.String()
     audience = graphene.String()
     lastEditedBy = graphene.String()
+    financialRequirements = graphene.String()
 
 
 class CreateEvent(graphene.Mutation):
@@ -39,6 +40,7 @@ class CreateEvent(graphene.Mutation):
             venue=event_data.venue,
             audience=event_data.audience,
             lastEditedBy=event_data.lastEditedBy,
+            financialRequirements=event_data.financialRequirements,
         )
 
         # optional fields

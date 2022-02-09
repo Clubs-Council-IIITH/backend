@@ -35,3 +35,5 @@ class Event(models.Model):
     audience = models.TextField(default="none")
     state = models.CharField(max_length=50, choices=EVENT_STATE_LIST, default="created")
     lastEditedBy = models.CharField(max_length=250, blank=False, null=False)
+
+    financialRequirements = models.TextField(default="-")
