@@ -6,7 +6,7 @@ from club_manager.models import Club
 
 from event_manager.models import Event
 from event_manager.types import EventType
-from event_manager.mutations import CreateEvent
+from event_manager.mutations import CreateEvent, UpdateEvent, DeleteEvent
 
 
 class Query(graphene.ObjectType):
@@ -55,6 +55,8 @@ class Query(graphene.ObjectType):
 
 class Mutation(graphene.ObjectType):
     create_event = CreateEvent.Field()
+    update_event = UpdateEvent.Field()
+    delete_event = DeleteEvent.Field()
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
