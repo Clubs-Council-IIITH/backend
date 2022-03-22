@@ -13,7 +13,7 @@ clubs = [
     {
         "name": "0x1337",
         "mail": "hacking.club@students.iiit.ac.in",
-        "category": "cultural",
+        "category": "technical",
     },
     {
         "name": "Amateur Sports Enthusiasts Club",
@@ -28,7 +28,7 @@ clubs = [
     {
         "name": "Astronomy Club",
         "mail": "astronomyclub@students.iiit.ac.in ",
-        "category": "cultural",
+        "category": "technical",
     },
     {
         "name": "Chess Club",
@@ -43,12 +43,12 @@ clubs = [
     {
         "name": "Developer Student Club",
         "mail": "dsc@students.iiit.ac.in ",
-        "category": "cultural",
+        "category": "technical",
     },
     {
         "name": "Electronics and Robotics Club",
         "mail": "roboticsclub@students.iiit.ac.in ",
-        "category": "cultural",
+        "category": "technical",
     },
     {
         "name": "Foreign Language Club",
@@ -68,12 +68,12 @@ clubs = [
     {
         "name": "National Service Scheme",
         "mail": "nss@iiit.ac.in ",
-        "category": "cultural",
+        "category": "other",
     },
     {
         "name": "Open-Source Developers Group",
         "mail": "osdg@students.iiit.ac.in ",
-        "category": "cultural",
+        "category": "technical",
     },
     {
         "name": "Pentaprism",
@@ -83,7 +83,7 @@ clubs = [
     {
         "name": "Programming Club",
         "mail": "programming.club@students.iiit.ac.in ",
-        "category": "cultural",
+        "category": "technical",
     },
     {
         "name": "The Dance Crew",
@@ -113,7 +113,7 @@ clubs = [
     {
         "name": "Theory Group",
         "mail": "theory.group@students.iiit.ac.in ",
-        "category": "cultural",
+        "category": "technical",
     },
 ]
 # }}}
