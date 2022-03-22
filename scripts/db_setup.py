@@ -61,11 +61,6 @@ clubs = [
         "category": "cultural",
     },
     {
-        "name": "Hacking Club",
-        "mail": "hacking.club@students.iiit.ac.in ",
-        "category": "cultural",
-    },
-    {
         "name": "Literary Club",
         "mail": "litclub@students.iiit.ac.in ",
         "category": "cultural",
