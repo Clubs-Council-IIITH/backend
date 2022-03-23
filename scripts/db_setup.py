@@ -136,7 +136,6 @@ def run():
     # Create all required usergroups
     for usergroup in usergroups:
         group, created = Group.objects.get_or_create(name=usergroup)
-
     Group.objects.get(name="clubs_council").user_set.add(cc_admin)
     print("Created user groups.")
 
@@ -144,4 +143,6 @@ def run():
     for club in clubs:
         club_instance = Club(name=club["name"], mail=club["mail"], category=club["category"])
         club_instance.save()
-    print("Created clubs.")
+        user = User.objects.create_user(club["mail"])
+        Group.objects.get(name="club").user_set.add(user)
+    print("Created clubs & club accounts.")
