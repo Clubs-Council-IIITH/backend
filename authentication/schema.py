@@ -17,6 +17,7 @@ class Query(graphene.ObjectType):
 class Mutation(graphene.ObjectType):
     verify_token = graphql_jwt.Verify.Field()
     refresh_token = graphql_jwt.Refresh.Field()
+    delete_token = graphql_jwt.DeleteJSONWebTokenCookie.Field()
 
 
 schema = graphene.Schema(mutation=Mutation)
