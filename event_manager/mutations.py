@@ -1,10 +1,12 @@
 import graphene
+from graphql import GraphQLError
 from graphene_file_upload.scalars import Upload
 
 from event_manager.models import Event
 from event_manager.types import EventType
 
 from club_manager.models import Club
+from authentication.decorators import allowed_groups
 
 
 class EventInput(graphene.InputObjectType):
@@ -27,7 +29,7 @@ class CreateEvent(graphene.Mutation):
     event = graphene.Field(EventType)
 
     @classmethod
-    # TODO: protect mutation
+    @allowed_groups(["club, clubs_council"])
     def mutate(cls, root, info, event_data=None):
         user = info.context.user
         club = Club.objects.get(mail=user.username)
@@ -64,11 +66,17 @@ class UpdateEvent(graphene.Mutation):
     event = graphene.Field(EventType)
 
     @classmethod
-    # TODO: protect mutation
+    @allowed_groups(["club, clubs_council"])
     def mutate(cls, root, info, event_data=None):
+        user = info.context.user
+        club = Club.objects.get(mail=user.username)
         event_instance = Event.objects.get(pk=event_data.id)
 
         if event_instance:
+            # check if event belongs to the requesting club
+            if event_instance.club != club:
+                raise GraphQLError("You do not have permission to access this resource.")
+
             # required fields
             if event_data.name:
                 event_instance.name = event_data.name
@@ -99,11 +107,17 @@ class DeleteEvent(graphene.Mutation):
     event = graphene.Field(EventType)
 
     @classmethod
-    # TODO: protect mutation
+    @allowed_groups(["club, clubs_council"])
     def mutate(cls, root, info, event_data=None):
+        user = info.context.user
+        club = Club.objects.get(mail=user.username)
         event_instance = Event.objects.get(pk=event_data.id)
 
         if event_instance:
+            # check if event belongs to the requesting club
+            if event_instance.club != club:
+                raise GraphQLError("You do not have permission to access this resource.")
+
             event_instance.state = "deleted"
             event_instance.save()
             return DeleteEvent(event=event_instance)
