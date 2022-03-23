@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django_cas_ng",
+    "django_extensions",
     "graphene_django",
     "authentication",
     "club_manager",

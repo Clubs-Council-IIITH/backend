@@ -77,10 +77,12 @@ class UpdateClub(graphene.Mutation):
             if club_data.mail:
                 club_instance.mail = club_data.mail
 
+            # optional fields
             club_instance.website = club_data.website
             club_instance.category = club_data.category
             club_instance.tagline = club_data.tagline
             club_instance.description = club_data.description
+
             club_instance.save()
             return UpdateClub(club=club_instance)
 

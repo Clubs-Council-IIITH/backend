@@ -16,6 +16,7 @@ class Query(
 class Mutation(
     authentication.schema.Mutation,
     club_manager.schema.Mutation,
+    event_manager.schema.Mutation,
     graphene.ObjectType,
 ):
     pass

@@ -1,6 +1,7 @@
 import graphene
 from graphql import GraphQLError
 from graphql_jwt.decorators import superuser_required
+
 from club_manager.models import Club
 from club_manager.types import ClubType
 from club_manager.mutations import CreateClub, DeleteClub, UpdateClub
