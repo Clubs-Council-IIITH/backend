@@ -1,4 +1,5 @@
 import graphene
+from graphql import GraphQLError
 from graphene_file_upload.scalars import Upload
 
 from user_manager.models import User, Member
@@ -19,7 +20,7 @@ class UserInput(graphene.InputObjectType):
 
 class MemberInput(graphene.InputObjectType):
     id = graphene.ID()
-    user_id = graphene.ID()
+    userId = graphene.ID()
     role = graphene.String()
     year = graphene.Int()
 
@@ -88,8 +89,13 @@ class AddMember(graphene.Mutation):
     @classmethod
     @allowed_groups(["club"])
     def mutate(cls, root, info, member_data=None):
-        user = User.objects.get(pk=member_data.user_id)
+        user = User.objects.get(pk=member_data.userId)
         club = Club.objects.get(mail=info.context.user.username)
+
+        # check if member is already in the club for the given year
+        member = Member.objects.filter(user=user, club=club, year=member_data.year)
+        if len(member):
+            raise GraphQLError("Member already exists!")
 
         member_instance = Member(
             user=user,
