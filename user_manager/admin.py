@@ -1,4 +1,5 @@
 from django.contrib import admin
-from user_manager.models import User
+from user_manager.models import User, Member
 
-admin.site.register(Event)
+admin.site.register(User)
+admin.site.register(Member)

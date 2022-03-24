@@ -1,5 +1,5 @@
 from graphene_django.types import DjangoObjectType
-from club_manager.models import User, Member
+from user_manager.models import User, Member
 
 
 class UserType(DjangoObjectType):

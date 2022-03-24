@@ -20,7 +20,7 @@ class Query(graphene.ObjectType):
     user = graphene.Field(UserType, mail=graphene.String())
 
     def resolve_club_members(self, info, club_id):
-        return Member.objects.filter(club__pk=club_id).order_by("firstName")
+        return Member.objects.filter(club__pk=club_id)
 
     def resolve_user(self, info, mail):
         return User.objects.get(mail=mail)
