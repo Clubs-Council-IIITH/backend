@@ -29,7 +29,7 @@ class CreateEvent(graphene.Mutation):
     event = graphene.Field(EventType)
 
     @classmethod
-    @allowed_groups(["club, clubs_council"])
+    @allowed_groups(["club", "clubs_council"])
     def mutate(cls, root, info, event_data=None):
         user = info.context.user
         club = Club.objects.get(mail=user.username)
@@ -66,7 +66,7 @@ class UpdateEvent(graphene.Mutation):
     event = graphene.Field(EventType)
 
     @classmethod
-    @allowed_groups(["club, clubs_council"])
+    @allowed_groups(["club"])
     def mutate(cls, root, info, event_data=None):
         user = info.context.user
         club = Club.objects.get(mail=user.username)
@@ -107,7 +107,7 @@ class DeleteEvent(graphene.Mutation):
     event = graphene.Field(EventType)
 
     @classmethod
-    @allowed_groups(["club, clubs_council"])
+    @allowed_groups(["club"])
     def mutate(cls, root, info, event_data=None):
         user = info.context.user
         club = Club.objects.get(mail=user.username)

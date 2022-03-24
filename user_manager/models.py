@@ -1,10 +1,12 @@
 from datetime import datetime
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
+
 from club_manager.models import Club
 
 
 class User(models.Model):
+    img = models.ImageField(upload_to="imgs/users/", blank=True, null=True)
     firstName = models.CharField(max_length=250, blank=False, null=False)
     lastName = models.CharField(max_length=250, blank=False, null=False)
     mail = models.EmailField(blank=False, null=False)
