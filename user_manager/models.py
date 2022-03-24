@@ -21,3 +21,4 @@ class Member(models.Model):
         default=datetime.now().year,
         validators=[MaxValueValidator(3000), MinValueValidator(2000)],
     )
+    approved = models.BooleanField(default=False)
