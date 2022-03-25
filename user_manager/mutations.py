@@ -126,6 +126,9 @@ class UpdateMember(graphene.Mutation):
             if member_data.year:
                 member_instance.year = member_data.year
 
+            # queue member for approval again
+            member_instance.approved = False
+
             member_instance.save()
             return UpdateMember(member=member_instance)
 
