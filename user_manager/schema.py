@@ -10,6 +10,7 @@ from user_manager.mutations import (
     AddMember,
     UpdateMember,
     RemoveMember,
+    AdminApproveMember
 )
 
 from club_manager.models import Club
@@ -28,10 +29,18 @@ class Query(graphene.ObjectType):
 
     # admin queries
     admin_club_members = graphene.List(MemberType)
+    admin_all_users = graphene.List(UserType)
+    admin_pending_members = graphene.List(MemberType)
 
     def resolve_admin_club_members(self, info):
         club = Club.objects.get(mail=info.context.user.username)
         return Member.objects.filter(club__pk=club.id)
+
+    def resolve_admin_all_users(self, info):
+        return User.objects.all()
+
+    def resolve_admin_pending_members(self, info):
+        return Member.objects.filter(approved=False)
 
 
 class Mutation(graphene.ObjectType):
@@ -40,6 +49,7 @@ class Mutation(graphene.ObjectType):
     add_member = AddMember.Field()
     update_member = UpdateMember.Field()
     remove_member = RemoveMember.Field()
+    admin_approve_member = AdminApproveMember.Field()
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)

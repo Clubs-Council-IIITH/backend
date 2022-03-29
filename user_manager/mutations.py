@@ -150,3 +150,22 @@ class RemoveMember(graphene.Mutation):
             member_instance.delete()
 
         return RemoveMember(member=None)
+
+
+class AdminApproveMember(graphene.Mutation):
+    class Arguments:
+        member_data = MemberInput(required=True)
+
+    member = graphene.Field(MemberType)
+
+    @classmethod
+    @allowed_groups(["clubs_council"])
+    def mutate(cls, root, info, member_data=None):
+        member_instance = Member.objects.get(pk=member_data.id)
+
+        if member_instance:
+            member_instance.approved = True
+
+            member_instance.save()
+            return AdminApproveMember(member=member_instance)
+        return AdminApproveMember(member=None)
