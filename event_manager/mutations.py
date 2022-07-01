@@ -2,11 +2,12 @@ import graphene
 from graphql import GraphQLError
 from graphene_file_upload.scalars import Upload
 
+from authentication.decorators import allowed_groups
+
 from event_manager.models import Event
 from event_manager.types import EventType
 
 from club_manager.models import Club
-from authentication.decorators import allowed_groups
 
 
 class EventInput(graphene.InputObjectType):
@@ -16,10 +17,8 @@ class EventInput(graphene.InputObjectType):
     datetimeEnd = graphene.DateTime()
     name = graphene.String()
     description = graphene.String()
-    venue = graphene.String()
     audience = graphene.String()
-    lastEditedBy = graphene.String()
-    financialRequirements = graphene.String()
+    mode = graphene.String()
 
 
 class CreateEvent(graphene.Mutation):
@@ -39,7 +38,7 @@ class CreateEvent(graphene.Mutation):
             name=event_data.name,
             datetimeStart=event_data.datetimeStart,
             datetimeEnd=event_data.datetimeEnd,
-            lastEditedBy=event_data.lastEditedBy,
+            mode=event_data.mode,
         )
 
         # optional fields
@@ -49,10 +48,6 @@ class CreateEvent(graphene.Mutation):
             event_instance.audience = event_data.audience
         if event_data.description:
             event_instance.description = event_data.description
-        if event_data.venue:
-            event_instance.venue = event_data.venue
-        if event_data.financialRequirements:
-            event_instance.financialRequirements = event_data.financialRequirements
 
         event_instance.save()
 
@@ -84,15 +79,13 @@ class UpdateEvent(graphene.Mutation):
                 event_instance.datetimeStart = event_data.datetimeStart
             if event_data.datetimeEnd:
                 event_instance.datetimeEnd = event_data.datetimeEnd
-            if event_data.lastEditedBy:
-                event_instance.lastEditedBy = event_data.lastEditedBy
+            if event_data.mode:
+                event_instance.mode = event_data.mode
 
             # optional fields
             event_instance.poster = event_data.poster
             event_instance.audience = event_data.audience
             event_instance.description = event_data.description
-            event_instance.venue = event_data.venue
-            event_instance.financialRequirements = event_data.financialRequirements
 
             event_instance.save()
             return UpdateEvent(event=event_instance)

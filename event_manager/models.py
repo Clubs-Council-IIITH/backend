@@ -23,6 +23,12 @@ EVENT_STATE_LIST = [
     ["deleted", "DELETED"],
 ]
 
+# possible event modes
+EVENT_MODE_LIST = [
+    ["offline", "offline"],
+    ["online", "online"],
+]
+
 
 class Event(models.Model):
     poster = models.ImageField(upload_to="imgs/events/", blank=True, null=True)
@@ -31,9 +37,6 @@ class Event(models.Model):
     datetimeEnd = models.DateTimeField()
     name = models.CharField(max_length=250, blank=False, null=False)
     description = models.TextField(default="No description available.")
-    venue = models.TextField(default="-")
     audience = models.TextField(default="none")
     state = models.CharField(max_length=50, choices=EVENT_STATE_LIST, default="created")
-    lastEditedBy = models.CharField(max_length=250, blank=False, null=False)
-
-    financialRequirements = models.TextField(default="-")
+    mode = models.CharField(max_length=50, choices=EVENT_MODE_LIST, default="offline")

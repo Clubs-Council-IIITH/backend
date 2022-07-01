@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "club_manager",
     "event_manager",
     "user_manager",
+    "finance_manager",
 ]
 
 MIDDLEWARE = [
