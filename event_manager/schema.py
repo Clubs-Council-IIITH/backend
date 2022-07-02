@@ -4,9 +4,12 @@ from graphql_jwt.decorators import superuser_required
 
 from club_manager.models import Club
 
-from event_manager.models import Event
+from event_manager.models import Event, EVENT_STATE_LIST
 from event_manager.types import EventType
 from event_manager.mutations import CreateEvent, UpdateEvent, DeleteEvent
+
+
+EVENT_STATE_DICT = {state[1]: state[0] for state in EVENT_STATE_LIST}
 
 
 class Query(graphene.ObjectType):
@@ -16,7 +19,10 @@ class Query(graphene.ObjectType):
     event = graphene.Field(EventType, event_id=graphene.Int())
 
     def resolve_all_events(self, info, **kwargs):
-        return Event.objects.filter(state__in=["published", "completed"]).order_by("datetimeStart")
+        # show only approved and completed events to the public
+        return Event.objects.filter(
+            stateKey__in=[EVENT_STATE_DICT["approved"], EVENT_STATE_DICT["completed"]]
+        ).order_by("datetimeStart")
 
     def resolve_club_events(self, info, club_id):
         user = info.context.user
@@ -26,8 +32,10 @@ class Query(graphene.ObjectType):
         if club.state != "active" and not user.is_superuser:
             raise GraphQLError("You do not have permission to access this resource.")
 
+        # show only approved and completed events to the public
         return Event.objects.filter(
-            club__pk=club_id, state__in=["published", "completed"]
+            club__pk=club_id,
+            stateKey__in=[EVENT_STATE_DICT["approved"], EVENT_STATE_DICT["completed"]],
         ).order_by("datetimeStart")
 
     def resolve_event(self, info, event_id):
@@ -35,7 +43,7 @@ class Query(graphene.ObjectType):
         event = Event.objects.get(pk=event_id)
         club = Club.objects.get(pk=event.club.pk)
 
-        # don't show deleted club event to the public
+        # don't show deleted club's event to the public
         if club.state != "active" and not user.is_superuser:
             raise GraphQLError("You do not have permission to access this resource.")
 

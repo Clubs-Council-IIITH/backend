@@ -15,12 +15,14 @@ AUDIENCE_LIST = [
 
 # possible event states
 EVENT_STATE_LIST = [
-    ["created", "CREATED"],
-    ["approved", "APPROVED"],
-    ["published", "PUBLISHED"],
-    ["scheduled", "SCHEDULED"],
-    ["completed", "COMPLETED"],
-    ["deleted", "DELETED"],
+    [0, "cc_pending"],
+    [1, "fc_pending"],
+    [2, "gad_pending"],
+    [3, "slc_pending"],
+    [4, "slo_pending"],
+    [5, "approved"],
+    [6, "completed"],
+    [7, "deleted"],
 ]
 
 # possible event modes
@@ -31,12 +33,16 @@ EVENT_MODE_LIST = [
 
 
 class Event(models.Model):
-    poster = models.ImageField(upload_to="imgs/events/", blank=True, null=True)
     club = models.ForeignKey(Club, on_delete=models.CASCADE, blank=False, null=False)
-    datetimeStart = models.DateTimeField()
-    datetimeEnd = models.DateTimeField()
+
+    poster = models.ImageField(upload_to="imgs/events/", blank=True, null=True)
     name = models.CharField(max_length=250, blank=False, null=False)
     description = models.TextField(default="No description available.")
     audience = models.TextField(default="none")
-    state = models.CharField(max_length=50, choices=EVENT_STATE_LIST, default="created")
     mode = models.CharField(max_length=50, choices=EVENT_MODE_LIST, default="offline")
+
+    datetimeStart = models.DateTimeField()
+    datetimeEnd = models.DateTimeField()
+
+    stateKey = models.IntegerField(default=0, blank=False, null=False, choices=EVENT_STATE_LIST)
+    stateRemarks = models.TextField(blank=True, null=True)
