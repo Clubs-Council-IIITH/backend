@@ -18,8 +18,8 @@ EVENT_STATE_LIST = [
     [0, "cc_pending"],
     [1, "fc_pending"],
     [2, "gad_pending"],
-    [3, "slc_pending"],
-    [4, "slo_pending"],
+    [3, "slo_pending"],
+    [4, "slc_pending"],
     [5, "approved"],
     [6, "completed"],
     [7, "deleted"],
@@ -45,4 +45,5 @@ class Event(models.Model):
     datetimeEnd = models.DateTimeField()
 
     stateKey = models.IntegerField(default=0, blank=False, null=False, choices=EVENT_STATE_LIST)
+    # TODO: preserve history with timestamps & author (on this date, clubs council wrote this...)
     stateRemarks = models.TextField(blank=True, null=True)
