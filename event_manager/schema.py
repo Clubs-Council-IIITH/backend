@@ -21,7 +21,7 @@ class Query(graphene.ObjectType):
     def resolve_all_events(self, info, **kwargs):
         # show only approved and completed events to the public
         return Event.objects.filter(
-            stateKey__in=[EVENT_STATE_DICT["approved"], EVENT_STATE_DICT["completed"]]
+            state__in=[EVENT_STATE_DICT["approved"], EVENT_STATE_DICT["completed"]]
         ).order_by("datetimeStart")
 
     def resolve_club_events(self, info, club_id):
@@ -35,7 +35,7 @@ class Query(graphene.ObjectType):
         # show only approved and completed events to the public
         return Event.objects.filter(
             club__pk=club_id,
-            stateKey__in=[EVENT_STATE_DICT["approved"], EVENT_STATE_DICT["completed"]],
+            state__in=[EVENT_STATE_DICT["approved"], EVENT_STATE_DICT["completed"]],
         ).order_by("datetimeStart")
 
     def resolve_event(self, info, event_id):

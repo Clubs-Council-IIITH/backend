@@ -111,7 +111,7 @@ class DeleteEvent(graphene.Mutation):
             if event_instance.club != club:
                 raise GraphQLError("You do not have permission to access this resource.")
 
-            event_instance.stateKey = 7
+            event_instance.state = 7
             event_instance.save()
             return DeleteEvent(event=event_instance)
 

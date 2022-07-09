@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth.models import User
+
 from club_manager.models import Club
 
 # possible event audiences
@@ -34,16 +36,18 @@ EVENT_MODE_LIST = [
 
 class Event(models.Model):
     club = models.ForeignKey(Club, on_delete=models.CASCADE, blank=False, null=False)
-
     poster = models.ImageField(upload_to="imgs/events/", blank=True, null=True)
     name = models.CharField(max_length=250, blank=False, null=False)
     description = models.TextField(default="No description available.")
     audience = models.TextField(default="none")
-    mode = models.CharField(max_length=50, choices=EVENT_MODE_LIST, default="offline")
-
     datetimeStart = models.DateTimeField()
     datetimeEnd = models.DateTimeField()
+    mode = models.CharField(max_length=50, choices=EVENT_MODE_LIST, default="offline")
+    state = models.IntegerField(default=0, choices=EVENT_STATE_LIST, blank=False, null=False)
 
-    stateKey = models.IntegerField(default=0, blank=False, null=False, choices=EVENT_STATE_LIST)
-    # TODO: preserve history with timestamps & author (on this date, clubs council wrote this...)
-    stateRemarks = models.TextField(blank=True, null=True)
+
+class EventFeedback(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, blank=False, null=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, null=False)
+    timestamp = models.DateTimeField()
+    message = models.TextField(blank=False, null=False)
