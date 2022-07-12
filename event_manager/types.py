@@ -1,5 +1,12 @@
 from graphene_django.types import DjangoObjectType
-from event_manager.models import Event
+from event_manager.models import Event, EventFeedback
+from django.contrib.auth.models import User as AuthUser
+
+
+class AuthUserType(DjangoObjectType):
+    class Meta:
+        model = AuthUser
+        fields = "__all__"
 
 
 class EventType(DjangoObjectType):
@@ -12,3 +19,9 @@ class EventType(DjangoObjectType):
             return info.context.build_absolute_uri(self.poster.url)
 
         return self.poster
+
+
+class EventFeedbackType(DjangoObjectType):
+    class Meta:
+        model = EventFeedback
+        fields = "__all__"

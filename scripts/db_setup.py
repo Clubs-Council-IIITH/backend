@@ -6,7 +6,7 @@ from club_manager.models import Club
 mail = "clubs@iiit.ac.in"
 
 # All usergroups in the app
-usergroups = ["club", "clubs_council", "finance_council", "slo", "slc"]
+usergroups = ["club", "clubs_council", "finance_council", "slo", "slc", "gad"]
 
 # All clubs {{{
 clubs = [

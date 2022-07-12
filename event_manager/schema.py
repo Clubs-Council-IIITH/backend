@@ -1,15 +1,19 @@
 import graphene
 from graphql import GraphQLError
 from graphql_jwt.decorators import superuser_required
+from authentication.decorators import allowed_groups
 
 from club_manager.models import Club
 
-from event_manager.models import Event, EVENT_STATE_LIST
-from event_manager.types import EventType
-from event_manager.mutations import CreateEvent, UpdateEvent, DeleteEvent
-
-
-EVENT_STATE_DICT = {state[1]: state[0] for state in EVENT_STATE_LIST}
+from event_manager.models import Event, EVENT_STATE_DICT, EventFeedback
+from event_manager.types import EventFeedbackType, EventType
+from event_manager.mutations import (
+    CreateEvent,
+    UpdateEvent,
+    DeleteEvent,
+    ProgressEvent,
+    AddEventFeedback,
+)
 
 
 class Query(graphene.ObjectType):
@@ -52,6 +56,13 @@ class Query(graphene.ObjectType):
     # admin queries
     admin_all_events = graphene.List(EventType)
     admin_club_events = graphene.List(EventType, club_id=graphene.Int())
+    admin_cc_pending_events = graphene.List(EventType)
+    admin_fc_pending_events = graphene.List(EventType)
+    admin_gad_pending_events = graphene.List(EventType)
+    admin_slo_pending_events = graphene.List(EventType)
+    admin_slc_pending_events = graphene.List(EventType)
+
+    event_feedback_thread = graphene.List(EventFeedbackType, event_id=graphene.Int())
 
     @superuser_required
     def resolve_admin_all_events(self, info, **kwargs):
@@ -60,11 +71,62 @@ class Query(graphene.ObjectType):
     def resolve_admin_club_events(self, info, club_id):
         return Event.objects.filter(club__pk=club_id).order_by("datetimeStart")
 
+    @allowed_groups(["club", "clubs_council", "finance_council", "slo", "slc", "gad"])
+    def resolve_event_feedback_thread(self, info, event_id):
+        event = Event.objects.get(pk=event_id)
+        feedback_thread = EventFeedback.objects.filter(event=event).order_by("timestamp")
+
+        return feedback_thread
+
+    @allowed_groups(["clubs_council"])
+    def resolve_admin_cc_pending_events(self, info, **kwargs):
+        events = Event.objects.filter(state=EVENT_STATE_DICT["cc_pending"]).order_by(
+            "datetimeStart"
+        )
+
+        return events
+
+    @allowed_groups(["finance_council"])
+    def resolve_admin_fc_pending_events(self, info, **kwargs):
+        events = Event.objects.filter(state=EVENT_STATE_DICT["fc_pending"]).order_by(
+            "datetimeStart"
+        )
+
+        return events
+
+    @allowed_groups(["gad"])
+    def resolve_admin_gad_pending_events(self, info, **kwargs):
+        events = Event.objects.filter(state=EVENT_STATE_DICT["gad_pending"]).order_by(
+            "datetimeStart"
+        )
+
+        return events
+
+    @allowed_groups(["slo"])
+    def resolve_admin_slo_pending_events(self, info, **kwargs):
+        events = Event.objects.filter(state=EVENT_STATE_DICT["slo_pending"]).order_by(
+            "datetimeStart"
+        )
+
+        return events
+
+    @allowed_groups(["slc"])
+    def resolve_admin_slc_pending_events(self, info, **kwargs):
+        events = Event.objects.filter(state=EVENT_STATE_DICT["slc_pending"]).order_by(
+            "datetimeStart"
+        )
+
+        return events
+
 
 class Mutation(graphene.ObjectType):
     create_event = CreateEvent.Field()
     update_event = UpdateEvent.Field()
     delete_event = DeleteEvent.Field()
+
+    progress_event = ProgressEvent.Field()
+
+    add_event_feedback = AddEventFeedback.Field()
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)

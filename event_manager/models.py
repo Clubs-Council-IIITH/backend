@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User as AuthUser
 
 from club_manager.models import Club
 
@@ -27,6 +27,8 @@ EVENT_STATE_LIST = [
     [7, "deleted"],
 ]
 
+EVENT_STATE_DICT = {state[1]: state[0] for state in EVENT_STATE_LIST}
+
 # possible event modes
 EVENT_MODE_LIST = [
     ["offline", "offline"],
@@ -48,6 +50,6 @@ class Event(models.Model):
 
 class EventFeedback(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE, blank=False, null=False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, null=False)
-    timestamp = models.DateTimeField()
+    user = models.ForeignKey(AuthUser, on_delete=models.CASCADE, blank=False, null=False)
+    timestamp = models.DateTimeField(auto_now_add=True, blank=True)
     message = models.TextField(blank=False, null=False)
