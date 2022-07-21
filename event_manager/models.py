@@ -20,11 +20,12 @@ EVENT_STATE_LIST = [
     [0, "cc_pending"],
     [1, "fc_pending"],
     [2, "gad_pending"],
-    [3, "slo_pending"],
-    [4, "slc_pending"],
-    [5, "approved"],
-    [6, "completed"],
-    [7, "deleted"],
+    [3, "fc-gad_pending"],
+    [4, "slo_pending"],
+    [5, "slc_pending"],
+    [6, "approved"],
+    [7, "completed"],
+    [8, "deleted"],
 ]
 
 EVENT_STATE_DICT = {state[1]: state[0] for state in EVENT_STATE_LIST}

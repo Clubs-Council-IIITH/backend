@@ -135,27 +135,34 @@ class ProgressEvent(graphene.Mutation):
         if event_instance:
 
             if event_instance.state == EVENT_STATE_DICT["cc_pending"]:
-                # check if total budget is non-zero, if yes progress to FC
+                # by default go to SLO
+                event_instance.state = EVENT_STATE_DICT["slo_pending"]
+
+                # check if total budget is non-zero, if yes go to FC
                 if BudgetRequirement.objects.filter(event__pk=event_instance.id).aggregate(
                     Sum("amount")
                 )["amount__sum"]:
                     event_instance.state = EVENT_STATE_DICT["fc_pending"]
 
-                # else check if room requirement is listed, if yes progress to GAD
+                # check if room requirement is listed
                 # ...  TODO
+                if ... :
+                    # check if budget was required, if yes, go to FC-GAD
+                    if event_instance.state == EVENT_STATE_DICT["fc_pending"] :
+                        event_instance.state = EVENT_STATE_DICT["fc-gad_pending"]
+                    # else go to GAD
+                    else :
+                        event_instance.state = EVENT_STATE_DICT["gad_pending"]
 
-                # else progress to SLO
-                else:
-                    event_instance.state = EVENT_STATE_DICT["slo_pending"]
+            elif event_instance.state == EVENT_STATE_DICT["fc-gad_pending"]:
+                # check if GAD called the function, progress to FC
+                if info.context.user.role == "gad" :
+                    event_instance.state = EVENT_STATE_DICT["fc_pending"]
+                # else, progress to GAD
+                else :
+                    event_instance.state = EVENT_STATE_DICT["gad_pending"]
 
-            elif event_instance.state == EVENT_STATE_DICT["fc_pending"]:
-                # check if room requirement is listed, if yes progress to GAD
-                # ...  TODO
-
-                # else progress to SLO
-                event_instance.state = EVENT_STATE_DICT["slo_pending"]
-
-            elif event_instance.state == EVENT_STATE_DICT["gad_pending"]:
+            elif event_instance.state in [EVENT_STATE_DICT["fc_pending"], EVENT_STATE_DICT["gad_pending"]]:
                 # progress to SLO
                 event_instance.state = EVENT_STATE_DICT["slo_pending"]
 
