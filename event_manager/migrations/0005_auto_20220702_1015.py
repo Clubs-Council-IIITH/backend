@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
             name='EventState',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('key', models.IntegerField(choices=[[0, 'cc_pending'], [1, 'fc_pending'], [2, 'gad_pending'], [3, 'fc-gad_pending'], [4, 'slc_pending'], [5, 'slo_pending'], [6, 'approved'], [7, 'completed'], [8, 'deleted']], default=0)),
+                ('key', models.IntegerField(choices=[[0, 'cc_pending'], [1, 'fc_pending'], [2, 'gad_pending'], [3, 'slc_pending'], [4, 'slo_pending'], [5, 'approved'], [6, 'completed'], [7, 'deleted']], default=0)),
                 ('remarks', models.TextField(blank=True, null=True)),
             ],
         ),

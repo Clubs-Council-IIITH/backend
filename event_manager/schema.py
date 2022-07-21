@@ -88,17 +88,17 @@ class Query(graphene.ObjectType):
 
     @allowed_groups(["finance_council"])
     def resolve_admin_fc_pending_events(self, info, **kwargs):
-        events = Event.objects.filter(
-            state__in=[EVENT_STATE_DICT["fc_pending"], EVENT_STATE_DICT["fc-gad_pending"]]
-        ).order_by("datetimeStart")
+        events = Event.objects.filter(state=EVENT_STATE_DICT["fc_pending"]).order_by(
+            "datetimeStart"
+        )
 
         return events
 
     @allowed_groups(["gad"])
     def resolve_admin_gad_pending_events(self, info, **kwargs):
-        events = Event.objects.filter(
-            state__in=[EVENT_STATE_DICT["gad_pending"], EVENT_STATE_DICT["fc-gad_pending"]]
-        ).order_by("datetimeStart")
+        events = Event.objects.filter(state=EVENT_STATE_DICT["gad_pending"]).order_by(
+            "datetimeStart"
+        )
 
         return events
 
