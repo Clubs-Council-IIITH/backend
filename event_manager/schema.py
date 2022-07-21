@@ -94,14 +94,6 @@ class Query(graphene.ObjectType):
 
         return events
 
-    @allowed_groups(["gad"])
-    def resolve_admin_gad_pending_events(self, info, **kwargs):
-        events = Event.objects.filter(state=EVENT_STATE_DICT["gad_pending"]).order_by(
-            "datetimeStart"
-        )
-
-        return events
-
     @allowed_groups(["slo"])
     def resolve_admin_slo_pending_events(self, info, **kwargs):
         events = Event.objects.filter(state=EVENT_STATE_DICT["slo_pending"]).order_by(
@@ -113,6 +105,14 @@ class Query(graphene.ObjectType):
     @allowed_groups(["slc"])
     def resolve_admin_slc_pending_events(self, info, **kwargs):
         events = Event.objects.filter(state=EVENT_STATE_DICT["slc_pending"]).order_by(
+            "datetimeStart"
+        )
+
+        return events
+
+    @allowed_groups(["gad"])
+    def resolve_admin_gad_pending_events(self, info, **kwargs):
+        events = Event.objects.filter(state=EVENT_STATE_DICT["gad_pending"]).order_by(
             "datetimeStart"
         )
 

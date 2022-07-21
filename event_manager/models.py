@@ -16,18 +16,18 @@ AUDIENCE_LIST = [
 ]
 
 # possible event states
-EVENT_STATE_LIST = [
-    [0, "cc_pending"],
-    [1, "fc_pending"],
-    [2, "gad_pending"],
-    [3, "slo_pending"],
-    [4, "slc_pending"],
-    [5, "approved"],
-    [6, "completed"],
-    [7, "deleted"],
+EVENT_STATES = [
+    "cc_pending",
+    "fc_pending",
+    "slo_pending",
+    "slc_pending",
+    "gad_pending",
+    "approved",
+    "completed",
+    "deleted",
 ]
-
-EVENT_STATE_DICT = {state[1]: state[0] for state in EVENT_STATE_LIST}
+EVENT_STATE_LIST = [ [idx, state] for idx, state in enumerate(EVENT_STATES) ]
+EVENT_STATE_DICT = { state: idx for idx, state in enumerate(EVENT_STATES) }
 
 # possible event modes
 EVENT_MODE_LIST = [

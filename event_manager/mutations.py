@@ -140,22 +140,11 @@ class ProgressEvent(graphene.Mutation):
                     Sum("amount")
                 )["amount__sum"]:
                     event_instance.state = EVENT_STATE_DICT["fc_pending"]
-
-                # else check if room requirement is listed, if yes progress to GAD
-                # ...  TODO
-
                 # else progress to SLO
                 else:
                     event_instance.state = EVENT_STATE_DICT["slo_pending"]
 
             elif event_instance.state == EVENT_STATE_DICT["fc_pending"]:
-                # check if room requirement is listed, if yes progress to GAD
-                # ...  TODO
-
-                # else progress to SLO
-                event_instance.state = EVENT_STATE_DICT["slo_pending"]
-
-            elif event_instance.state == EVENT_STATE_DICT["gad_pending"]:
                 # progress to SLO
                 event_instance.state = EVENT_STATE_DICT["slo_pending"]
 
@@ -164,7 +153,15 @@ class ProgressEvent(graphene.Mutation):
                 event_instance.state = EVENT_STATE_DICT["slc_pending"]
 
             elif event_instance.state == EVENT_STATE_DICT["slc_pending"]:
-                # grant final approval
+                # check if room requirement is listed, if yes progress to GAD
+                if ... :    # TODO
+                    event_instance.state = EVENT_STATE_DICT["gad_pending"]
+                # else grant final approval
+                else :
+                    event_instance.state = EVENT_STATE_DICT["approved"]
+
+            elif event_instance.state == EVENT_STATE_DICT["gad_pending"]:
+                # else grant final approval
                 event_instance.state = EVENT_STATE_DICT["approved"]
 
             event_instance.save()
