@@ -5,14 +5,15 @@ from authentication.decorators import allowed_groups
 
 from club_manager.models import Club
 
-from event_manager.models import Event, EVENT_STATE_DICT, EventFeedback
-from event_manager.types import EventFeedbackType, EventType
+from event_manager.models import Event, EVENT_STATE_DICT, ROOM_LIST, EventFeedback
+from event_manager.types import EventFeedbackType, EventType, RoomType
 from event_manager.mutations import (
     CreateEvent,
     UpdateEvent,
     DeleteEvent,
     ProgressEvent,
     AddEventFeedback,
+    AddRoomDetails,
 )
 
 
@@ -61,6 +62,7 @@ class Query(graphene.ObjectType):
     admin_gad_pending_events = graphene.List(EventType)
     admin_slo_pending_events = graphene.List(EventType)
     admin_slc_pending_events = graphene.List(EventType)
+    admin_get_rooms = graphene.List(RoomType, event_id=graphene.Int())
 
     event_feedback_thread = graphene.List(EventFeedbackType, event_id=graphene.Int())
 
@@ -118,6 +120,20 @@ class Query(graphene.ObjectType):
 
         return events
 
+    def resolve_admin_get_rooms(self, info, event_id):
+        otherEvents = Event.objects.filter(state=EVENT_STATE_DICT["approved"]).exclude(pk=event_id)
+        # for testing ->
+        #otherEvents = Event.objects.exclude(pk=event_id)
+        event = Event.objects.get(pk=event_id)
+        availablity = { idx: True for idx, _ in ROOM_LIST }
+        for otherEvent in otherEvents :
+            # check if the other event's room is not none
+            if ( otherEvent.roomId != 0 ) :
+                # check if the room is available and the time slot collides with this event's time slot
+                if ( availablity[otherEvent.roomId] and event.datetimeEnd > otherEvent.datetimeStart and event.datetimeStart < otherEvent.datetimeEnd ) :
+                    availablity[otherEvent.roomId] = False
+        return [ { "room": room, "available": availablity[idx] } for idx, room in ROOM_LIST ]
+
 
 class Mutation(graphene.ObjectType):
     create_event = CreateEvent.Field()
@@ -127,6 +143,8 @@ class Mutation(graphene.ObjectType):
     progress_event = ProgressEvent.Field()
 
     add_event_feedback = AddEventFeedback.Field()
+
+    add_room_details = AddRoomDetails.Field()
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)

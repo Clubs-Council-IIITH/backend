@@ -6,7 +6,7 @@ from django.db.models import Sum
 
 from authentication.decorators import allowed_groups
 
-from event_manager.models import Event, EVENT_STATE_DICT, EventFeedback
+from event_manager.models import Event, EVENT_STATE_DICT, ROOM_DICT, EventFeedback
 from event_manager.types import EventType, EventFeedbackType
 
 from club_manager.models import Club
@@ -198,3 +198,43 @@ class AddEventFeedback(graphene.Mutation):
         feedback_instance.save()
 
         return AddEventFeedback(feedback=feedback_instance)
+
+
+class RoomDetailsInput(graphene.InputObjectType) :
+    event_id = graphene.ID()
+    room = graphene.String()
+    population = graphene.Int()
+    equipment = graphene.String(required=False)
+    additional = graphene.String(required=False)
+
+class AddRoomDetails(graphene.Mutation):
+    class Arguments:
+        room_data = RoomDetailsInput(required=True)
+
+    event = graphene.Field(EventType)
+
+    @classmethod
+    @allowed_groups(["club"])
+    def mutate(cls, root, info, room_data=None):
+        user = info.context.user
+        club = Club.objects.get(mail=user.username)
+        event_instance = Event.objects.get(pk=room_data.event_id)
+
+        if event_instance:
+            # check if event belongs to the requesting club
+            if event_instance.club != club:
+                raise GraphQLError("You do not have permission to access this resource.")
+
+            if room_data.room:
+                event_instance.roomId = ROOM_DICT[room_data.room]
+            if room_data.population:
+                event_instance.population = room_data.population
+            if room_data.equipment:
+                event_instance.equipment = room_data.equipment
+            if room_data.additional:
+                event_instance.additional = room_data.additional
+
+            event_instance.save()
+            return AddRoomDetails(event=event_instance)
+
+        return AddRoomDetails(event=None)

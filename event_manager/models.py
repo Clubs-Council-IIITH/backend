@@ -35,6 +35,20 @@ EVENT_MODE_LIST = [
     ["online", "online"],
 ]
 
+ROOMS = [
+    "none",
+    "Himalaya_101",
+    "Himalaya_102",
+    "Himalaya_103",
+    "Himalaya_104",
+    "Himalaya_105",
+    "Vindhya_sh1",
+    "Vindhya_sh2",
+    "Amphitheatre",
+]
+ROOM_LIST = [ [idx, room] for idx, room in enumerate(ROOMS) ]
+ROOM_DICT = { room: idx for idx, room in enumerate(ROOMS) }
+
 
 class Event(models.Model):
     club = models.ForeignKey(Club, on_delete=models.CASCADE, blank=False, null=False)
@@ -46,6 +60,10 @@ class Event(models.Model):
     datetimeEnd = models.DateTimeField()
     mode = models.CharField(max_length=50, choices=EVENT_MODE_LIST, default="offline")
     state = models.IntegerField(default=0, choices=EVENT_STATE_LIST, blank=False, null=False)
+    roomId = models.IntegerField(default=0, choices=ROOM_LIST, blank=False, null=False)
+    population = models.IntegerField(default=0, blank=False, null=False)
+    equipment = models.CharField(max_length=1000, default="")
+    additional = models.CharField(max_length=1000, default="")
 
 
 class EventFeedback(models.Model):
