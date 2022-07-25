@@ -2,11 +2,21 @@ from django.contrib.auth.models import User, Group
 from club_manager.models import Club
 
 
-# Clubs Council admin account ID
-mail = "clubs@iiit.ac.in"
+# Superuser account ID
+superuser_mail = "clubs@iiit.ac.in"
 
 # All usergroups in the app
 usergroups = ["club", "clubs_council", "finance_council", "slo", "slc", "gad"]
+
+# All admins and roles {{{
+admins = [
+    {"mail": "clubs@iiit.ac.in", "role": "clubs_council"},
+    {"mail": "fc@iiit.ac.in", "role": "finance_council"},
+    {"mail": "slo@iiit.ac.in", "role": "slo"},
+    {"mail": "slc@iiit.ac.in", "role": "slc"},
+    {"mail": "gad@iiit.ac.in", "role": "gad"},
+]
+# }}}
 
 # All clubs {{{
 clubs = [
@@ -120,24 +130,27 @@ clubs = [
 
 
 def run():
-    # Exit initialization if admin account exists
-    if User.objects.filter(username=mail).exists():
+    # Exit initialization if superuser account already exists
+    if User.objects.filter(username=superuser_mail).exists():
         return
 
-    print("Running initial database setup")
+    print("Running initial database setup...")
 
-    # Create Clubs Council Admin account and grant sudo perms
-    cc_admin = User.objects.create_user(mail)
-    cc_admin.is_staff = True
-    cc_admin.is_superuser = True
-    cc_admin.save()
-    print("Created admin account.")
+    # Create superuser account and grant sudo perms
+    superuser = User.objects.create_superuser(superuser_mail)
+    superuser.save()
+    print("Created superuser.")
 
     # Create all required usergroups
     for usergroup in usergroups:
         group, created = Group.objects.get_or_create(name=usergroup)
-    Group.objects.get(name="clubs_council").user_set.add(cc_admin)
     print("Created user groups.")
+
+    # Create admins
+    for account in admins:
+        admin, created = User.objects.get_or_create(username=account["mail"])
+        Group.objects.get(name=account["role"]).user_set.add(admin)
+    print("Created admin accounts.")
 
     # Create all clubs
     for club in clubs:
@@ -145,4 +158,4 @@ def run():
         club_instance.save()
         user = User.objects.create_user(club["mail"])
         Group.objects.get(name="club").user_set.add(user)
-    print("Created clubs & club accounts.")
+    print("Created all clubs & club accounts.")
