@@ -21,7 +21,6 @@ class EventInput(graphene.InputObjectType):
     name = graphene.String()
     description = graphene.String()
     audience = graphene.String()
-    mode = graphene.String()
 
 
 class CreateEvent(graphene.Mutation):
@@ -41,7 +40,6 @@ class CreateEvent(graphene.Mutation):
             name=event_data.name,
             datetimeStart=event_data.datetimeStart,
             datetimeEnd=event_data.datetimeEnd,
-            mode=event_data.mode,
         )
 
         # optional fields
@@ -82,8 +80,6 @@ class UpdateEvent(graphene.Mutation):
                 event_instance.datetimeStart = event_data.datetimeStart
             if event_data.datetimeEnd:
                 event_instance.datetimeEnd = event_data.datetimeEnd
-            if event_data.mode:
-                event_instance.mode = event_data.mode
 
             # optional fields
             event_instance.poster = event_data.poster
@@ -154,10 +150,10 @@ class ProgressEvent(graphene.Mutation):
 
             elif event_instance.state == EVENT_STATE_DICT["slc_pending"]:
                 # check if room requirement is listed, if yes progress to GAD
-                if ... :    # TODO
+                if ...:  # TODO
                     event_instance.state = EVENT_STATE_DICT["gad_pending"]
                 # else grant final approval
-                else :
+                else:
                     event_instance.state = EVENT_STATE_DICT["approved"]
 
             elif event_instance.state == EVENT_STATE_DICT["gad_pending"]:
@@ -200,12 +196,13 @@ class AddEventFeedback(graphene.Mutation):
         return AddEventFeedback(feedback=feedback_instance)
 
 
-class RoomDetailsInput(graphene.InputObjectType) :
+class RoomDetailsInput(graphene.InputObjectType):
     event_id = graphene.ID()
     room = graphene.String()
     population = graphene.Int()
     equipment = graphene.String(required=False)
     additional = graphene.String(required=False)
+
 
 class AddRoomDetails(graphene.Mutation):
     class Arguments:

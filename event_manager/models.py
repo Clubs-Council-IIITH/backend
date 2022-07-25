@@ -26,8 +26,8 @@ EVENT_STATES = [
     "completed",
     "deleted",
 ]
-EVENT_STATE_LIST = [ [idx, state] for idx, state in enumerate(EVENT_STATES) ]
-EVENT_STATE_DICT = { state: idx for idx, state in enumerate(EVENT_STATES) }
+EVENT_STATE_LIST = [[idx, state] for idx, state in enumerate(EVENT_STATES)]
+EVENT_STATE_DICT = {state: idx for idx, state in enumerate(EVENT_STATES)}
 
 # possible event modes
 EVENT_MODE_LIST = [
@@ -46,8 +46,8 @@ ROOMS = [
     "Vindhya_sh2",
     "Amphitheatre",
 ]
-ROOM_LIST = [ [idx, room] for idx, room in enumerate(ROOMS) ]
-ROOM_DICT = { room: idx for idx, room in enumerate(ROOMS) }
+ROOM_LIST = [[idx, room] for idx, room in enumerate(ROOMS)]
+ROOM_DICT = {room: idx for idx, room in enumerate(ROOMS)}
 
 
 class Event(models.Model):
@@ -58,7 +58,6 @@ class Event(models.Model):
     audience = models.TextField(default="none")
     datetimeStart = models.DateTimeField()
     datetimeEnd = models.DateTimeField()
-    mode = models.CharField(max_length=50, choices=EVENT_MODE_LIST, default="offline")
     state = models.IntegerField(default=0, choices=EVENT_STATE_LIST, blank=False, null=False)
     roomId = models.IntegerField(default=0, choices=ROOM_LIST, blank=False, null=False)
     population = models.IntegerField(default=0, blank=False, null=False)
