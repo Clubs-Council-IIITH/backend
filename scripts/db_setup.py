@@ -10,11 +10,11 @@ usergroups = ["club", "clubs_council", "finance_council", "slo", "slc", "gad"]
 
 # All admins and roles {{{
 admins = [
-    {"mail": "clubs@iiit.ac.in", "role": "clubs_council"},
-    {"mail": "fc@iiit.ac.in", "role": "finance_council"},
-    {"mail": "slo@iiit.ac.in", "role": "slo"},
-    {"mail": "slc@iiit.ac.in", "role": "slc"},
-    {"mail": "gad@iiit.ac.in", "role": "gad"},
+    {"name": "Clubs Council", "mail": "clubs@iiit.ac.in", "role": "clubs_council"},
+    {"name": "Finance Council", "mail": "fc@iiit.ac.in", "role": "finance_council"},
+    {"name": "Student Life Office", "mail": "slo@iiit.ac.in", "role": "slo"},
+    {"name": "Student Life Committee", "mail": "slc@iiit.ac.in", "role": "slc"},
+    {"name": "GAD", "mail": "gad@iiit.ac.in", "role": "gad"},
 ]
 # }}}
 
@@ -149,13 +149,22 @@ def run():
     # Create admins
     for account in admins:
         admin, created = User.objects.get_or_create(username=account["mail"])
+        admin.first_name = account["name"]
+        admin.save()
+
         Group.objects.get(name=account["role"]).user_set.add(admin)
     print("Created admin accounts.")
 
     # Create all clubs
-    for club in clubs:
-        club_instance = Club(name=club["name"], mail=club["mail"], category=club["category"])
+    for account in clubs:
+        club_instance = Club(
+            name=account["name"], mail=account["mail"], category=account["category"]
+        )
         club_instance.save()
-        user = User.objects.create_user(club["mail"])
-        Group.objects.get(name="club").user_set.add(user)
+
+        club, created = User.objects.get_or_create(username=account["mail"])
+        club.first_name = account["name"]
+        club.save()
+
+        Group.objects.get(name="club").user_set.add(club)
     print("Created all clubs & club accounts.")
