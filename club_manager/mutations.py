@@ -49,7 +49,7 @@ class CreateClub(graphene.Mutation):
         club_instance.save()
 
         try:
-            user = AuthUser.objects.create_user(club_data.mail)
+            user = AuthUser.objects.create_user(club_data.mail, email=club_data.mail, first_name=club_data.name)
         except IntegrityError:
             user = AuthUser.objects.get(username=club_data.mail)
         Group.objects.get(name="club").user_set.add(user)
@@ -69,13 +69,19 @@ class UpdateClub(graphene.Mutation):
         club_instance = Club.objects.get(pk=club_data.id)
 
         if club_instance:
+            # get the corresponding club user
+            user_instance = AuthUser.objects.get(username=club_instance.mail)
+
             # required fields
             if club_data.img:
                 club_instance.img = club_data.img
             if club_data.name:
                 club_instance.name = club_data.name
+                user_instance.first_name = club_data.name
             if club_data.mail:
                 club_instance.mail = club_data.mail
+                user_instance.email = club_data.mail
+                user_instance.username = club_data.mail
 
             # optional fields
             club_instance.website = club_data.website
@@ -84,6 +90,7 @@ class UpdateClub(graphene.Mutation):
             club_instance.description = club_data.description
 
             club_instance.save()
+            user_instance.save()
             return UpdateClub(club=club_instance)
 
         return UpdateClub(club=None)

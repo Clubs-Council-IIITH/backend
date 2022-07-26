@@ -137,8 +137,7 @@ def run():
     print("Running initial database setup...")
 
     # Create superuser account and grant sudo perms
-    superuser = User.objects.create_superuser(superuser_mail)
-    superuser.save()
+    superuser = User.objects.create_superuser(superuser_mail, email=superuser_mail)
     print("Created superuser.")
 
     # Create all required usergroups
@@ -148,23 +147,28 @@ def run():
 
     # Create admins
     for account in admins:
-        admin, created = User.objects.get_or_create(username=account["mail"])
-        admin.first_name = account["name"]
-        admin.save()
+        admin, created = User.objects.get_or_create(
+                username=account["mail"],
+                defaults={
+                    "email": account["mail"],
+                    "first_name": account["name"]
+                }
+        )
 
         Group.objects.get(name=account["role"]).user_set.add(admin)
     print("Created admin accounts.")
 
     # Create all clubs
     for account in clubs:
-        club_instance = Club(
-            name=account["name"], mail=account["mail"], category=account["category"]
-        )
-        club_instance.save()
+        club_instance = Club.objects.create(name=account["name"], mail=account["mail"], category=account["category"])
 
-        club, created = User.objects.get_or_create(username=account["mail"])
-        club.first_name = account["name"]
-        club.save()
+        club, created = User.objects.get_or_create(
+                username=account["mail"],
+                defaults={
+                    "email": account["mail"],
+                    "first_name": account["name"]
+                }
+        )
 
         Group.objects.get(name="club").user_set.add(club)
     print("Created all clubs & club accounts.")
