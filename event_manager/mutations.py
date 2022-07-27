@@ -235,3 +235,31 @@ class AddRoomDetails(graphene.Mutation):
             return AddRoomDetails(event=event_instance)
 
         return AddRoomDetails(event=None)
+
+
+class ChangePoster(graphene.Mutation):
+    class Arguments:
+        event_data = EventInput(required=True)
+
+    event = graphene.Field(EventType)
+
+    @classmethod
+    @allowed_groups(["club"])
+    def mutate(cls, root, info, event_data=None):
+        user = info.context.user
+        club = Club.objects.get(mail=user.username)
+        event_instance = Event.objects.get(pk=event_data.id)
+
+        if event_instance:
+            # check if event belongs to the requesting club
+            if event_instance.club != club:
+                raise GraphQLError("You do not have permission to access this resource.")
+
+            # required fields
+            if event_data.poster:
+                event_instance.poster = event_data.poster
+
+            event_instance.save()
+            return ChangePoster(event=event_instance)
+
+        return ChangePoster(event=None)

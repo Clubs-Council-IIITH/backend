@@ -14,6 +14,7 @@ from event_manager.mutations import (
     ProgressEvent,
     AddEventFeedback,
     AddRoomDetails,
+    ChangePoster,
 )
 
 
@@ -158,5 +159,6 @@ class Mutation(graphene.ObjectType):
 
     add_room_details = AddRoomDetails.Field()
 
+    change_poster = ChangePoster.Field()
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
