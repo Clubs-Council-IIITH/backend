@@ -80,9 +80,10 @@ class UpdateEvent(graphene.Mutation):
                 event_instance.datetimeStart = event_data.datetimeStart
             if event_data.datetimeEnd:
                 event_instance.datetimeEnd = event_data.datetimeEnd
+            if event_data.poster:
+                event_instance.poster = event_data.poster
 
             # optional fields
-            event_instance.poster = event_data.poster
             event_instance.audience = event_data.audience
             event_instance.description = event_data.description
 
