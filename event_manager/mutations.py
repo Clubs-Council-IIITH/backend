@@ -15,7 +15,6 @@ from finance_manager.models import BudgetRequirement
 
 class EventInput(graphene.InputObjectType):
     id = graphene.ID()
-    poster = Upload(required=False)
     datetimeStart = graphene.DateTime()
     datetimeEnd = graphene.DateTime()
     name = graphene.String()
@@ -43,8 +42,6 @@ class CreateEvent(graphene.Mutation):
         )
 
         # optional fields
-        if event_data.poster:
-            event_instance.poster = event_data.poster
         if event_data.audience:
             event_instance.audience = event_data.audience
         if event_data.description:
@@ -80,8 +77,6 @@ class UpdateEvent(graphene.Mutation):
                 event_instance.datetimeStart = event_data.datetimeStart
             if event_data.datetimeEnd:
                 event_instance.datetimeEnd = event_data.datetimeEnd
-            if event_data.poster:
-                event_instance.poster = event_data.poster
 
             # optional fields
             event_instance.audience = event_data.audience
@@ -238,27 +233,36 @@ class AddRoomDetails(graphene.Mutation):
         return AddRoomDetails(event=None)
 
 
+class ChangePosterInput(graphene.InputObjectType):
+    event_id = graphene.ID()
+    img = Upload(required=False)
+    delete_prev = graphene.Boolean()
+
+
 class ChangePoster(graphene.Mutation):
     class Arguments:
-        event_data = EventInput(required=True)
+        poster_data = ChangePosterInput(required=True)
 
     event = graphene.Field(EventType)
 
     @classmethod
     @allowed_groups(["club"])
-    def mutate(cls, root, info, event_data=None):
+    def mutate(cls, root, info, poster_data):
         user = info.context.user
         club = Club.objects.get(mail=user.username)
-        event_instance = Event.objects.get(pk=event_data.id)
+        event_instance = Event.objects.get(pk=poster_data.event_id)
 
         if event_instance:
             # check if event belongs to the requesting club
             if event_instance.club != club:
                 raise GraphQLError("You do not have permission to access this resource.")
 
-            # required fields
-            if event_data.poster:
-                event_instance.poster = event_data.poster
+            # if delete_prev is true then delete the previous poster
+            if poster_data.delete_prev:
+                event_instance.poster.delete()
+            # if img is not null, set the poster as this variable
+            if poster_data.img:
+                event_instance.poster = poster_data.img
 
             event_instance.save()
             return ChangePoster(event=event_instance)
