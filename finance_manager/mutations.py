@@ -19,6 +19,7 @@ class BudgetRequirementInput(graphene.InputObjectType):
     event_id = graphene.ID()
     amount = graphene.Decimal()
     description = graphene.String()
+    reimbursable = graphene.Boolean()
 
 
 class CreateBudgetRequirement(graphene.Mutation):
@@ -42,6 +43,7 @@ class CreateBudgetRequirement(graphene.Mutation):
             event=event,
             amount=budget_requirement_data.amount,
             description=budget_requirement_data.description,
+            reimbursable=budget_requirement_data.reimbursable,
         )
 
         budget_requirement_instance.save()
