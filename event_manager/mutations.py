@@ -150,7 +150,7 @@ class ProgressEvent(graphene.Mutation):
 
             elif event_instance.state == EVENT_STATE_DICT["slc_pending"]:
                 # check if room requirement is listed, if yes progress to GAD
-                if ...:  # TODO
+                if event_instance.room_id != ROOM_DICT["none"]:
                     event_instance.state = EVENT_STATE_DICT["gad_pending"]
                 # else grant final approval
                 else:
@@ -223,7 +223,7 @@ class AddRoomDetails(graphene.Mutation):
                 raise GraphQLError("You do not have permission to access this resource.")
 
             if room_data.room:
-                event_instance.roomId = ROOM_DICT[room_data.room]
+                event_instance.room_id = ROOM_DICT[room_data.room]
             if room_data.population:
                 event_instance.population = room_data.population
             if room_data.equipment:

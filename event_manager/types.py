@@ -28,6 +28,13 @@ class EventFeedbackType(DjangoObjectType):
         fields = "__all__"
 
 
-class RoomType(graphene.ObjectType):
+class AvailableRoomType(graphene.ObjectType):
     room = graphene.String()
     available = graphene.Boolean()
+
+
+class RoomType(graphene.ObjectType):
+    room = graphene.String()
+    population = graphene.Int()
+    equipment = graphene.String()
+    additional = graphene.String()

@@ -59,7 +59,7 @@ class Event(models.Model):
     datetimeStart = models.DateTimeField()
     datetimeEnd = models.DateTimeField()
     state = models.IntegerField(default=0, choices=EVENT_STATE_LIST, blank=False, null=False)
-    roomId = models.IntegerField(default=0, choices=ROOM_LIST, blank=False, null=False)
+    room_id = models.IntegerField(default=0, choices=ROOM_LIST, blank=False, null=False)
     population = models.IntegerField(default=0, blank=False, null=False)
     equipment = models.CharField(max_length=1000, default="")
     additional = models.CharField(max_length=1000, default="")

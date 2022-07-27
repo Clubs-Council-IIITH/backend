@@ -5,8 +5,8 @@ from authentication.decorators import allowed_groups
 
 from club_manager.models import Club
 
-from event_manager.models import Event, EVENT_STATE_DICT, ROOM_LIST, EventFeedback
-from event_manager.types import EventFeedbackType, EventType, RoomType
+from event_manager.models import Event, EVENT_STATE_DICT, ROOM_LIST, ROOM_DICT, EventFeedback
+from event_manager.types import EventFeedbackType, EventType, AvailableRoomType, RoomType
 from event_manager.mutations import (
     CreateEvent,
     UpdateEvent,
@@ -62,7 +62,8 @@ class Query(graphene.ObjectType):
     admin_gad_pending_events = graphene.List(EventType)
     admin_slo_pending_events = graphene.List(EventType)
     admin_slc_pending_events = graphene.List(EventType)
-    admin_get_rooms = graphene.List(RoomType, event_id=graphene.Int())
+    admin_available_rooms = graphene.List(AvailableRoomType, event_id=graphene.Int())
+    admin_room_by_event_id = graphene.Field(RoomType, event_id=graphene.Int())
 
     event_feedback_thread = graphene.List(EventFeedbackType, event_id=graphene.Int())
 
@@ -120,7 +121,8 @@ class Query(graphene.ObjectType):
 
         return events
 
-    def resolve_admin_get_rooms(self, info, event_id):
+    @allowed_groups(["club", "clubs_council", "finance_council", "slo", "slc", "gad"])
+    def resolve_admin_available_rooms(self, info, event_id):
         otherEvents = Event.objects.filter(state=EVENT_STATE_DICT["approved"]).exclude(pk=event_id)
         # for testing ->
         #otherEvents = Event.objects.exclude(pk=event_id)
@@ -128,11 +130,21 @@ class Query(graphene.ObjectType):
         availablity = { idx: True for idx, _ in ROOM_LIST }
         for otherEvent in otherEvents :
             # check if the other event's room is not none
-            if ( otherEvent.roomId != 0 ) :
+            if ( otherEvent.room_id != ROOM_DICT["none"] ) :
                 # check if the room is available and the time slot collides with this event's time slot
-                if ( availablity[otherEvent.roomId] and event.datetimeEnd > otherEvent.datetimeStart and event.datetimeStart < otherEvent.datetimeEnd ) :
-                    availablity[otherEvent.roomId] = False
+                if ( availablity[otherEvent.room_id] and event.datetimeEnd > otherEvent.datetimeStart and event.datetimeStart < otherEvent.datetimeEnd ) :
+                    availablity[otherEvent.room_id] = False
         return [ { "room": room, "available": availablity[idx] } for idx, room in ROOM_LIST ]
+
+    @allowed_groups(["club", "clubs_council", "finance_council", "slo", "slc", "gad"])
+    def resolve_admin_room_by_event_id(self, info, event_id):
+        event = Event.objects.get(pk=event_id)
+        return {
+            "room": ROOM_LIST[event.room_id][1],
+            "population": event.population,
+            "equipment": event.equipment,
+            "additional": event.additional,
+        }
 
 
 class Mutation(graphene.ObjectType):
