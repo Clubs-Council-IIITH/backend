@@ -5,8 +5,8 @@ from authentication.decorators import allowed_groups
 
 from club_manager.models import Club
 
-from event_manager.models import Event, EVENT_STATE_DICT, ROOM_LIST, ROOM_DICT, EventFeedback
-from event_manager.types import EventFeedbackType, EventType, AvailableRoomType, RoomType
+from event_manager.models import Event, EVENT_STATE_DICT, ROOM_LIST, ROOM_DICT, EventDiscussion
+from event_manager.types import EventDiscussionType, EventType, AvailableRoomType, RoomType
 from event_manager.mutations import (
     CreateEvent,
     UpdateEvent,
@@ -66,7 +66,7 @@ class Query(graphene.ObjectType):
     admin_available_rooms = graphene.List(AvailableRoomType, event_id=graphene.Int())
     admin_room_by_event_id = graphene.Field(RoomType, event_id=graphene.Int())
 
-    event_feedback_thread = graphene.List(EventFeedbackType, event_id=graphene.Int())
+    event_feedback_thread = graphene.List(EventDiscussionType, event_id=graphene.Int())
 
     @superuser_required
     def resolve_admin_all_events(self, info, **kwargs):
@@ -78,7 +78,7 @@ class Query(graphene.ObjectType):
     @allowed_groups(["club", "clubs_council", "finance_council", "slo", "slc", "gad"])
     def resolve_event_feedback_thread(self, info, event_id):
         event = Event.objects.get(pk=event_id)
-        feedback_thread = EventFeedback.objects.filter(event=event).order_by("timestamp")
+        feedback_thread = EventDiscussion.objects.filter(event=event).order_by("timestamp")
 
         return feedback_thread
 

@@ -6,8 +6,8 @@ from django.db.models import Sum
 
 from authentication.decorators import allowed_groups
 
-from event_manager.models import Event, EVENT_STATE_DICT, ROOM_DICT, EventFeedback
-from event_manager.types import EventType, EventFeedbackType
+from event_manager.models import Event, EVENT_STATE_DICT, ROOM_DICT, EventDiscussion
+from event_manager.types import EventType, EventDiscussionType
 
 from club_manager.models import Club
 from finance_manager.models import BudgetRequirement
@@ -162,16 +162,16 @@ class ProgressEvent(graphene.Mutation):
         return ProgressEvent(event=event_instance)
 
 
-class EventFeedbackInput(graphene.InputObjectType):
+class EventDiscussionInput(graphene.InputObjectType):
     event_id = graphene.ID()
     message = graphene.String()
 
 
 class AddEventFeedback(graphene.Mutation):
     class Arguments:
-        feedback_data = EventFeedbackInput(required=True)
+        feedback_data = EventDiscussionInput(required=True)
 
-    feedback = graphene.Field(EventFeedbackType)
+    feedback = graphene.Field(EventDiscussionType)
 
     @classmethod
     def mutate(cls, root, info, feedback_data=None):
@@ -181,7 +181,7 @@ class AddEventFeedback(graphene.Mutation):
         if not event_instance:
             raise GraphQLError("The target event does not exist")
 
-        feedback_instance = EventFeedback(
+        feedback_instance = EventDiscussion(
             event=event_instance,
             user=user,
             message=feedback_data.message,
