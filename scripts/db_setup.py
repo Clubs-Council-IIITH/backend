@@ -2,8 +2,8 @@ from django.contrib.auth.models import User, Group
 from club_manager.models import Club
 
 
-# Superuser account ID
-superuser_mail = "clubs@iiit.ac.in"
+# Superuser account
+superuser = {"name": "Clubs Council", "mail": "clubs@iiit.ac.in"}
 
 # All usergroups in the app
 usergroups = ["club", "clubs_council", "finance_council", "slo", "slc", "gad"]
@@ -131,23 +131,23 @@ clubs = [
 
 def run():
     # Exit initialization if superuser account already exists
-    if User.objects.filter(username=superuser_mail).exists():
+    if User.objects.filter(username=superuser["mail"]).exists():
         return
 
     print("Running initial database setup...")
 
     # Create superuser account and grant sudo perms
-    superuser = User.objects.create_superuser(superuser_mail, email=superuser_mail)
+    User.objects.create_superuser(superuser["mail"], email=superuser["mail"], first_name=superuser["name"])
     print("Created superuser.")
 
     # Create all required usergroups
     for usergroup in usergroups:
-        group, created = Group.objects.get_or_create(name=usergroup)
+        Group.objects.get_or_create(name=usergroup)
     print("Created user groups.")
 
     # Create admins
     for account in admins:
-        admin, created = User.objects.get_or_create(
+        admin, _ = User.objects.get_or_create(
                 username=account["mail"],
                 defaults={
                     "email": account["mail"],
@@ -160,9 +160,9 @@ def run():
 
     # Create all clubs
     for account in clubs:
-        club_instance = Club.objects.create(name=account["name"], mail=account["mail"], category=account["category"])
+        Club.objects.create(name=account["name"], mail=account["mail"], category=account["category"])
 
-        club, created = User.objects.get_or_create(
+        club, _ = User.objects.get_or_create(
                 username=account["mail"],
                 defaults={
                     "email": account["mail"],
