@@ -65,7 +65,7 @@ class Event(models.Model):
     additional = models.CharField(max_length=1000, default="")
 
 
-class EventFeedback(models.Model):
+class EventDiscussion(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE, blank=False, null=False)
     user = models.ForeignKey(AuthUser, on_delete=models.CASCADE, blank=False, null=False)
     timestamp = models.DateTimeField(auto_now_add=True, blank=True)

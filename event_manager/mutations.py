@@ -6,8 +6,8 @@ from django.db.models import Sum
 
 from authentication.decorators import allowed_groups
 
-from event_manager.models import Event, EVENT_STATE_DICT, ROOM_DICT, EventFeedback
-from event_manager.types import EventType, EventFeedbackType
+from event_manager.models import Event, EVENT_STATE_DICT, ROOM_DICT, EventDiscussion
+from event_manager.types import EventType, EventDiscussionType
 
 from club_manager.models import Club
 from finance_manager.models import BudgetRequirement
@@ -162,34 +162,34 @@ class ProgressEvent(graphene.Mutation):
         return ProgressEvent(event=event_instance)
 
 
-class EventFeedbackInput(graphene.InputObjectType):
+class EventDiscussionInput(graphene.InputObjectType):
     event_id = graphene.ID()
     message = graphene.String()
 
 
-class AddEventFeedback(graphene.Mutation):
+class SendDiscussionMessage(graphene.Mutation):
     class Arguments:
-        feedback_data = EventFeedbackInput(required=True)
+        discussion_data = EventDiscussionInput(required=True)
 
-    feedback = graphene.Field(EventFeedbackType)
+    discussion = graphene.Field(EventDiscussionType)
 
     @classmethod
-    def mutate(cls, root, info, feedback_data=None):
+    def mutate(cls, root, info, discussion_data=None):
         user = info.context.user
-        event_instance = Event.objects.get(pk=feedback_data.event_id)
+        event_instance = Event.objects.get(pk=discussion_data.event_id)
 
         if not event_instance:
             raise GraphQLError("The target event does not exist")
 
-        feedback_instance = EventFeedback(
+        discussion_instance = EventDiscussion(
             event=event_instance,
             user=user,
-            message=feedback_data.message,
+            message=discussion_data.message,
         )
 
-        feedback_instance.save()
+        discussion_instance.save()
 
-        return AddEventFeedback(feedback=feedback_instance)
+        return SendDiscussionMessage(discussion=discussion_instance)
 
 
 class RoomDetailsInput(graphene.InputObjectType):

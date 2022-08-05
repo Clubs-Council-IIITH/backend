@@ -1,6 +1,6 @@
 import graphene
 from graphene_django.types import DjangoObjectType
-from event_manager.models import Event, EventFeedback
+from event_manager.models import Event, EventDiscussion
 from django.contrib.auth.models import User as AuthUser
 
 
@@ -22,9 +22,9 @@ class EventType(DjangoObjectType):
         return self.poster
 
 
-class EventFeedbackType(DjangoObjectType):
+class EventDiscussionType(DjangoObjectType):
     class Meta:
-        model = EventFeedback
+        model = EventDiscussion
         fields = "__all__"
 
 
