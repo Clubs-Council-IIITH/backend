@@ -167,29 +167,29 @@ class EventDiscussionInput(graphene.InputObjectType):
     message = graphene.String()
 
 
-class AddEventFeedback(graphene.Mutation):
+class SendDiscussionMessage(graphene.Mutation):
     class Arguments:
-        feedback_data = EventDiscussionInput(required=True)
+        discussion_data = EventDiscussionInput(required=True)
 
-    feedback = graphene.Field(EventDiscussionType)
+    discussion = graphene.Field(EventDiscussionType)
 
     @classmethod
-    def mutate(cls, root, info, feedback_data=None):
+    def mutate(cls, root, info, discussion_data=None):
         user = info.context.user
-        event_instance = Event.objects.get(pk=feedback_data.event_id)
+        event_instance = Event.objects.get(pk=discussion_data.event_id)
 
         if not event_instance:
             raise GraphQLError("The target event does not exist")
 
-        feedback_instance = EventDiscussion(
+        discussion_instance = EventDiscussion(
             event=event_instance,
             user=user,
-            message=feedback_data.message,
+            message=discussion_data.message,
         )
 
-        feedback_instance.save()
+        discussion_instance.save()
 
-        return AddEventFeedback(feedback=feedback_instance)
+        return SendDiscussionMessage(discussion=discussion_instance)
 
 
 class RoomDetailsInput(graphene.InputObjectType):
