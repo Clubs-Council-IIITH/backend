@@ -1,14 +1,13 @@
-FROM python:3.8
+# [base] image
+FROM python:3.8.13-slim as base
+
+EXPOSE 8000
+WORKDIR /backend
+
 ENV PYTHONUNBUFFERED 1
 
-RUN mkdir /backend
-WORKDIR /backend
-COPY requirements.txt /backend/
-EXPOSE 8000
-RUN pip install -r requirements.txt
-COPY . /backend/
+# [production] image
+FROM base as prod
 
-RUN python manage.py collectstatic --noinput
-RUN python manage.py makemigrations
-RUN python manage.py migrate
-RUN python manage.py runscript db_setup
+# copy all files to container
+COPY . /backend/
