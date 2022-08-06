@@ -25,7 +25,10 @@ class Query(graphene.ObjectType):
         return Member.objects.filter(club__pk=club_id, approved=True)
 
     def resolve_user(self, info, mail):
-        return User.objects.get(mail=mail)
+        try:
+            return User.objects.get(mail=mail)
+        except User.DoesNotExist:
+            return None
 
     # admin queries
     admin_club_members = graphene.List(MemberType)
