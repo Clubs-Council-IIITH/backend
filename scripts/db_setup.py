@@ -20,35 +20,16 @@ admins = [
 
 # All clubs {{{
 clubs = [
+#     TECHNICAL CLUBS
     {
-        "name": "0x1337",
+        "name": "0x1337: The Hacking Club",
         "mail": "hacking.club@students.iiit.ac.in",
         "category": "technical",
-    },
-    {
-        "name": "Amateur Sports Enthusiasts Club",
-        "mail": "sportsclub@students.iiit.ac.in",
-        "category": "cultural",
-    },
-    {
-        "name": "Art Society",
-        "mail": "artsociety@students.iiit.ac.in",
-        "category": "cultural",
     },
     {
         "name": "Astronomy Club",
         "mail": "astronomyclub@students.iiit.ac.in",
         "category": "technical",
-    },
-    {
-        "name": "Chess Club",
-        "mail": "chessclub@students.iiit.ac.in",
-        "category": "cultural",
-    },
-    {
-        "name": "Decore",
-        "mail": "decore@students.iiit.ac.in",
-        "category": "cultural",
     },
     {
         "name": "Developer Student Club",
@@ -61,8 +42,30 @@ clubs = [
         "category": "technical",
     },
     {
-        "name": "Foreign Language Club",
-        "mail": "thelanguageclub@students.iiit.ac.in",
+        "name": "Open-Source Developers Group",
+        "mail": "osdg@students.iiit.ac.in",
+        "category": "technical",
+    },
+    {
+        "name": "Programming Club",
+        "mail": "programming.club@students.iiit.ac.in",
+        "category": "technical",
+    },
+    {
+        "name": "Theory Group",
+        "mail": "theory.group@students.iiit.ac.in",
+        "category": "technical",
+    },
+    
+#     CULTURAL CLUBS
+    {
+        "name": "Amateur Sports Enthusiasts Club",
+        "mail": "sportsclub@students.iiit.ac.in",
+        "category": "cultural",
+    },
+    {
+        "name": "Decore –The Design Club",
+        "mail": "decore@students.iiit.ac.in",
         "category": "cultural",
     },
     {
@@ -76,24 +79,24 @@ clubs = [
         "category": "cultural",
     },
     {
-        "name": "National Service Scheme",
-        "mail": "nss@iiit.ac.in",
-        "category": "other",
-    },
-    {
-        "name": "Open-Source Developers Group",
-        "mail": "osdg@students.iiit.ac.in",
-        "category": "technical",
-    },
-    {
         "name": "Pentaprism",
         "mail": "photography@students.iiit.ac.in",
         "category": "cultural",
     },
     {
-        "name": "Programming Club",
-        "mail": "programming.club@students.iiit.ac.in",
-        "category": "technical",
+        "name": "Skateboarding Club",
+        "mail": "skateboardingclub@students.iiit.ac.in",
+        "category": "cultural",
+    },
+    {
+        "name": "The Art Society",
+        "mail": "artsociety@students.iiit.ac.in",
+        "category": "cultural",
+    },
+    {
+        "name": "The Chess Club",
+        "mail": "chessclub@students.iiit.ac.in",
+        "category": "cultural",
     },
     {
         "name": "The Dance Crew",
@@ -111,6 +114,11 @@ clubs = [
         "category": "cultural",
     },
     {
+        "name": "The Language Club",
+        "mail": "thelanguageclub@students.iiit.ac.in",
+        "category": "cultural",
+    },
+    {
         "name": "The Music Club",
         "mail": "themusicclub@students.iiit.ac.in",
         "category": "cultural",
@@ -120,10 +128,12 @@ clubs = [
         "mail": "quizzing@students.iiit.ac.in",
         "category": "cultural",
     },
+    
+#     OTHERS
     {
-        "name": "Theory Group",
-        "mail": "theory.group@students.iiit.ac.in",
-        "category": "technical",
+        "name": "National Service Scheme",
+        "mail": "nss@iiit.ac.in",
+        "category": "other",
     },
 ]
 # }}}
