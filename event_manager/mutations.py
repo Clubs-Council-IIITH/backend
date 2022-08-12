@@ -134,15 +134,16 @@ class ProgressEvent(graphene.Mutation):
                     event_instance.state = EVENT_STATE_DICT["fc_pending"]
                 # else progress to SLO
                 else:
-                    event_instance.state = EVENT_STATE_DICT["slo_pending"]
+                    event_instance.state = EVENT_STATE_DICT["slc_pending"]
 
             elif event_instance.state == EVENT_STATE_DICT["fc_pending"]:
                 # progress to SLO
-                event_instance.state = EVENT_STATE_DICT["slo_pending"]
-
-            elif event_instance.state == EVENT_STATE_DICT["slo_pending"]:
-                # progress to SLC
+                # progressing directly to SLC Pending Event
                 event_instance.state = EVENT_STATE_DICT["slc_pending"]
+
+            # elif event_instance.state == EVENT_STATE_DICT["slo_pending"]:
+            #     # progress to SLC
+            #     event_instance.state = EVENT_STATE_DICT["slc_pending"]
 
             elif event_instance.state == EVENT_STATE_DICT["slc_pending"]:
                 # check if room requirement is listed, if yes progress to GAD

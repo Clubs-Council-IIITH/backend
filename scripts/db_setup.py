@@ -11,10 +11,11 @@ usergroups = ["club", "clubs_council", "finance_council", "slo", "slc", "gad"]
 # All admins and roles {{{
 admins = [
     {"name": "Clubs Council", "mail": "clubs@iiit.ac.in", "role": "clubs_council"},
-    {"name": "Finance Council", "mail": "fc@iiit.ac.in", "role": "finance_council"},
-    {"name": "Student Life Office", "mail": "slo@iiit.ac.in", "role": "slo"},
+    {"name": "Finance Council", "mail": "fc@iiit.ac.in", # Change the Email
+        "role": "finance_council"}, 
+    {"name": "Student Life Office", "mail": "slo.oa@iiit.ac.in", "role": "slc"},
     {"name": "Student Life Committee", "mail": "slc@iiit.ac.in", "role": "slc"},
-    {"name": "GAD", "mail": "gad@iiit.ac.in", "role": "gad"},
+    {"name": "GAD", "mail": "gad@iiit.ac.in", "role": "gad"}, # Change the Email
 ]
 # }}}
 
