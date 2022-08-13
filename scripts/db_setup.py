@@ -63,7 +63,11 @@ clubs = [
         "category": "technical",
         "tagline": "",
     },
-    	
+    {
+        "name": "IIIT Society for Applied/Advanced Quantum Computing",
+        "mail": "isaqc@students.iiit.ac.in",
+        "category": "technical",
+    },
 #     CULTURAL CLUBS
     {
         "name": "Amateur Sports Enthusiasts Club",
