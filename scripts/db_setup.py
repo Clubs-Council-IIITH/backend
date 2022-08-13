@@ -25,116 +25,136 @@ clubs = [
         "name": "0x1337: The Hacking Club",
         "mail": "hacking.club@students.iiit.ac.in",
         "category": "technical",
+        "tagline": "",
     },
     {
         "name": "Astronomy Club",
         "mail": "astronomyclub@students.iiit.ac.in",
         "category": "technical",
+        "tagline": "",
     },
     {
         "name": "Developer Student Club",
         "mail": "dsc@students.iiit.ac.in",
         "category": "technical",
+        "tagline": "",
     },
     {
         "name": "Electronics and Robotics Club",
         "mail": "roboticsclub@students.iiit.ac.in",
         "category": "technical",
+        "tagline": "",
     },
     {
         "name": "Open-Source Developers Group",
         "mail": "osdg@students.iiit.ac.in",
         "category": "technical",
+        "tagline": "",
     },
     {
         "name": "Programming Club",
         "mail": "programming.club@students.iiit.ac.in",
         "category": "technical",
+        "tagline": "",
     },
     {
         "name": "Theory Group",
         "mail": "theory.group@students.iiit.ac.in",
         "category": "technical",
+        "tagline": "",
     },
     {
         "name": "IIIT Society for Applied/Advanced Quantum Computing",
         "mail": "isaqc@students.iiit.ac.in",
         "category": "technical",
-    }.
-    
+    },
 #     CULTURAL CLUBS
     {
         "name": "Amateur Sports Enthusiasts Club",
         "mail": "sportsclub@students.iiit.ac.in",
         "category": "cultural",
+        "tagline": "",
     },
     {
         "name": "Decore –The Design Club",
         "mail": "decore@students.iiit.ac.in",
         "category": "cultural",
+        "tagline": "Design from the core",
     },
     {
         "name": "Frivolous Humour Club",
         "mail": "fhc@students.iiit.ac.in",
         "category": "cultural",
+        "tagline": "",
     },
     {
         "name": "Literary Club",
         "mail": "litclub@students.iiit.ac.in",
         "category": "cultural",
+        "tagline": "",
     },
     {
         "name": "Pentaprism",
         "mail": "photography@students.iiit.ac.in",
         "category": "cultural",
+        "tagline": "The Photography Club of IIITH",
     },
     {
         "name": "Skateboarding Club",
         "mail": "skateboardingclub@students.iiit.ac.in",
         "category": "cultural",
+        "tagline": "",
     },
     {
         "name": "The Art Society",
         "mail": "artsociety@students.iiit.ac.in",
         "category": "cultural",
+        "tagline": "",
     },
     {
         "name": "The Chess Club",
         "mail": "chessclub@students.iiit.ac.in",
         "category": "cultural",
+        "tagline": "",
     },
     {
         "name": "The Dance Crew",
         "mail": "thedancecrew@students.iiit.ac.in",
         "category": "cultural",
+        "tagline": "",
     },
     {
         "name": "The Debate Society",
         "mail": "debsoc@students.iiit.ac.in",
         "category": "cultural",
+        "tagline": "The debate society of IIIT-H",
     },
     {
         "name": "The Gaming Club",
         "mail": "thegamingclub@students.iiit.ac.in",
         "category": "cultural",
+        "tagline": "",
     },
     {
         "name": "The Language Club",
         "mail": "thelanguageclub@students.iiit.ac.in",
         "category": "cultural",
+        "tagline": "",
     },
     {
         "name": "The Music Club",
         "mail": "themusicclub@students.iiit.ac.in",
         "category": "cultural",
+        "tagline": "Because without music, life would B flat.",
     },
     {
         "name": "The TV Room Quiz Club",
         "mail": "quizzing@students.iiit.ac.in",
         "category": "cultural",
+        "tagline": "",
     },
-    
-#     OTHERS
+
+    #     OTHERS
     {
         "name": "National Service Scheme",
         "mail": "nss@iiit.ac.in",
@@ -152,7 +172,8 @@ def run():
     print("Running initial database setup...")
 
     # Create superuser account and grant sudo perms
-    User.objects.create_superuser(superuser["mail"], email=superuser["mail"], first_name=superuser["name"])
+    User.objects.create_superuser(
+        superuser["mail"], email=superuser["mail"], first_name=superuser["name"])
     print("Created superuser.")
 
     # Create all required usergroups
@@ -163,11 +184,11 @@ def run():
     # Create admins
     for account in admins:
         admin, _ = User.objects.get_or_create(
-                username=account["mail"],
-                defaults={
-                    "email": account["mail"],
-                    "first_name": account["name"]
-                }
+            username=account["mail"],
+            defaults={
+                "email": account["mail"],
+                "first_name": account["name"]
+            }
         )
 
         Group.objects.get(name=account["role"]).user_set.add(admin)
@@ -175,14 +196,15 @@ def run():
 
     # Create all clubs
     for account in clubs:
-        Club.objects.create(name=account["name"], mail=account["mail"], category=account["category"])
+        Club.objects.create(name=account["name"], mail=account["mail"],
+                            category=account["category"], tagline=account["tagline"])
 
         club, _ = User.objects.get_or_create(
-                username=account["mail"],
-                defaults={
-                    "email": account["mail"],
-                    "first_name": account["name"]
-                }
+            username=account["mail"],
+            defaults={
+                "email": account["mail"],
+                "first_name": account["name"]
+            }
         )
 
         Group.objects.get(name="club").user_set.add(club)
