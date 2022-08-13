@@ -25,7 +25,7 @@ clubs = [
         "name": "0x1337: The Hacking Club",
         "mail": "hacking.club@students.iiit.ac.in",
         "category": "technical",
-        "tagline": "",
+        "tagline": "Exploiting vulnerabilities for fun and profit",
     },
     {
         "name": "Astronomy Club",
