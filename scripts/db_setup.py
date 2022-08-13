@@ -20,7 +20,7 @@ admins = [
 
 # All clubs {{{
 clubs = [
-#     TECHNICAL CLUBS
+    #     TECHNICAL CLUBS
     {
         "name": "0x1337: The Hacking Club",
         "mail": "hacking.club@students.iiit.ac.in",
@@ -67,8 +67,9 @@ clubs = [
         "name": "IIIT Society for Applied/Advanced Quantum Computing",
         "mail": "isaqc@students.iiit.ac.in",
         "category": "technical",
+        "tagline": "",
     },
-#     CULTURAL CLUBS
+    #     CULTURAL CLUBS
     {
         "name": "Amateur Sports Enthusiasts Club",
         "mail": "sportsclub@students.iiit.ac.in",
@@ -153,12 +154,12 @@ clubs = [
         "category": "cultural",
         "tagline": "",
     },
-
     #     OTHERS
     {
         "name": "National Service Scheme",
         "mail": "nss@iiit.ac.in",
         "category": "other",
+        "tagline": "",
     },
 ]
 # }}}
@@ -173,7 +174,8 @@ def run():
 
     # Create superuser account and grant sudo perms
     User.objects.create_superuser(
-        superuser["mail"], email=superuser["mail"], first_name=superuser["name"])
+        superuser["mail"], email=superuser["mail"], first_name=superuser["name"]
+    )
     print("Created superuser.")
 
     # Create all required usergroups
@@ -185,10 +187,7 @@ def run():
     for account in admins:
         admin, _ = User.objects.get_or_create(
             username=account["mail"],
-            defaults={
-                "email": account["mail"],
-                "first_name": account["name"]
-            }
+            defaults={"email": account["mail"], "first_name": account["name"]},
         )
 
         Group.objects.get(name=account["role"]).user_set.add(admin)
@@ -196,15 +195,16 @@ def run():
 
     # Create all clubs
     for account in clubs:
-        Club.objects.create(name=account["name"], mail=account["mail"],
-                            category=account["category"], tagline=account["tagline"])
+        Club.objects.create(
+            name=account["name"],
+            mail=account["mail"],
+            category=account["category"],
+            tagline=account["tagline"],
+        )
 
         club, _ = User.objects.get_or_create(
             username=account["mail"],
-            defaults={
-                "email": account["mail"],
-                "first_name": account["name"]
-            }
+            defaults={"email": account["mail"], "first_name": account["name"]},
         )
 
         Group.objects.get(name="club").user_set.add(club)
