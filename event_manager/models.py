@@ -19,8 +19,8 @@ AUDIENCE_LIST = [
 EVENT_STATES = [
     "cc_pending",
     "fc_pending",
-    "slo_pending",
     "slc_pending",
+    "slo_pending",
     "gad_pending",
     "approved",
     "completed",

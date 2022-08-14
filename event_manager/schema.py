@@ -87,16 +87,18 @@ class Query(graphene.ObjectType):
     def resolve_admin_approved_events(self, info, **kwargs):
         user_roles = info.context.user.groups
         admin_level = -1
-        if user_roles.filter(name="clubs_council").exists() :
+        if user_roles.filter(name="clubs_council").exists():
             admin_level = 0
-        if user_roles.filter(name="finance_council").exists() :
+        if user_roles.filter(name="finance_council").exists():
             admin_level = 1
-        if user_roles.filter(name="slo").exists() :
+        if user_roles.filter(name="slc").exists():
             admin_level = 2
-        if user_roles.filter(name="slc").exists() :
+        if user_roles.filter(name="slo").exists():
             admin_level = 3
-        if user_roles.filter(name="gad").exists() :
+        if user_roles.filter(name="gad").exists():
             admin_level = 4
+
+        print(admin_level)
 
         return Event.objects.filter(state__gt=admin_level).order_by("datetimeStart")
 
