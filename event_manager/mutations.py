@@ -127,24 +127,20 @@ class ProgressEvent(graphene.Mutation):
         if event_instance:
 
             if event_instance.state == EVENT_STATE_DICT["cc_pending"]:
-                # check if total budget is non-zero, if yes progress to FC
+                # check if total budget is non-zero, if yes progress to slc
                 if BudgetRequirement.objects.filter(event__pk=event_instance.id).aggregate(
                     Sum("amount")
                 )["amount__sum"]:
-                    event_instance.state = EVENT_STATE_DICT["fc_pending"]
+                    event_instance.state = EVENT_STATE_DICT["slc_pending"]
                 # else progress to SLO
                 else:
                     event_instance.state = EVENT_STATE_DICT["slo_pending"]
 
-            elif event_instance.state == EVENT_STATE_DICT["fc_pending"]:
+            elif event_instance.state == EVENT_STATE_DICT["slc_pending"]:
                 # progress to SLO
                 event_instance.state = EVENT_STATE_DICT["slo_pending"]
 
             elif event_instance.state == EVENT_STATE_DICT["slo_pending"]:
-                # progress to SLC
-                event_instance.state = EVENT_STATE_DICT["slc_pending"]
-
-            elif event_instance.state == EVENT_STATE_DICT["slc_pending"]:
                 # check if room requirement is listed, if yes progress to GAD
                 if event_instance.room_id != ROOM_DICT["none"]:
                     event_instance.state = EVENT_STATE_DICT["gad_pending"]
