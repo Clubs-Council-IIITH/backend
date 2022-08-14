@@ -37,34 +37,33 @@ EVENT_MODE_LIST = [
 
 ROOMS = [
     "none",
-    "Himalaya_101",
-    "Himalaya_102",
-    "Himalaya_103",
-    "Himalaya_104",
-    "Himalaya_201",
-    "Himalaya_202",
-    "Himalaya_203",
-    "Himalaya_204",
-    "Himalaya_301",
-    "Himalaya_302",
-    "Himalaya_303",
-    "Himalaya_304",
-
-    "Vindhya A3 117 Conference Room",
-    "SH1",
-    "SH2",
-    "Amphitheatre",
-    "CIE Gaming Room",
-
+    # Himalaya
+    "himalaya_101",
+    "himalaya_102",
+    "himalaya_103",
+    "himalaya_104",
+    "himalaya_201",
+    "himalaya_202",
+    "himalaya_203",
+    "himalaya_204",
+    "himalaya_301",
+    "himalaya_302",
+    "himalaya_303",
+    "himalaya_304",
+    # Vindhya
+    "vindhya_a3_117",
+    "vindhya_sh1",
+    "vindhya_sh2",
+    # Other
+    "amphitheatre",
+    "cie_gaming",
     # Academic Rooms
-    "*Himalaya_105",
-    "*Himalaya_205",
-    "*KRB Auditorium",
-    "*LTRC Small Meeting Room",
-    "*KRB Faculty Meeting Room",
-
-    "OTHER (Mention in Additional Requirements Field)",
-
+    "himalaya_105",
+    "himalaya_205",
+    "krb_auditorium",
+    "ltrc_small_mr",
+    "krb_faculty_mr",
+    "other",
 ]
 ROOM_LIST = [[idx, room] for idx, room in enumerate(ROOMS)]
 ROOM_DICT = {room: idx for idx, room in enumerate(ROOMS)}
