@@ -58,6 +58,7 @@ class Query(graphene.ObjectType):
     # admin queries
     admin_all_events = graphene.List(EventType)
     admin_club_events = graphene.List(EventType, club_id=graphene.Int())
+    admin_approved_events = graphene.List(EventType)
     admin_cc_pending_events = graphene.List(EventType)
     admin_fc_pending_events = graphene.List(EventType)
     admin_gad_pending_events = graphene.List(EventType)
@@ -81,6 +82,23 @@ class Query(graphene.ObjectType):
         discussion_thread = EventDiscussion.objects.filter(event=event).order_by("timestamp")
 
         return discussion_thread
+
+    @allowed_groups(["clubs_council", "finance_council", "slo", "slc", "gad"])
+    def resolve_admin_approved_events(self, info, **kwargs):
+        user_roles = info.context.user.groups
+        admin_level = -1
+        if user_roles.filter(name="clubs_council").exists() :
+            admin_level = 0
+        if user_roles.filter(name="finance_council").exists() :
+            admin_level = 1
+        if user_roles.filter(name="slo").exists() :
+            admin_level = 2
+        if user_roles.filter(name="slc").exists() :
+            admin_level = 3
+        if user_roles.filter(name="gad").exists() :
+            admin_level = 4
+
+        return Event.objects.filter(state__gt=admin_level).order_by("datetimeStart")
 
     @allowed_groups(["clubs_council"])
     def resolve_admin_cc_pending_events(self, info, **kwargs):
