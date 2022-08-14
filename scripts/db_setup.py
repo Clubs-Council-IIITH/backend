@@ -161,6 +161,54 @@ clubs = [
         "category": "other",
         "tagline": "",
     },
+    {
+        "name": "Apex",
+        "mail": "apex@students.iiit.ac.in",
+        "category": "other",
+        "tagline": "",
+    },
+    {
+        "name": "Cultural Council",
+        "mail": "cultural@students.iiit.ac.in",
+        "category": "other",
+        "tagline": "",
+    },
+    {
+        "name": "Student Parliament",
+        "mail": "parliament@students.iiit.ac.in",
+        "category": "other",
+        "tagline": "",
+    },
+    {
+        "name": "Finance Council",
+        "mail": "finance_council@students.iiit.ac.in",
+        "category": "other",
+        "tagline": "",
+    },
+    {
+        "name": "Campus Life Council",
+        "mail": "campuslife@students.iiit.ac.in",
+        "category": "other",
+        "tagline": "",
+    },
+    {
+        "name": "Alumni Cell",
+        "mail": "alumnicell@iiit.ac.in",
+        "category": "other",
+        "tagline": "",
+    },
+    {
+        "name": "E-Cell",
+        "mail": "ecell@iiit.ac.in",
+        "category": "other",
+        "tagline": "",
+    },
+    {
+        "name": "Felicity Taskforce",
+        "mail": "felicity@iiit.ac.in",
+        "category": "other",
+        "tagline": "",
+    },
 ]
 # }}}
 
