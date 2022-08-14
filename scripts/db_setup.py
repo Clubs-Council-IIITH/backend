@@ -77,7 +77,7 @@ clubs = [
         "tagline": "",
     },
     {
-        "name": "Decore –The Design Club",
+        "name": "Decore – The Design Club",
         "mail": "decore@students.iiit.ac.in",
         "category": "cultural",
         "tagline": "Design from the core",
