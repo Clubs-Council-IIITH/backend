@@ -41,10 +41,30 @@ ROOMS = [
     "Himalaya_102",
     "Himalaya_103",
     "Himalaya_104",
-    "Himalaya_105",
-    "Vindhya_sh1",
-    "Vindhya_sh2",
+    "Himalaya_201",
+    "Himalaya_202",
+    "Himalaya_203",
+    "Himalaya_204",
+    "Himalaya_301",
+    "Himalaya_302",
+    "Himalaya_303",
+    "Himalaya_304",
+
+    "Vindhya A3 117 Conference Room",
+    "SH1",
+    "SH2",
     "Amphitheatre",
+    "CIE Gaming Room",
+
+    # Academic Rooms
+    "*Himalaya_105",
+    "*Himalaya_205",
+    "*KRB Auditorium",
+    "*LTRC Small Meeting Room",
+    "*KRB Faculty Meeting Room",
+
+    "OTHER (Mention in Additional Requirements Field)",
+
 ]
 ROOM_LIST = [[idx, room] for idx, room in enumerate(ROOMS)]
 ROOM_DICT = {room: idx for idx, room in enumerate(ROOMS)}
