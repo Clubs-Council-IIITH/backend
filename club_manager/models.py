@@ -24,4 +24,4 @@ class Club(models.Model):
     )
     state = models.CharField(max_length=50, choices=CLUB_STATE_LIST, default="active")
     tagline = models.CharField(max_length=500, default="No tagline set.")
-    description = models.TextField(default="No description provided.")
+    description = models.TextField(default='[{"type":"paragraph", "children":[{"text":"No description provided."}]}]')
