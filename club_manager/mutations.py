@@ -1,6 +1,7 @@
 import graphene
 from graphene_file_upload.scalars import Upload
 from graphql_jwt.decorators import superuser_required
+from authentication.decorators import allowed_groups
 
 from django.db import IntegrityError
 from django.contrib.auth.models import User as AuthUser, Group
@@ -21,7 +22,7 @@ class ClubInput(graphene.InputObjectType):
     img = Upload(required=False)
 
 
-class CreateClub(graphene.Mutation):
+class AdminCreateClub(graphene.Mutation):
     class Arguments:
         club_data = ClubInput(required=True)
 
@@ -54,10 +55,10 @@ class CreateClub(graphene.Mutation):
             user = AuthUser.objects.get(username=club_data.mail)
         Group.objects.get(name="club").user_set.add(user)
 
-        return CreateClub(club=club_instance)
+        return AdminCreateClub(club=club_instance)
 
 
-class UpdateClub(graphene.Mutation):
+class AdminUpdateClub(graphene.Mutation):
     class Arguments:
         club_data = ClubInput(required=True)
 
@@ -91,12 +92,40 @@ class UpdateClub(graphene.Mutation):
 
             club_instance.save()
             user_instance.save()
+            return AdminUpdateClub(club=club_instance)
+
+        return AdminUpdateClub(club=None)
+
+
+class UpdateClub(graphene.Mutation):
+    class Arguments:
+        club_data = ClubInput(required=True)
+
+    club = graphene.Field(ClubType)
+
+    @classmethod
+    @allowed_groups(["club"])
+    def mutate(cls, root, info, club_data=None):
+        club_instance = Club.objects.get(pk=club_data.id)
+
+        if club_instance:
+            if club_data.img:
+                club_instance.img = club_data.img
+            if club_data.description:
+                club_instance.description = club_data.description
+            if club_data.name:
+                club_instance.name = club_data.name
+            if club_data.website:
+                club_instance.website = club_data.website
+            if club_data.tagline:
+                club_instance.tagline = club_data.tagline
+            club_instance.save()
             return UpdateClub(club=club_instance)
 
         return UpdateClub(club=None)
 
 
-class DeleteClub(graphene.Mutation):
+class AdminDeleteClub(graphene.Mutation):
     class Arguments:
         club_data = ClubInput(required=True)
 
@@ -110,6 +139,6 @@ class DeleteClub(graphene.Mutation):
         if club_instance:
             club_instance.state = "deleted"
             club_instance.save()
-            return DeleteClub(club=club_instance)
+            return AdminDeleteClub(club=club_instance)
 
-        return DeleteClub(club=None)
+        return AdminDeleteClub(club=None)

@@ -4,7 +4,7 @@ from graphql_jwt.decorators import superuser_required
 
 from club_manager.models import Club
 from club_manager.types import ClubType
-from club_manager.mutations import CreateClub, DeleteClub, UpdateClub
+from club_manager.mutations import AdminCreateClub, AdminDeleteClub, AdminUpdateClub, UpdateClub
 
 
 class Query(graphene.ObjectType):
@@ -34,9 +34,10 @@ class Query(graphene.ObjectType):
 
 
 class Mutation(graphene.ObjectType):
-    create_club = CreateClub.Field()
+    admin_create_club = AdminCreateClub.Field()
+    admin_update_club = AdminUpdateClub.Field()
     update_club = UpdateClub.Field()
-    delete_club = DeleteClub.Field()
+    admin_delete_club = AdminDeleteClub.Field()
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
