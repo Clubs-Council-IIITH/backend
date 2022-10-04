@@ -15,6 +15,12 @@ ALL_CLUBS_QUERY = """
         state
         tagline
         description
+        instagram
+        facebook
+        youtube
+        twitter
+        linkedin
+        discord
     }
 }
 """
@@ -30,13 +36,19 @@ SPECIFIC_CLUB_QUERY = """
         state
         tagline
         description
+        instagram
+        facebook
+        youtube
+        twitter
+        linkedin
+        discord
     }
 }
 """
 
 CREATE_CLUB_MUTATION = """
-mutation createClubMutation($name: String!, $mail: String!, $website: String, $category: String, $state: String) {
-    createClub(clubData: {name: $name, mail: $mail, website: $website, category: $category, state: $state}) {
+mutation createClubMutation($name: String!, $mail: String!, $website: String, $category: String, $state: String, $instagram: String, $facebook: String, $youtube: String, $twitter: String, $linkedin: String, $discord: String) {
+    createClub(clubData: {name: $name, mail: $mail, website: $website, category: $category, state: $state,instagram: $instagram, facebook: $facebook, youtube: $youtube, twitter: $twitter, linkedin: $linkedin, discord: $discord}) {
         club {
             id
             name
@@ -44,6 +56,12 @@ mutation createClubMutation($name: String!, $mail: String!, $website: String, $c
             website
             category
             state
+            instagram
+            facebook
+            youtube
+            twitter
+            linkedin
+            discord
         }
     }
 }
@@ -69,7 +87,8 @@ class ClubSnapshotCase(TestCase):
 
     def test_mutation_create_club(self):
         response = self.client.execute(
-            CREATE_CLUB_MUTATION, variables={"name": "TestClubZero", "mail": "test.club@zero.com"}
+            CREATE_CLUB_MUTATION, variables={
+                "name": "TestClubZero", "mail": "test.club@zero.com"}
         )
         print(response)
         self.assertMatchSnapshot(response)
