@@ -19,6 +19,14 @@ class ClubInput(graphene.InputObjectType):
     state = graphene.String()
     tagline = graphene.String()
     description = graphene.String()
+
+    instagram = graphene.String()
+    facebook = graphene.String()
+    youtube = graphene.String()
+    twitter = graphene.String()
+    linkedin = graphene.String()
+    discord = graphene.String()
+
     img = Upload(required=False)
 
 
@@ -47,10 +55,24 @@ class AdminCreateClub(graphene.Mutation):
         if club_data.description:
             club_instance.description = club_data.description
 
+        if club_data.instagram:
+            club_instance.instagram = club_data.instagram
+        if club_data.facebook:
+            club_instance.facebook = club_data.facebook
+        if club_data.youtube:
+            club_instance.youtube = club_data.youtube
+        if club_data.twitter:
+            club_instance.twitter = club_data.twitter
+        if club_data.linkedin:
+            club_instance.linkedin = club_data.linkedin
+        if club_data.discord:
+            club_instance.discord = club_data.discord
+
         club_instance.save()
 
         try:
-            user = AuthUser.objects.create_user(club_data.mail, email=club_data.mail, first_name=club_data.name)
+            user = AuthUser.objects.create_user(
+                club_data.mail, email=club_data.mail, first_name=club_data.name)
         except IntegrityError:
             user = AuthUser.objects.get(username=club_data.mail)
         Group.objects.get(name="club").user_set.add(user)
@@ -90,6 +112,13 @@ class AdminUpdateClub(graphene.Mutation):
             club_instance.tagline = club_data.tagline
             club_instance.description = club_data.description
 
+            club_instance.instagram = club_data.instagram
+            club_instance.facebook = club_data.facebook
+            club_instance.youtube = club_data.youtube
+            club_instance.twitter = club_data.twitter
+            club_instance.linkedin = club_data.linkedin
+            club_instance.discord = club_data.discord
+
             club_instance.save()
             user_instance.save()
             return AdminUpdateClub(club=club_instance)
@@ -119,6 +148,20 @@ class UpdateClub(graphene.Mutation):
                 club_instance.website = club_data.website
             if club_data.tagline:
                 club_instance.tagline = club_data.tagline
+
+            if club_data.instagram:
+                club_instance.instagram = club_data.instagram
+            if club_data.facebook:
+                club_instance.facebook = club_data.facebook
+            if club_data.youtube:
+                club_instance.youtube = club_data.youtube
+            if club_data.twitter:
+                club_instance.twitter = club_data.twitter
+            if club_data.linkedin:
+                club_instance.linkedin = club_data.linkedin
+            if club_data.discord:
+                club_instance.discord = club_data.discord
+
             club_instance.save()
             return UpdateClub(club=club_instance)
 
