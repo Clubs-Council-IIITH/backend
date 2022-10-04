@@ -28,7 +28,7 @@ class Club(models.Model):
     tagline = models.CharField(
         max_length=500, default="No tagline set.", blank=True, null=True)
     description = models.TextField(
-        default='[{"type":"paragraph", "children":[{"text":"No description provided."}]}]')
+        default='[{"type":"paragraph", "children":[{"text":""}]}]')
 
     instagram = models.CharField(max_length=700, blank=True, null=True)
     facebook = models.CharField(max_length=700, blank=True, null=True)

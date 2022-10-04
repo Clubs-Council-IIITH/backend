@@ -75,7 +75,7 @@ class Event(models.Model):
     poster = models.ImageField(upload_to="imgs/events/", blank=True, null=True)
     name = models.CharField(max_length=250, blank=False, null=False)
     description = models.TextField(
-        default='[{"type":"paragraph", "children":[{"text":"No description provided."}]}]')
+        default='[{"type":"paragraph", "children":[{"text":""}]}]')
     audience = models.TextField(default="none")
     datetimeStart = models.DateTimeField()
     datetimeEnd = models.DateTimeField()
