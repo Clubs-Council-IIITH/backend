@@ -262,6 +262,14 @@ class SendDiscussionMessage(graphene.Mutation):
 
         discussion_instance.save()
 
+        # construct mail notification
+        mail_subject = f"Discussion: '{event_instance.name}'"
+        mail_body = f"{user.first_name} sent a message on '{event_instance.name}': '{discussion_data.message}'\n\nLog in to clubs.iiit.ac.in to view the full thread and send replies."
+        mail_to_recipients = [event_instance.club.mail]
+
+        # send mail notification to club
+        mail_notify(subject=mail_subject, body=mail_body, to_recipients=mail_to_recipients)
+
         return SendDiscussionMessage(discussion=discussion_instance)
 
 
