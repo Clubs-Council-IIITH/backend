@@ -11,23 +11,18 @@ usergroups = ["club", "clubs_council", "finance_council", "slo", "slc", "gad"]
 # All admins and roles {{{
 admins = [
     {"name": "Clubs Council", "mail": "clubs@iiit.ac.in", "role": "clubs_council"},
-    {"name": "Finance Council", "mail": "finance_council@students.iiit.ac.in", "role": "finance_council"},
-    {"name": "Student Life Office", "mail": "studlife.office@iiit.ac.in", "role": "slo"},
-    {"name": "Student Life Office", "mail": "slo.oa@iiit.ac.in", "role": "slo"},
-    {"name": "Student Life Committee", "mail": "slc@iiit.ac.in", "role": "slc"},
-    {"name": "GAD", "mail": "gad@iiit.ac.in", "role": "gad"},
+    # {"name": "Finance Council", "mail": "finance_council@students.iiit.ac.in", "role": "finance_council"},
+    # {"name": "Student Life Office", "mail": "studlife.office@iiit.ac.in", "role": "slo"},
+    # {"name": "Student Life Office", "mail": "slo.oa@iiit.ac.in", "role": "slo"},
+    # {"name": "Student Life Committee", "mail": "slc@iiit.ac.in", "role": "slc"},
+    # {"name": "GAD", "mail": "gad@iiit.ac.in", "role": "gad"},
 
-    # faculty
-    {"name": "Tapan Kumar Sau", "mail": "tapan.sau@iiit.ac.in", "role": "slc"},
-    {"name": "Radhika Mamidi", "mail": "radhika.mamidi@iiit.ac.in", "role": "slc"},
-    {"name": "Indranil Chakrabarty", "mail": "indranil.chakrabarty@iiit.ac.in", "role": "slc"},
-    {"name": "Subhadip Mitra", "mail": "subhadip.mitra@iiit.ac.in", "role": "slc"},
-    {"name": "Aftab Hussain", "mail": "aftab.hussain@iiit.ac.in", "role": "slc"},
-
-    # demo emails
-    {"name": "Student Life Committee", "mail": "vishva.saravanan@research.iiit.ac.in", "role": "slc"},
-    {"name": "Student Life Office", "mail": "radheshyam.t@research.iiit.ac.in", "role": "slo"},
-    {"name": "GAD", "mail": "bhav.beri@research.iiit.ac.in", "role": "gad"},
+    # # faculty
+    # {"name": "Tapan Kumar Sau", "mail": "tapan.sau@iiit.ac.in", "role": "slc"},
+    # {"name": "Radhika Mamidi", "mail": "radhika.mamidi@iiit.ac.in", "role": "slc"},
+    # {"name": "Indranil Chakrabarty", "mail": "indranil.chakrabarty@iiit.ac.in", "role": "slc"},
+    # {"name": "Subhadip Mitra", "mail": "subhadip.mitra@iiit.ac.in", "role": "slc"},
+    # {"name": "Aftab Hussain", "mail": "aftab.hussain@iiit.ac.in", "role": "slc"},
 ]
 # }}}
 
