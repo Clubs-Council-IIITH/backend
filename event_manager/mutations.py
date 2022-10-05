@@ -3,6 +3,7 @@ from graphql import GraphQLError
 from graphene_file_upload.scalars import Upload
 
 from django.db.models import Sum
+from django.contrib.auth.models import User
 
 from authentication.decorators import allowed_groups
 
@@ -11,6 +12,8 @@ from event_manager.types import EventType, EventDiscussionType
 
 from club_manager.models import Club
 from finance_manager.models import BudgetRequirement
+
+from .utils import mail_notify
 
 
 class EventInput(graphene.InputObjectType):
@@ -49,6 +52,17 @@ class CreateEvent(graphene.Mutation):
 
         event_instance.save()
 
+        # construct mail notification
+        mail_subject = f"Event created: '{event_data.name}'"
+        mail_body = f"{club.name} has created the event '{event_data.name}' and is waiting for your approval.\n\nLog in to clubs.iiit.ac.in to view details and add remarks."
+
+        # fetch all CC emails
+        cc_users = User.objects.filter(groups__name="clubs_council").all()
+        mail_to_recipients = list(map(lambda user: user.email, cc_users))
+
+        # send mail notification to CC
+        mail_notify(subject=mail_subject, body=mail_body, to_recipients=mail_to_recipients)
+
         return CreateEvent(event=event_instance)
 
 
@@ -83,6 +97,18 @@ class UpdateEvent(graphene.Mutation):
             event_instance.description = event_data.description
 
             event_instance.save()
+
+            # construct mail notification
+            mail_subject = f"Event updated: '{event_data.name}'"
+            mail_body = f"{club.name} has updated the event '{event_data.name}' and is waiting for your approval.\n\nLog in to clubs.iiit.ac.in to view details and add remarks."
+
+            # fetch all CC emails
+            cc_users = User.objects.filter(groups__name="clubs_council").all()
+            mail_to_recipients = list(map(lambda user: user.email, cc_users))
+
+            # send mail notification to CC
+            mail_notify(subject=mail_subject, body=mail_body, to_recipients=mail_to_recipients)
+
             return UpdateEvent(event=event_instance)
 
         return UpdateEvent(event=None)
@@ -124,6 +150,15 @@ class ProgressEvent(graphene.Mutation):
     def mutate(cls, root, info, event_data=None):
         event_instance = Event.objects.get(pk=event_data.id)
 
+        # construct approval mail notification
+        approval_mail_subject = f"Event approval request: '{event_instance.name}'"
+        approval_mail_body = f"{event_instance.club.name} wishes to conduct the event '{event_instance.name}' and is waiting for your approval.\n\nLog in to clubs.iiit.ac.in to view details and add remarks."
+
+        # construct update mail notification
+        update_mail_subject = f"Event update: '{event_instance.name}'"
+        update_mail_body_template = "has approved the event.\n\nLog in to clubs.iiit.ac.in to view current status."
+        update_mail_to_recipients = [event_instance.club.mail]
+
         if event_instance:
 
             if event_instance.state == EVENT_STATE_DICT["cc_pending"]:
@@ -132,25 +167,67 @@ class ProgressEvent(graphene.Mutation):
                     Sum("amount")
                 )["amount__sum"]:
                     event_instance.state = EVENT_STATE_DICT["slc_pending"]
+
+                    # fetch all SLC emails
+                    cc_users = User.objects.filter(groups__name="slc").all()
+                    approval_mail_to_recipients = list(map(lambda user: user.email, cc_users))
+
+                    # send approval mail notification to SLC
+                    mail_notify(subject=approval_mail_subject, body=approval_mail_body, to_recipients=approval_mail_to_recipients)
+
                 # else progress to SLO
                 else:
                     event_instance.state = EVENT_STATE_DICT["slo_pending"]
+
+                    # fetch all SLO emails
+                    cc_users = User.objects.filter(groups__name="slo").all()
+                    approval_mail_to_recipients = list(map(lambda user: user.email, cc_users))
+
+                    # send approval mail notification to SLO
+                    mail_notify(subject=approval_mail_subject, body=approval_mail_body, to_recipients=approval_mail_to_recipients)
+
+                # send update mail to club
+                mail_notify(subject=update_mail_subject, body=f"Clubs Council {update_mail_body_template}", to_recipients=update_mail_to_recipients)
 
             elif event_instance.state == EVENT_STATE_DICT["slc_pending"]:
                 # progress to SLO
                 event_instance.state = EVENT_STATE_DICT["slo_pending"]
 
+                # fetch all SLO emails
+                cc_users = User.objects.filter(groups__name="slo").all()
+                approval_mail_to_recipients = list(map(lambda user: user.email, cc_users))
+
+                # send approval mail notification to SLO
+                mail_notify(subject=approval_mail_subject, body=approval_mail_body, to_recipients=approval_mail_to_recipients)
+
+                # send update mail to club
+                mail_notify(subject=update_mail_subject, body=f"SLC {update_mail_body_template}", to_recipients=update_mail_to_recipients)
+
             elif event_instance.state == EVENT_STATE_DICT["slo_pending"]:
                 # check if room requirement is listed, if yes progress to GAD
                 if event_instance.room_id != ROOM_DICT["none"]:
                     event_instance.state = EVENT_STATE_DICT["gad_pending"]
+
+                    # fetch all SLO emails
+                    cc_users = User.objects.filter(groups__name="gad").all()
+                    approval_mail_to_recipients = list(map(lambda user: user.email, cc_users))
+
+                    # send approval mail notification to SLO
+                    mail_notify(subject=approval_mail_subject, body=approval_mail_body, to_recipients=approval_mail_to_recipients)
+
                 # else grant final approval
                 else:
                     event_instance.state = EVENT_STATE_DICT["approved"]
 
+                # send update mail to club
+                mail_notify(subject=update_mail_subject, body=f"SLO {update_mail_body_template}", to_recipients=update_mail_to_recipients)
+
             elif event_instance.state == EVENT_STATE_DICT["gad_pending"]:
                 # else grant final approval
                 event_instance.state = EVENT_STATE_DICT["approved"]
+
+                # send update mail to club
+                mail_notify(subject=update_mail_subject, body=f"GAD {update_mail_body_template}", to_recipients=update_mail_to_recipients)
 
             event_instance.save()
             return ProgressEvent(event=event_instance)
@@ -184,6 +261,14 @@ class SendDiscussionMessage(graphene.Mutation):
         )
 
         discussion_instance.save()
+
+        # construct mail notification
+        mail_subject = f"Discussion: '{event_instance.name}'"
+        mail_body = f"{user.first_name} sent a message on '{event_instance.name}': '{discussion_data.message}'\n\nLog in to clubs.iiit.ac.in to view the full thread and send replies."
+        mail_to_recipients = [event_instance.club.mail]
+
+        # send mail notification to club
+        mail_notify(subject=mail_subject, body=mail_body, to_recipients=mail_to_recipients)
 
         return SendDiscussionMessage(discussion=discussion_instance)
 
