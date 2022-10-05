@@ -74,8 +74,7 @@ class Event(models.Model):
         Club, on_delete=models.CASCADE, blank=False, null=False)
     poster = models.ImageField(upload_to="imgs/events/", blank=True, null=True)
     name = models.CharField(max_length=250, blank=False, null=False)
-    description = models.TextField(
-        default='[{"type":"paragraph", "children":[{"text":""}]}]')
+    description = models.TextField(default="No description available.")
     audience = models.TextField(default="none")
     datetimeStart = models.DateTimeField()
     datetimeEnd = models.DateTimeField()
