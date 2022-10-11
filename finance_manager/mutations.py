@@ -46,6 +46,9 @@ class CreateBudgetRequirement(graphene.Mutation):
             reimbursable=budget_requirement_data.reimbursable,
         )
 
+        event.budget_approved = False
+        event.save()
+
         budget_requirement_instance.save()
 
         return CreateBudgetRequirement(budget_requirement=budget_requirement_instance)
@@ -69,6 +72,9 @@ class DeleteBudgetRequirement(graphene.Mutation):
             # check if event belongs to the requesting club
             if event_instance.club != club:
                 raise GraphQLError("You do not have permission to access this resource.")
+
+            event_instance.budget_approved = False
+            event_instance.save()
 
             budget_requirement_instance.delete()
             return DeleteBudgetRequirement(budget_requirement=None)

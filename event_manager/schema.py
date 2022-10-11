@@ -144,7 +144,7 @@ class Query(graphene.ObjectType):
 
     @allowed_groups(["club", "clubs_council", "finance_council", "slo", "slc", "gad"])
     def resolve_admin_available_rooms(self, info, event_id):
-        otherEvents = Event.objects.filter(state=EVENT_STATE_DICT["approved"]).exclude(pk=event_id)
+        otherEvents = Event.objects.filter(room_approved=True).exclude(pk=event_id)
         # for testing ->
         # otherEvents = Event.objects.exclude(pk=event_id)
         event = Event.objects.get(pk=event_id)
@@ -166,6 +166,7 @@ class Query(graphene.ObjectType):
         event = Event.objects.get(pk=event_id)
         return {
             "room": ROOM_LIST[event.room_id][1],
+            "isapproved": event.room_approved,
             "population": event.population,
             "equipment": event.equipment,
             "additional": event.additional,

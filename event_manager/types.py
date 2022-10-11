@@ -35,6 +35,7 @@ class AvailableRoomType(graphene.ObjectType):
 
 class RoomType(graphene.ObjectType):
     room = graphene.String()
+    isapproved = graphene.Boolean()
     population = graphene.Int()
     equipment = graphene.String()
     additional = graphene.String()

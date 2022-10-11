@@ -82,6 +82,8 @@ class Event(models.Model):
         default=0, choices=EVENT_STATE_LIST, blank=False, null=False)
     room_id = models.IntegerField(
         default=0, choices=ROOM_LIST, blank=False, null=False)
+    room_approved = models.BooleanField(default=False)
+    budget_approved = models.BooleanField(default=False)
     population = models.IntegerField(default=0, blank=False, null=False)
     equipment = models.CharField(
         max_length=1000, default="", blank=True, null=True)

@@ -133,6 +133,9 @@ class DeleteEvent(graphene.Mutation):
                 raise GraphQLError("You do not have permission to access this resource.")
 
             event_instance.state = EVENT_STATE_DICT["deleted"]
+            event_instance.room_approved = False
+            event_instance.budget_approved = False
+
             event_instance.save()
             return DeleteEvent(event=event_instance)
 
@@ -162,8 +165,8 @@ class ProgressEvent(graphene.Mutation):
         if event_instance:
 
             if event_instance.state == EVENT_STATE_DICT["cc_pending"]:
-                # check if total budget is non-zero, if yes progress to slc
-                if BudgetRequirement.objects.filter(event__pk=event_instance.id).aggregate(
+                # check if budget is not approved and total budget is non-zero, if yes progress to slc
+                if event_instance.budget_approved == False and BudgetRequirement.objects.filter(event__pk=event_instance.id).aggregate(
                     Sum("amount")
                 )["amount__sum"]:
                     event_instance.state = EVENT_STATE_DICT["slc_pending"]
@@ -192,6 +195,8 @@ class ProgressEvent(graphene.Mutation):
             elif event_instance.state == EVENT_STATE_DICT["slc_pending"]:
                 # progress to SLO
                 event_instance.state = EVENT_STATE_DICT["slo_pending"]
+                # set budget to approved
+                event_instance.budget_approved = True
 
                 # fetch all SLO emails
                 cc_users = User.objects.filter(groups__name="slo").all()
@@ -204,8 +209,8 @@ class ProgressEvent(graphene.Mutation):
                 mail_notify(subject=update_mail_subject, body=f"SLC {update_mail_body_template}", to_recipients=update_mail_to_recipients)
 
             elif event_instance.state == EVENT_STATE_DICT["slo_pending"]:
-                # check if room requirement is listed, if yes progress to GAD
-                if event_instance.room_id != ROOM_DICT["none"]:
+                # check if room is not approved and room requirement is listed, if yes progress to GAD
+                if event_instance.room_approved == False and event_instance.room_id != ROOM_DICT["none"]:
                     event_instance.state = EVENT_STATE_DICT["gad_pending"]
 
                     # fetch all SLO emails
@@ -225,6 +230,8 @@ class ProgressEvent(graphene.Mutation):
             elif event_instance.state == EVENT_STATE_DICT["gad_pending"]:
                 # else grant final approval
                 event_instance.state = EVENT_STATE_DICT["approved"]
+                # set room to approved
+                event_instance.room_approved = True
 
                 # send update mail to club
                 mail_notify(subject=update_mail_subject, body=f"GAD {update_mail_body_template}", to_recipients=update_mail_to_recipients)
@@ -307,6 +314,8 @@ class AddRoomDetails(graphene.Mutation):
                 event_instance.equipment = room_data.equipment
             if room_data.additional:
                 event_instance.additional = room_data.additional
+
+            event_instance.room_approved = False
 
             event_instance.save()
             return AddRoomDetails(event=event_instance)
