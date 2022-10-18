@@ -57,12 +57,16 @@ ROOMS = [
     # Other
     "amphitheatre",
     "cie_gaming",
+    "saranga_hall",
     # Academic Rooms
     "himalaya_105",
     "himalaya_205",
+    # KRB
     "krb_auditorium",
-    "ltrc_small_mr",
-    "krb_faculty_mr",
+    "sm24",
+    "sm22",
+    "sm34",
+    "sm32",
     "other",
 ]
 ROOM_LIST = [[idx, room] for idx, room in enumerate(ROOMS)]
