@@ -13,4 +13,5 @@ __pycache__/
 django_static/
 backend/.env
 media/imgs/events/
+media/imgs/users/
 migrations/
