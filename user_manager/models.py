@@ -10,6 +10,7 @@ class User(models.Model):
     firstName = models.CharField(max_length=250, blank=False, null=False)
     lastName = models.CharField(max_length=250, blank=False, null=False)
     mail = models.EmailField(blank=False, null=False)
+    rollno = models.IntegerField(default=0, blank=False, null=False)
     batch = models.CharField(max_length=25, blank=False, null=False)
 
 

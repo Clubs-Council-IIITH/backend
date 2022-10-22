@@ -15,6 +15,7 @@ class UserInput(graphene.InputObjectType):
     firstName = graphene.String()
     lastName = graphene.String()
     mail = graphene.String()
+    rollno = graphene.Int()
     batch = graphene.String()
 
 
@@ -38,6 +39,7 @@ class CreateUser(graphene.Mutation):
             firstName=user_data.firstName,
             lastName=user_data.lastName,
             mail=user_data.mail,
+            rollno=user_data.rollno,
             batch=user_data.batch,
         )
 
@@ -69,6 +71,8 @@ class UpdateUser(graphene.Mutation):
                 user_instance.lastName = user_data.lastName
             if user_data.mail:
                 user_instance.mail = user_data.mail
+            if user_data.rollno:
+                user_instance.rollno = user_data.rollno
             if user_data.batch:
                 user_instance.batch = user_data.batch
             if user_data.img:
