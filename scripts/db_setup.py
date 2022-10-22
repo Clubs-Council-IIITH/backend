@@ -162,6 +162,12 @@ clubs = [
         "category": "cultural",
         "tagline": "",
     },
+    {
+        "name": "Cyclorama",
+        "mail": "film.club@students.iiit.ac.in",
+        "category": "cultural",
+        "tagline": "",
+    },
     #     OTHERS
     {
         "name": "National Service Scheme",
