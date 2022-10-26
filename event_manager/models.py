@@ -1,6 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User as AuthUser
 
+from django.core.files import File
+from PIL import Image
+from io import BytesIO
+
 from club_manager.models import Club
 
 # possible event audiences
@@ -93,6 +97,13 @@ class Event(models.Model):
         max_length=1000, default="", blank=True, null=True)
     additional = models.CharField(
         max_length=1000, default="", blank=True, null=True)
+    
+    def save(self, force_insert=False, force_update=False, using=None, *args, **kwargs):
+        if self.poster:
+            image = self.poster
+            if image.size > 0.3*1024*1024:  # if size greater than 300kb then it will send to compress image function
+                self.poster = compress_image(image)
+        super(Event, self).save(*args, **kwargs)
 
 
 class EventDiscussion(models.Model):
@@ -102,3 +113,13 @@ class EventDiscussion(models.Model):
         AuthUser, on_delete=models.CASCADE, blank=False, null=False)
     timestamp = models.DateTimeField(auto_now_add=True, blank=True)
     message = models.TextField(blank=False, null=False)
+
+
+def compress_image(image):
+    im = Image.open(image)
+    if im.mode != 'RGB':
+        im = im.convert('RGB')
+    im_io = BytesIO()
+    im.save(im_io, 'jpeg', quality=60, optimize=True)
+    new_image = File(im_io, name=image.name)
+    return new_image
