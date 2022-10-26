@@ -16,12 +16,11 @@ AUDIENCE_LIST = [
 ]
 
 # possible event states
+# TODO : replace these with enum objects
 EVENT_STATES = [
+    "incomplete",
     "cc_pending",
-    "fc_pending",
-    "slc_pending",
-    "slo_pending",
-    "gad_pending",
+    "room|budget_pending",
     "approved",
     "completed",
     "deleted",
@@ -76,19 +75,24 @@ ROOM_DICT = {room: idx for idx, room in enumerate(ROOMS)}
 class Event(models.Model):
     club = models.ForeignKey(
         Club, on_delete=models.CASCADE, blank=False, null=False)
-    poster = models.ImageField(upload_to="imgs/events/", blank=True, null=True)
+
     name = models.CharField(max_length=250, blank=False, null=False)
     description = models.TextField(default="No description available.")
+    poster = models.ImageField(upload_to="imgs/events/", blank=True, null=True)
     audience = models.TextField(default="none")
+
     datetimeStart = models.DateTimeField()
     datetimeEnd = models.DateTimeField()
+
     state = models.IntegerField(
         default=0, choices=EVENT_STATE_LIST, blank=False, null=False)
-    room_id = models.IntegerField(
-        default=0, choices=ROOM_LIST, blank=False, null=False)
     room_approved = models.BooleanField(default=False)
     budget_approved = models.BooleanField(default=False)
+
+    room_id = models.IntegerField(
+        default=0, choices=ROOM_LIST, blank=False, null=False)
     population = models.IntegerField(default=0, blank=False, null=False)
+
     equipment = models.CharField(
         max_length=1000, default="", blank=True, null=True)
     additional = models.CharField(

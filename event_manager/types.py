@@ -1,5 +1,6 @@
 import graphene
 from graphene_django.types import DjangoObjectType
+from graphene_file_upload.scalars import Upload
 from event_manager.models import Event, EventDiscussion
 from django.contrib.auth.models import User as AuthUser
 
@@ -39,3 +40,31 @@ class RoomType(graphene.ObjectType):
     population = graphene.Int()
     equipment = graphene.String()
     additional = graphene.String()
+
+
+class EventInput(graphene.InputObjectType):
+    id = graphene.ID()
+    datetimeStart = graphene.DateTime()
+    datetimeEnd = graphene.DateTime()
+    name = graphene.String()
+    description = graphene.String()
+    audience = graphene.String()
+
+
+class RoomDetailsInput(graphene.InputObjectType):
+    event_id = graphene.ID()
+    room = graphene.String()
+    population = graphene.Int()
+    equipment = graphene.String(required=False)
+    additional = graphene.String(required=False)
+
+
+class ChangePosterInput(graphene.InputObjectType):
+    event_id = graphene.ID()
+    img = Upload(required=False)
+    delete_prev = graphene.Boolean()
+
+
+class EventDiscussionInput(graphene.InputObjectType):
+    event_id = graphene.ID()
+    message = graphene.String()
