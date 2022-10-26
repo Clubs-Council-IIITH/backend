@@ -62,7 +62,7 @@ class CreateEvent(graphene.Mutation):
         mail_to_recipients = list(map(lambda user: user.email, cc_users))
 
         # send mail notification to CC
-        mail_notify(subject=mail_subject, body=mail_body,
+        mail_notify.delay(subject=mail_subject, body=mail_body,
                     to_recipients=mail_to_recipients)
 
         return CreateEvent(event=event_instance)
@@ -119,7 +119,7 @@ class UpdateEvent(graphene.Mutation):
                     map(lambda user: user.email, cc_users))
 
                 # send mail notification to CC
-                mail_notify(subject=mail_subject, body=mail_body,
+                mail_notify.delay(subject=mail_subject, body=mail_body,
                             to_recipients=mail_to_recipients)
 
             return UpdateEvent(event=event_instance)
@@ -191,7 +191,7 @@ class ProgressEvent(graphene.Mutation):
                         map(lambda user: user.email, cc_users))
 
                     # send approval mail notification to SLC
-                    mail_notify(subject=approval_mail_subject, body=approval_mail_body,
+                    mail_notify.delay(subject=approval_mail_subject, body=approval_mail_body,
                                 to_recipients=approval_mail_to_recipients)
 
                 # else progress to SLO
@@ -204,11 +204,11 @@ class ProgressEvent(graphene.Mutation):
                         map(lambda user: user.email, cc_users))
 
                     # send approval mail notification to SLO
-                    mail_notify(subject=approval_mail_subject, body=approval_mail_body,
+                    mail_notify.delay(subject=approval_mail_subject, body=approval_mail_body,
                                 to_recipients=approval_mail_to_recipients)
 
                 # send update mail to club
-                mail_notify(subject=update_mail_subject,
+                mail_notify.delay(subject=update_mail_subject,
                             body=f"Clubs Council {update_mail_body_template}", to_recipients=update_mail_to_recipients)
 
             elif event_instance.state == EVENT_STATE_DICT["slc_pending"]:
@@ -223,11 +223,11 @@ class ProgressEvent(graphene.Mutation):
                     map(lambda user: user.email, cc_users))
 
                 # send approval mail notification to SLO
-                mail_notify(subject=approval_mail_subject, body=approval_mail_body,
+                mail_notify.delay(subject=approval_mail_subject, body=approval_mail_body,
                             to_recipients=approval_mail_to_recipients)
 
                 # send update mail to club
-                mail_notify(subject=update_mail_subject,
+                mail_notify.delay(subject=update_mail_subject,
                             body=f"SLC {update_mail_body_template}", to_recipients=update_mail_to_recipients)
 
             elif event_instance.state == EVENT_STATE_DICT["slo_pending"]:
@@ -241,7 +241,7 @@ class ProgressEvent(graphene.Mutation):
                         map(lambda user: user.email, cc_users))
 
                     # send approval mail notification to SLO
-                    mail_notify(subject=approval_mail_subject, body=approval_mail_body,
+                    mail_notify.delay(subject=approval_mail_subject, body=approval_mail_body,
                                 to_recipients=approval_mail_to_recipients)
 
                 # else grant final approval
@@ -249,7 +249,7 @@ class ProgressEvent(graphene.Mutation):
                     event_instance.state = EVENT_STATE_DICT["approved"]
 
                 # send update mail to club
-                mail_notify(subject=update_mail_subject,
+                mail_notify.delay(subject=update_mail_subject,
                             body=f"SLO {update_mail_body_template}", to_recipients=update_mail_to_recipients)
 
             elif event_instance.state == EVENT_STATE_DICT["gad_pending"]:
@@ -259,7 +259,7 @@ class ProgressEvent(graphene.Mutation):
                 event_instance.room_approved = True
 
                 # send update mail to club
-                mail_notify(subject=update_mail_subject,
+                mail_notify.delay(subject=update_mail_subject,
                             body=f"GAD {update_mail_body_template}", to_recipients=update_mail_to_recipients)
 
             event_instance.save()
@@ -301,7 +301,7 @@ class SendDiscussionMessage(graphene.Mutation):
         mail_to_recipients = [event_instance.club.mail]
 
         # send mail notification to club
-        mail_notify(subject=mail_subject, body=mail_body,
+        mail_notify.delay(subject=mail_subject, body=mail_body,
                     to_recipients=mail_to_recipients)
 
         return SendDiscussionMessage(discussion=discussion_instance)

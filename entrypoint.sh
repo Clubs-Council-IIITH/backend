@@ -12,4 +12,9 @@ pip install -r requirements.txt
 python manage.py makemigrations --noinput
 python manage.py migrate --noinput
 python manage.py runscript db_setup
+
+# start celery
+celery -A backend worker -l debug -P solo --detach
+
+# start server
 python manage.py runserver 0.0.0.0:8000
