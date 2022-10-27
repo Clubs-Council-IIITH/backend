@@ -8,13 +8,13 @@ from club_manager.models import Club
 from event_manager.models import Event, EVENT_STATE_DICT, ROOM_LIST, ROOM_DICT, EventDiscussion
 from event_manager.types import EventDiscussionType, EventType, AvailableRoomType, RoomType
 from event_manager.mutations import (
-    CreateEvent,
-    UpdateEvent,
-    DeleteEvent,
-    ProgressEvent,
-    SendDiscussionMessage,
+    NewEventDescription,
     AddRoomDetails,
     ChangePoster,
+    DeleteEvent,
+    ProgressEvent,
+    BypassBudgetApproval,
+    SendDiscussionMessage,
 )
 
 
@@ -88,15 +88,13 @@ class Query(graphene.ObjectType):
         user_roles = info.context.user.groups
         admin_level = -1
         if user_roles.filter(name="clubs_council").exists():
-            admin_level = 0
-        if user_roles.filter(name="finance_council").exists():
             admin_level = 1
         if user_roles.filter(name="slc").exists():
             admin_level = 2
         if user_roles.filter(name="slo").exists():
-            admin_level = 3
+            admin_level = 2
         if user_roles.filter(name="gad").exists():
-            admin_level = 4
+            admin_level = 2
 
         # print(admin_level)
 
@@ -174,17 +172,16 @@ class Query(graphene.ObjectType):
 
 
 class Mutation(graphene.ObjectType):
-    create_event = CreateEvent.Field()
-    update_event = UpdateEvent.Field()
+    new_event_description = NewEventDescription.Field()
+    add_room_details = AddRoomDetails.Field()
+    change_poster = ChangePoster.Field()
+
     delete_event = DeleteEvent.Field()
 
     progress_event = ProgressEvent.Field()
+    bypass_budget_approval = BypassBudgetApproval.Field()
 
     send_discussion_message = SendDiscussionMessage.Field()
-
-    add_room_details = AddRoomDetails.Field()
-
-    change_poster = ChangePoster.Field()
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
