@@ -16,7 +16,6 @@ admins = [
     # {"name": "Student Life Office", "mail": "slo.oa@iiit.ac.in", "role": "slo"},
     # {"name": "Student Life Committee", "mail": "slc@iiit.ac.in", "role": "slc"},
     # {"name": "GAD", "mail": "gad@iiit.ac.in", "role": "gad"},
-
     # # faculty
     # {"name": "Tapan Kumar Sau", "mail": "tapan.sau@iiit.ac.in", "role": "slc"},
     # {"name": "Radhika Mamidi", "mail": "radhika.mamidi@iiit.ac.in", "role": "slc"},

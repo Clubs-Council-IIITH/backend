@@ -43,3 +43,4 @@ tomli==1.2.1
 urllib3==1.26.6
 wasmer==1.0.0
 wasmer-compiler-cranelift==1.0.0
+pandas
