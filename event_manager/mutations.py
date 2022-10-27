@@ -217,7 +217,7 @@ class ProgressEvent(graphene.Mutation):
                 event_instance.budget_approved = True
             # check if room is not required, if yes mark room_approved as true
             # if the room is already approved then this will not change anything
-            if event_instance.room == ROOM_DICT["none"]:
+            if event_instance.room_id == ROOM_DICT["none"]:
                 event_instance.room_approved = True
 
             # bodies of whom approval is pending
@@ -293,19 +293,19 @@ class ProgressEvent(graphene.Mutation):
 
 class BypassBudgetApproval(graphene.Mutation):
     class Arguments:
-        eventid = graphene.ID(required=True)
+        event_data = EventInput(required=True)
 
     event = graphene.Field(EventType)
 
     @classmethod
     @allowed_groups(["clubs_council"])
-    def mutate(cls, _, info, eventid):
+    def mutate(cls, _, info, event_data):
 
         roles = info.context.user.groups
         if not roles.filter(name="clubs_council").exists():
             raise GraphQLError("You do not have permission to access this resource.")
 
-        event_instance = Event.objects.get(pk=eventid)
+        event_instance = Event.objects.get(pk=event_data.id)
         if not event_instance:
             raise GraphQLError("Event does not exist.")
 

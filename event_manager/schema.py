@@ -88,15 +88,13 @@ class Query(graphene.ObjectType):
         user_roles = info.context.user.groups
         admin_level = -1
         if user_roles.filter(name="clubs_council").exists():
-            admin_level = 0
-        if user_roles.filter(name="finance_council").exists():
             admin_level = 1
         if user_roles.filter(name="slc").exists():
             admin_level = 2
         if user_roles.filter(name="slo").exists():
-            admin_level = 3
+            admin_level = 2
         if user_roles.filter(name="gad").exists():
-            admin_level = 4
+            admin_level = 2
 
         print(admin_level)
 
