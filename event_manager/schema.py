@@ -96,7 +96,7 @@ class Query(graphene.ObjectType):
         if user_roles.filter(name="gad").exists():
             admin_level = 2
 
-        print(admin_level)
+        # print(admin_level)
 
         return Event.objects.filter(state__gt=admin_level).order_by("datetimeStart")
 
