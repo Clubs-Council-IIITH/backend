@@ -7,7 +7,14 @@ from django.contrib.auth.models import User
 from authentication.decorators import allowed_groups
 
 from event_manager.models import Event, EVENT_STATE_DICT, ROOM_DICT, EventDiscussion
-from event_manager.types import EventType, EventDiscussionType, EventInput, RoomDetailsInput, ChangePosterInput, EventDiscussionInput
+from event_manager.types import (
+    EventType,
+    EventDiscussionType,
+    EventInput,
+    RoomDetailsInput,
+    ChangePosterInput,
+    EventDiscussionInput,
+)
 
 from club_manager.models import Club
 from finance_manager.models import BudgetRequirement
@@ -18,6 +25,7 @@ from .utils import mail_notify
 class NewEventDescription(graphene.Mutation):
     class Arguments:
         event_data = EventInput(required=True)
+
     event = graphene.Field(EventType)
 
     @classmethod
@@ -45,16 +53,16 @@ class NewEventDescription(graphene.Mutation):
 
         event_instance.save()
 
-        # construct mail notification
-        mail_subject = f"Event created: '{event_data.name}'"
-        mail_body = f"{club.name} has created the event '{event_data.name}' and is waiting for your approval.\n\nLog in to clubs.iiit.ac.in to view details and add remarks."
+        # # construct mail notification
+        # mail_subject = f"Event created: '{event_data.name}'"
+        # mail_body = f"{club.name} has created the event '{event_data.name}' and is waiting for your approval.\n\nLog in to clubs.iiit.ac.in to view details and add remarks."
 
-        # fetch all CC emails
-        cc_users = User.objects.filter(groups__name="clubs_council").all()
-        mail_to_recipients = list(map(lambda user: user.email, cc_users))
+        # # fetch all CC emails
+        # cc_users = User.objects.filter(groups__name="clubs_council").all()
+        # mail_to_recipients = list(map(lambda user: user.email, cc_users))
 
-        # send mail notification to CC
-        mail_notify(subject=mail_subject, body=mail_body, to_recipients=mail_to_recipients)
+        # # send mail notification to CC
+        # mail_notify(subject=mail_subject, body=mail_body, to_recipients=mail_to_recipients)
 
         return NewEventDescription(event=event_instance)
 
@@ -62,6 +70,7 @@ class NewEventDescription(graphene.Mutation):
 class AddRoomDetails(graphene.Mutation):
     class Arguments:
         room_data = RoomDetailsInput(required=True)
+
     event = graphene.Field(EventType)
 
     @classmethod
@@ -96,6 +105,7 @@ class AddRoomDetails(graphene.Mutation):
 class ChangePoster(graphene.Mutation):
     class Arguments:
         poster_data = ChangePosterInput(required=True)
+
     event = graphene.Field(EventType)
 
     @classmethod
@@ -106,7 +116,7 @@ class ChangePoster(graphene.Mutation):
         event_instance = Event.objects.get(pk=poster_data.event_id)
 
         if not event_instance:
-           raise GraphQLError("Event does not exist.")
+            raise GraphQLError("Event does not exist.")
 
         # check if event belongs to the requesting club
         if event_instance.club != club:
@@ -126,6 +136,7 @@ class ChangePoster(graphene.Mutation):
 class DeleteEvent(graphene.Mutation):
     class Arguments:
         event_data = EventInput(required=True)
+
     event = graphene.Field(EventType)
 
     @classmethod
@@ -153,6 +164,7 @@ class DeleteEvent(graphene.Mutation):
 class ProgressEvent(graphene.Mutation):
     class Arguments:
         event_data = EventInput(required=True)
+
     event = graphene.Field(EventType)
 
     @classmethod
@@ -170,7 +182,9 @@ class ProgressEvent(graphene.Mutation):
         # construct update mail notification
         update_mail_subject = f"Event update: '{event_instance.name}'"
         update_mail_to_recipients = [event_instance.club.mail]
-        update_mail_body_template = "has approved the event.\n\nLog in to clubs.iiit.ac.in to view current status."
+        update_mail_body_template = (
+            "has approved the event.\n\nLog in to clubs.iiit.ac.in to view current status."
+        )
 
         roles = info.context.user.groups
 
@@ -183,7 +197,7 @@ class ProgressEvent(graphene.Mutation):
             mail_notify(
                 subject=approval_mail_subject,
                 body=approval_mail_body,
-                to_recipients=list(map(lambda user: user.email, recipients))
+                to_recipients=list(map(lambda user: user.email, recipients)),
             )
             event_instance.state = EVENT_STATE_DICT["cc_pending"]
 
@@ -194,9 +208,12 @@ class ProgressEvent(graphene.Mutation):
 
             # check if total budget is zero, if yes mark budget_approved as true
             # if the budget is already approved then this will not change anything
-            if BudgetRequirement.objects.filter(event__pk=event_instance.id).aggregate(
-                Sum("amount")
-            )["amount__sum"] == 0 :
+            if (
+                BudgetRequirement.objects.filter(event__pk=event_instance.id).aggregate(
+                    Sum("amount")
+                )["amount__sum"]
+                == 0
+            ):
                 event_instance.budget_approved = True
             # check if room is not required, if yes mark room_approved as true
             # if the room is already approved then this will not change anything
@@ -217,14 +234,14 @@ class ProgressEvent(graphene.Mutation):
                 mail_notify(
                     subject=approval_mail_subject,
                     body=approval_mail_body,
-                    to_recipients=list(map(lambda user: user.email, recipients))
+                    to_recipients=list(map(lambda user: user.email, recipients)),
                 )
 
             # send update mail to club
             mail_notify(
                 subject=update_mail_subject,
                 body=f"Clubs Council {update_mail_body_template}",
-                to_recipients=update_mail_to_recipients
+                to_recipients=update_mail_to_recipients,
             )
 
             # if both budget and room are approved, mark event as approved
@@ -233,11 +250,14 @@ class ProgressEvent(graphene.Mutation):
             else:
                 event_instance.state = EVENT_STATE_DICT["room|budget_pending"]
 
-
         elif event_instance.state == EVENT_STATE_DICT["room|budget_pending"]:
 
-            can_approve_room = event_instance.room_approved == False and roles.filter(name="slo").exists()
-            can_approve_budget = event_instance.budget_approved == False and roles.filter(name="slc").exists()
+            can_approve_room = (
+                event_instance.room_approved == False and roles.filter(name="slo").exists()
+            )
+            can_approve_budget = (
+                event_instance.budget_approved == False and roles.filter(name="slc").exists()
+            )
 
             if not (can_approve_room or can_approve_budget):
                 raise GraphQLError("You do not have permission to access this resource.")
@@ -248,7 +268,7 @@ class ProgressEvent(graphene.Mutation):
                 mail_notify(
                     subject=update_mail_subject,
                     body=f"Student Life Council {update_mail_body_template}",
-                    to_recipients=update_mail_to_recipients
+                    to_recipients=update_mail_to_recipients,
                 )
             if can_approve_room:
                 event_instance.room_approved = True
@@ -256,7 +276,7 @@ class ProgressEvent(graphene.Mutation):
                 mail_notify(
                     subject=update_mail_subject,
                     body=f"Student Life Office {update_mail_body_template}",
-                    to_recipients=update_mail_to_recipients
+                    to_recipients=update_mail_to_recipients,
                 )
 
             # if both budget and room are approved, move to next state
@@ -270,9 +290,11 @@ class ProgressEvent(graphene.Mutation):
         event_instance.save()
         return ProgressEvent(event=event_instance)
 
+
 class BypassBudgetApproval(graphene.Mutation):
     class Arguments:
         eventid = graphene.ID(required=True)
+
     event = graphene.Field(EventType)
 
     @classmethod
