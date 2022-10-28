@@ -20,20 +20,20 @@ def run():
             "date1": int(row["date1"]),
             "hour1": int(row["hour1"]),
             "min1": int(row["min1"]),
+            "state": int(row["state"]),
+            "audience": row["audience"]
         }
 
         club = int(data["club"])
         club_instance, _ = Club.objects.get_or_create(id=club)
 
         name = data["name"]
-        print("Start")
         start = datetime(2022, data["month"], data["date"],
                          data["hour"], data["min"], 0, tzinfo=timezone.utc)
-        print("End")
         end = datetime(2022, data["month1"], data["date1"], data["hour1"], int(
             data["min1"]), 0, tzinfo=timezone.utc)
-        state = 4
-        audience = "ug1"
+        state = data["state"]
+        audience = data["audience"]
 
         Event.objects.get_or_create(
             name=name,

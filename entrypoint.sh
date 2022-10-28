@@ -12,5 +12,6 @@ pip install -r requirements.txt
 python manage.py makemigrations --noinput
 python manage.py migrate --noinput
 python manage.py runscript db_setup
+python manage.py runscript new_event
 python manage.py runscript populate_members
 python manage.py runserver 0.0.0.0:8000

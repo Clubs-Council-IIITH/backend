@@ -1,1 +1,13 @@
-club,name,month,date,hour,min,month1,date1,hour1,min1
+club,name,month,date,hour,min,month1,date1,hour1,min1,state,audience
+5,"Talk by Richard Stallman",10,27,15,30,10,27,17,30,4,"ug1,ug2,ug3,ugx,pg,staff,faculty"
+21,"Unplugged",10,20,18,00,10,20,22,00,4,"ug1,ug2,ug3,ugx,pg,faculty"
+19,"Geoguesser",10,12,15,00,10,12,18,00,4,"ug1,ug2,ug3,ugx,pg"
+31,"Megathon",10,22,15,30,10,23,20,30,4,"ug1,ug2,ug3,ugx,pg"
+25,"Intro to Student Bodies 1",10,30,9,00,10,30,12,00,1,"ug1"
+5,"Linux Fest",10,30,14,00,10,30,16,00,1,"ug1,ug2"
+25,"Intro to Student Bodies 2",10,31,17,30,10,31,19,30,1,"ug1"
+5,"Linux Fest Doubt Session",11,1,17,30,11,1,17,30,1,"ug1,ug2"
+12,"Treasure Hunt",10,30,16,0,10,30,20,0,1,"ug1"
+13,"Clash of Clusters Photo Contest",11,2,14,30,11,2,16,30,1,"ug1"
+4,"Arduino",11,2,17,00,11,2,19,00,1,"ug1"
+25,"Clash of Clusters",11,2,21,30,11,2,23,59,1,"ug1"
