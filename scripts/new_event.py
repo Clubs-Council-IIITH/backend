@@ -32,7 +32,7 @@ def run():
         print("End")
         end = datetime(2022, data["month1"], data["date1"], data["hour1"], int(
             data["min1"]), 0, tzinfo=timezone.utc)
-        state = 3
+        state = 4
         audience = "ug1"
 
         Event.objects.get_or_create(
