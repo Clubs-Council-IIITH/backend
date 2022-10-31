@@ -209,10 +209,9 @@ class ProgressEvent(graphene.Mutation):
             # check if total budget is zero, if yes mark budget_approved as true
             # if the budget is already approved then this will not change anything
             if (
-                BudgetRequirement.objects.filter(event__pk=event_instance.id).aggregate(
+                not BudgetRequirement.objects.filter(event__pk=8).aggregate(
                     Sum("amount")
                 )["amount__sum"]
-                == 0
             ):
                 event_instance.budget_approved = True
             # check if room is not required, if yes mark room_approved as true
