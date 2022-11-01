@@ -59,6 +59,7 @@ class Query(graphene.ObjectType):
     admin_all_events = graphene.List(EventType)
     admin_club_events = graphene.List(EventType, club_id=graphene.Int())
     admin_approved_events = graphene.List(EventType)
+    admin_incomplete_events = graphene.List(EventType)
     admin_cc_pending_events = graphene.List(EventType)
     admin_fc_pending_events = graphene.List(EventType)
     admin_gad_pending_events = graphene.List(EventType)
@@ -103,6 +104,14 @@ class Query(graphene.ObjectType):
     @allowed_groups(["clubs_council"])
     def resolve_admin_cc_pending_events(self, info, **kwargs):
         events = Event.objects.filter(state=EVENT_STATE_DICT["cc_pending"]).order_by(
+            "datetimeStart"
+        )
+
+        return events
+    
+    @allowed_groups(["clubs_council"])
+    def resolve_admin_incomplete_events(self, info, **kwargs):
+        events = Event.objects.filter(state=EVENT_STATE_DICT["incomplete"]).order_by(
             "datetimeStart"
         )
 
