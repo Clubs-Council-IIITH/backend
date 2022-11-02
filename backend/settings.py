@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     "event_manager",
     "user_manager",
     "finance_manager",
+    "misc",
 ]
 
 MIDDLEWARE = [

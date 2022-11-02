@@ -4,6 +4,7 @@ import club_manager.schema
 import event_manager.schema
 import user_manager.schema
 import finance_manager.schema
+import misc.schema
 
 
 class Query(
@@ -12,6 +13,7 @@ class Query(
     event_manager.schema.Query,
     user_manager.schema.Query,
     finance_manager.schema.Query,
+    misc.schema.Query,
     graphene.ObjectType,
 ):
     pass
