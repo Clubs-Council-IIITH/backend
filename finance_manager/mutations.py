@@ -47,7 +47,8 @@ class CreateBudgetRequirement(graphene.Mutation):
         )
 
         event.budget_approved = False
-        event.state = EVENT_STATE_DICT["cc_pending"]
+        if event.state != EVENT_STATE_DICT["incomplete"] :
+            event.state = EVENT_STATE_DICT["cc_pending"]
         event.save()
 
         budget_requirement_instance.save()
@@ -75,7 +76,8 @@ class DeleteBudgetRequirement(graphene.Mutation):
                 raise GraphQLError("You do not have permission to access this resource.")
 
             event_instance.budget_approved = False
-            event_instance.state = EVENT_STATE_DICT["cc_pending"]
+            if event.state != EVENT_STATE_DICT["incomplete"] :
+                event.state = EVENT_STATE_DICT["cc_pending"]
             event_instance.save()
 
             budget_requirement_instance.delete()
