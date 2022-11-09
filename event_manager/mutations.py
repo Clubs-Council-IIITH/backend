@@ -140,7 +140,7 @@ class DeleteEvent(graphene.Mutation):
     event = graphene.Field(EventType)
 
     @classmethod
-    @allowed_groups(["club"])
+    @allowed_groups(["club", "clubs_council"])
     def mutate(cls, _, info, event_data):
         user = info.context.user
         club = Club.objects.get(mail=user.username)
