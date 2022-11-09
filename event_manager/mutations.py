@@ -314,7 +314,7 @@ class BypassBudgetApproval(graphene.Mutation):
         return BypassBudgetApproval(event=event_instance)
 
 
-# TODO
+# TODO - Currently no emails to SLC
 class SendDiscussionMessage(graphene.Mutation):
     class Arguments:
         discussion_data = EventDiscussionInput(required=True)
@@ -342,7 +342,49 @@ class SendDiscussionMessage(graphene.Mutation):
         mail_body = f"{user.first_name} sent a message on '{event_instance.name}': '{discussion_data.message}'\n\nLog in to clubs.iiit.ac.in to view the full thread and send replies."
         mail_to_recipients = [event_instance.club.mail]
 
-        # send mail notification to club
-        mail_notify(subject=mail_subject, body=mail_body, to_recipients=mail_to_recipients)
+        if user.groups.filter(name="slc").exists() or user.groups.filter(name="slo").exists():
+            # send mail notification to club
+            mail_to_recipients = [event_instance.club.mail]
+            mail_notify(subject=mail_subject, body=mail_body,
+                        to_recipients=mail_to_recipients)
+            
+            # send mail notification to cc
+            mail_to_recipients = User.objects.filter(
+                groups__name="clubs_council").all()
+            mail_notify(
+                subject=mail_subject,
+                body=mail_body,
+                to_recipients=list(
+                    map(lambda user: user.email, mail_to_recipients)),
+            )
+
+        if user.groups.filter(name="club").exists():
+            if event_instance.room_approved == False and event_instance.state == 2:
+                # send mail notification to slo
+                mail_to_recipients = User.objects.filter(
+                    groups__name="slo").all()
+                mail_notify(
+                    subject=mail_subject,
+                    body=mail_body,
+                    to_recipients=list(
+                        map(lambda user: user.email, mail_to_recipients)),
+                )
+
+        if user.groups.filter(name="clubs_council").exists():
+            if event_instance.room_approved == False and event_instance.state == 2:
+                # send mail notification to slo
+                mail_to_recipients = User.objects.filter(
+                    groups__name="slo").all()
+                mail_notify(
+                    subject=mail_subject,
+                    body=mail_body,
+                    to_recipients=list(
+                        map(lambda user: user.email, mail_to_recipients)),
+                )
+            
+            # send mail notification to club
+            mail_to_recipients = [event_instance.club.mail]
+            mail_notify(subject=mail_subject, body=mail_body,
+                        to_recipients=mail_to_recipients)
 
         return SendDiscussionMessage(discussion=discussion_instance)
