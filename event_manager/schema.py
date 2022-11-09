@@ -27,7 +27,8 @@ class Query(graphene.ObjectType):
     def resolve_all_events(self, info, **kwargs):
         # show only approved and completed events to the public
         return Event.objects.filter(
-            state__in=[EVENT_STATE_DICT["approved"], EVENT_STATE_DICT["completed"]]
+            state__in=[EVENT_STATE_DICT["approved"],
+                       EVENT_STATE_DICT["completed"]]
         ).order_by("datetimeStart")
 
     def resolve_club_events(self, info, club_id):
@@ -36,12 +37,14 @@ class Query(graphene.ObjectType):
 
         # don't show deleted club events to the public
         if club.state != "active" and not user.is_superuser:
-            raise GraphQLError("You do not have permission to access this resource.")
+            raise GraphQLError(
+                "You do not have permission to access this resource.")
 
         # show only approved and completed events to the public
         return Event.objects.filter(
             club__pk=club_id,
-            state__in=[EVENT_STATE_DICT["approved"], EVENT_STATE_DICT["completed"]],
+            state__in=[EVENT_STATE_DICT["approved"],
+                       EVENT_STATE_DICT["completed"]],
         ).order_by("datetimeStart")
 
     def resolve_event(self, info, event_id):
@@ -108,7 +111,7 @@ class Query(graphene.ObjectType):
         )
 
         return events
-    
+
     @allowed_groups(["clubs_council"])
     def resolve_admin_incomplete_events(self, info, **kwargs):
         events = Event.objects.filter(state=EVENT_STATE_DICT["incomplete"]).order_by(
@@ -119,7 +122,11 @@ class Query(graphene.ObjectType):
 
     @allowed_groups(["finance_council"])
     def resolve_admin_fc_pending_events(self, info, **kwargs):
-        events = Event.objects.filter(state=EVENT_STATE_DICT["fc_pending"]).order_by(
+        events = Event.objects.filter(
+            state=EVENT_STATE_DICT["room|budget_pending"]
+        ).filter(
+            budget_approved=False
+        ).order_by(
             "datetimeStart"
         )
 
@@ -127,7 +134,13 @@ class Query(graphene.ObjectType):
 
     @allowed_groups(["slo"])
     def resolve_admin_slo_pending_events(self, info, **kwargs):
-        events = Event.objects.filter(state=EVENT_STATE_DICT["slo_pending"]).order_by(
+        events = Event.objects.filter(
+            state=EVENT_STATE_DICT["room|budget_pending"]
+        ).filter(
+            room_approved=False
+        ).exclude(
+            room_id = 0
+        ).order_by(
             "datetimeStart"
         )
 
@@ -135,7 +148,11 @@ class Query(graphene.ObjectType):
 
     @allowed_groups(["slc"])
     def resolve_admin_slc_pending_events(self, info, **kwargs):
-        events = Event.objects.filter(state=EVENT_STATE_DICT["slc_pending"]).order_by(
+        events = Event.objects.filter(
+            state=EVENT_STATE_DICT["room|budget_pending"]
+        ).filter(
+            budget_approved=False
+        ).order_by(
             "datetimeStart"
         )
 
@@ -143,7 +160,13 @@ class Query(graphene.ObjectType):
 
     @allowed_groups(["gad"])
     def resolve_admin_gad_pending_events(self, info, **kwargs):
-        events = Event.objects.filter(state=EVENT_STATE_DICT["gad_pending"]).order_by(
+        events = Event.objects.filter(
+            state=EVENT_STATE_DICT["room|budget_pending"]
+        ).filter(
+            room_approved=False
+        ).exclude(
+            room_id=0
+        ).order_by(
             "datetimeStart"
         )
 
@@ -151,7 +174,8 @@ class Query(graphene.ObjectType):
 
     @allowed_groups(["club", "clubs_council", "finance_council", "slo", "slc", "gad"])
     def resolve_admin_available_rooms(self, info, event_id):
-        otherEvents = Event.objects.filter(room_approved=True).exclude(pk=event_id)
+        otherEvents = Event.objects.filter(
+            room_approved=True).exclude(pk=event_id)
         # for testing ->
         # otherEvents = Event.objects.exclude(pk=event_id)
         event = Event.objects.get(pk=event_id)
