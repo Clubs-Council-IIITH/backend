@@ -209,7 +209,7 @@ class ProgressEvent(graphene.Mutation):
             # check if total budget is zero, if yes mark budget_approved as true
             # if the budget is already approved then this will not change anything
             if (
-                not BudgetRequirement.objects.filter(event__pk=8).aggregate(
+                not BudgetRequirement.objects.filter(event__pk=event_data.id).aggregate(
                     Sum("amount")
                 )["amount__sum"]
             ):
