@@ -29,6 +29,8 @@ class Query(graphene.ObjectType):
         return Event.objects.filter(
             state__in=[EVENT_STATE_DICT["approved"],
                        EVENT_STATE_DICT["completed"]]
+        ).exclude(
+            audience__contains="internal"
         ).order_by("datetimeStart")
 
     def resolve_club_events(self, info, club_id):
@@ -45,6 +47,8 @@ class Query(graphene.ObjectType):
             club__pk=club_id,
             state__in=[EVENT_STATE_DICT["approved"],
                        EVENT_STATE_DICT["completed"]],
+        ).exclude(
+            audience__contains="internal"
         ).order_by("datetimeStart")
 
     def resolve_event(self, info, event_id):
@@ -139,7 +143,7 @@ class Query(graphene.ObjectType):
         ).filter(
             room_approved=False
         ).exclude(
-            room_id = 0
+            room_id=0
         ).order_by(
             "datetimeStart"
         )
