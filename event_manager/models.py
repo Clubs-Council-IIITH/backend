@@ -17,6 +17,7 @@ AUDIENCE_LIST = [
     ["pg", "PG"],
     ["staff", "Staff"],
     ["faculty", "Faculty"],
+    ["internal", "Internal"],
 ]
 
 # possible event states
@@ -52,20 +53,20 @@ ROOMS = [
     "himalaya_301",
     "himalaya_302",
     "himalaya_303",
-    "himalaya_304",
+    "himalaya_304", # 12 Index
     # Vindhya
     "vindhya_a3_117",
     "vindhya_sh1",
-    "vindhya_sh2",
+    "vindhya_sh2", # 15 Index
     # Other
     "amphitheatre",
     "cie_gaming",
-    "saranga_hall",
+    "saranga_hall", # 18 Index
     # Academic Rooms
     "himalaya_105",
     "himalaya_205",
     # KRB
-    "krb_auditorium",
+    "krb_auditorium", # 21 Index
     "sm24",
     "sm22",
     "sm34",
