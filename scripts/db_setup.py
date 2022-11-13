@@ -71,10 +71,10 @@ clubs = [
         "tagline": "",
     },
     {
-        "name": "ISAQC",
+        "name": "ISAQC: Quantum Computing Club",
         "mail": "isaqc@students.iiit.ac.in",
         "category": "technical",
-        "tagline": "",
+        "tagline": "Our beliefs, Our Universe",
     },
     #     CULTURAL CLUBS
     {
