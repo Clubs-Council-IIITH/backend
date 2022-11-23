@@ -23,6 +23,7 @@ class Query(graphene.ObjectType):
     all_events = graphene.List(EventType)
     club_events = graphene.List(EventType, club_id=graphene.Int())
     event = graphene.Field(EventType, event_id=graphene.Int())
+    room_by_event_id = graphene.Field(RoomType, event_id=graphene.Int())
 
     def resolve_all_events(self, info, **kwargs):
         # show only approved and completed events to the public
@@ -61,6 +62,13 @@ class Query(graphene.ObjectType):
             raise GraphQLError("You do not have permission to access this resource.")
 
         return event
+    
+    def resolve_room_by_event_id(self, info, event_id):
+        event = Event.objects.get(pk=event_id)
+
+        return {
+            "room": ROOM_LIST[event.room_id][1]
+        }
 
     # admin queries
     admin_all_events = graphene.List(EventType)
