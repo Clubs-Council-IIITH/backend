@@ -231,12 +231,21 @@ class DeleteEvent(graphene.Mutation):
     @allowed_groups(["club", "clubs_council"])
     def mutate(cls, _, info, event_data):
         user = info.context.user
-        club = Club.objects.get(mail=user.username)
         event_instance = Event.objects.get(pk=event_data.id)
 
         if not event_instance:
             raise GraphQLError("Event does not exist.")
+        
+        if user.groups.filter(name="clubs_council").exists():
+            event_instance.state = EVENT_STATE_DICT["deleted"]
+            event_instance.room_approved = False
+            event_instance.budget_approved = False
 
+            event_instance.save()
+            return DeleteEvent(event=event_instance)
+
+        club = Club.objects.get(mail=user.username)
+        
         # check if event belongs to the requesting club
         if event_instance.club != club:
             raise GraphQLError(
