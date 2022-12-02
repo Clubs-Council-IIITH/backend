@@ -21,6 +21,7 @@ from club_manager.models import Club
 from finance_manager.models import BudgetRequirement
 
 from .utils import mail_notify
+from datetime import timedelta
 
 
 class NewEventDescription(graphene.Mutation):
@@ -86,15 +87,15 @@ class UpdateEvent(graphene.Mutation):
             if event_instance.club != club:
                 raise GraphQLError(
                     "You do not have permission to access this resource.")
-            
+
             if event_instance.state != EVENT_STATE_DICT["incomplete"]:
                 raise GraphQLError("Operation not allowed in this state.")
-            
+
             if event_data.name:
                 event_instance.name = event_data.name
-            if event_data.datetimeStart:
-                event_instance.datetimeStart=event_data.datetimeStart
-            if event_data.datetimeEnd:
+            if event_data.datetimeStart and str(event_instance.datetimeStart + timedelta(hours=5) + timedelta(minutes=30))[:19] != str(event_data.datetimeStart):
+                event_instance.datetimeStart = event_data.datetimeStart
+            if event_data.datetimeEnd and str(event_instance.datetimeEnd + timedelta(hours=5) + timedelta(minutes=30))[:19] != str(event_data.datetimeEnd):
                 event_instance.datetimeEnd = event_data.datetimeEnd
 
             # optional fields
@@ -111,7 +112,7 @@ class UpdateEvent(graphene.Mutation):
             event_instance.room_id = 0
 
             event_instance.save()
-            return UpdateEvent(event=event_instance)        
+            return UpdateEvent(event=event_instance)
         else:
             raise GraphQLError("Event does not exist.")
 
@@ -427,7 +428,7 @@ class SLCReminder(graphene.Mutation):
         event_instance = Event.objects.get(pk=event_data.id)
         if not event_instance:
             raise GraphQLError("Event does not exist.")
-        
+
         if event_instance.budget_approved == False:
             # construct approval mail notification
             approval_mail_subject = f"Waiting approval: '{event_instance.name}'"
