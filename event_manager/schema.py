@@ -6,8 +6,9 @@ from authentication.decorators import allowed_groups
 from club_manager.models import Club
 
 from event_manager.models import Event, EVENT_STATE_DICT, ROOM_LIST, ROOM_DICT, EventDiscussion
-from event_manager.types import EventDiscussionType, EventType, AvailableRoomType, RoomType
+from event_manager.types import EventDiscussionType, EventType, AvailableRoomType, RoomType, PocType
 from event_manager.mutations import (
+    AddPocDetails,
     NewEventDescription,
     AddRoomDetails,
     ChangePoster,
@@ -82,6 +83,7 @@ class Query(graphene.ObjectType):
     admin_slc_pending_events = graphene.List(EventType)
     admin_available_rooms = graphene.List(AvailableRoomType, event_id=graphene.Int())
     admin_room_by_event_id = graphene.Field(RoomType, event_id=graphene.Int())
+    admin_poc_by_event_id = graphene.Field(PocType, event_id=graphene.Int())
 
     event_discussion_thread = graphene.List(EventDiscussionType, event_id=graphene.Int())
 
@@ -214,11 +216,22 @@ class Query(graphene.ObjectType):
             "equipment": event.equipment,
             "additional": event.additional,
         }
+    
+    @allowed_groups(["club", "clubs_council", "finance_council", "slo", "slc", "gad"])
+    def resolve_admin_poc_by_event_id(self, info, event_id):
+        event = Event.objects.get(pk=event_id)
+        return {
+            "poc_name": event.poc_name,
+            "poc_email": event.poc_email,
+            "poc_rollno": event.poc_rollno,
+            "poc_mobile": event.poc_mobile,
+        }
 
 
 class Mutation(graphene.ObjectType):
     new_event_description = NewEventDescription.Field()
     add_room_details = AddRoomDetails.Field()
+    add_poc_details = AddPocDetails.Field()
     change_poster = ChangePoster.Field()
 
     delete_event = DeleteEvent.Field()

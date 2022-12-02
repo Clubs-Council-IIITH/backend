@@ -53,20 +53,20 @@ ROOMS = [
     "himalaya_301",
     "himalaya_302",
     "himalaya_303",
-    "himalaya_304", # 12 Index
+    "himalaya_304",  # 12 Index
     # Vindhya
     "vindhya_a3_117",
     "vindhya_sh1",
-    "vindhya_sh2", # 15 Index
+    "vindhya_sh2",  # 15 Index
     # Other
     "amphitheatre",
     "cie_gaming",
-    "saranga_hall", # 18 Index
+    "saranga_hall",  # 18 Index
     # Academic Rooms
     "himalaya_105",
     "himalaya_205",
     # KRB
-    "krb_auditorium", # 21 Index
+    "krb_auditorium",  # 21 Index
     "sm24",
     "sm22",
     "sm34",
@@ -102,7 +102,15 @@ class Event(models.Model):
         max_length=1000, default="", blank=True, null=True)
     additional = models.CharField(
         max_length=1000, default="", blank=True, null=True)
-    
+
+    poc_name = models.CharField(
+        max_length=250, blank=False, null=False, default="")
+    poc_email = models.EmailField(blank=False, null=False, default="")
+    poc_rollno = models.CharField(
+        max_length=11, default="", blank=False, null=False)
+    poc_mobile = models.CharField(
+        max_length=15, default="", blank=False, null=False)
+
     def save(self, force_insert=False, force_update=False, using=None, *args, **kwargs):
         if self.poster:
             image = self.poster

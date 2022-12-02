@@ -42,6 +42,13 @@ class RoomType(graphene.ObjectType):
     additional = graphene.String()
 
 
+class PocType(graphene.ObjectType):
+    poc_name = graphene.String()
+    poc_email = graphene.String()
+    poc_rollno = graphene.String()
+    poc_mobile = graphene.String()
+
+
 class EventInput(graphene.InputObjectType):
     id = graphene.ID()
     datetimeStart = graphene.DateTime()
@@ -57,6 +64,14 @@ class RoomDetailsInput(graphene.InputObjectType):
     population = graphene.Int()
     equipment = graphene.String(required=False)
     additional = graphene.String(required=False)
+
+
+class PocInput(graphene.InputObjectType):
+    event_id = graphene.ID()
+    poc_name = graphene.String()
+    poc_rollno = graphene.String()
+    poc_mobile = graphene.String()
+    poc_email = graphene.String()
 
 
 class ChangePosterInput(graphene.InputObjectType):

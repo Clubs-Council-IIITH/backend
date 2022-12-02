@@ -14,6 +14,7 @@ from event_manager.types import (
     RoomDetailsInput,
     ChangePosterInput,
     EventDiscussionInput,
+    PocInput,
 )
 
 from club_manager.models import Club
@@ -101,6 +102,41 @@ class AddRoomDetails(graphene.Mutation):
 
         event_instance.save()
         return AddRoomDetails(event=event_instance)
+
+
+class AddPocDetails(graphene.Mutation):
+    class Arguments:
+        poc_data = PocInput(required=True)
+
+    event = graphene.Field(EventType)
+
+    @classmethod
+    @allowed_groups(["club"])
+    def mutate(cls, _, info, poc_data):
+        user = info.context.user
+        club = Club.objects.get(mail=user.username)
+        event_instance = Event.objects.get(pk=poc_data.event_id)
+
+        if not event_instance:
+            raise GraphQLError("Event does not exist.")
+
+        # check if event belongs to the requesting club
+        if event_instance.club != club:
+            raise GraphQLError(
+                "You do not have permission to access this resource.")
+
+        if poc_data.poc_name:
+            event_instance.poc_name = poc_data.poc_name
+        if poc_data.poc_email:
+            event_instance.poc_email = poc_data.poc_email
+        if poc_data.poc_rollno:
+            event_instance.poc_rollno = poc_data.poc_rollno
+        if poc_data.poc_mobile:
+            event_instance.poc_mobile = poc_data.poc_mobile
+
+        event_instance.save()
+        print(event_instance.poc_email, poc_data.poc_email)
+        return AddPocDetails(event=event_instance)
 
 
 class ChangePoster(graphene.Mutation):
@@ -391,7 +427,7 @@ class SendDiscussionMessage(graphene.Mutation):
                     to_recipients=list(
                         map(lambda user: user.email, mail_to_recipients)),
                 )
-            
+
             # send mail notification to club
             mail_to_recipients = [event_instance.club.mail]
             mail_notify(subject=mail_subject, body=mail_body,
