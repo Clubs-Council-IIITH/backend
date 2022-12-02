@@ -68,6 +68,55 @@ class NewEventDescription(graphene.Mutation):
         return NewEventDescription(event=event_instance)
 
 
+class UpdateEvent(graphene.Mutation):
+    class Arguments:
+        event_data = EventInput(required=True)
+
+    event = graphene.Field(EventType)
+
+    @classmethod
+    @allowed_groups(["club"])
+    def mutate(cls, _, info, event_data):
+        user = info.context.user
+        club = Club.objects.get(mail=user.username)
+        event_instance = Event.objects.get(pk=event_data.id)
+
+        if event_instance:
+            # check if event belongs to the requesting club
+            if event_instance.club != club:
+                raise GraphQLError(
+                    "You do not have permission to access this resource.")
+            
+            if event_instance.state != EVENT_STATE_DICT["incomplete"]:
+                raise GraphQLError("Operation not allowed in this state.")
+            
+            if event_data.name:
+                event_instance.name = event_data.name
+            if event_data.datetimeStart:
+                event_instance.datetimeStart=event_data.datetimeStart
+            if event_data.datetimeEnd:
+                event_instance.datetimeEnd = event_data.datetimeEnd
+
+            # optional fields
+            if event_data.audience:
+                event_instance.audience = event_data.audience
+            if event_data.description:
+                event_instance.description = event_data.description
+
+            # By default, the event is in the "incomplete" state,
+            # once the club has added the description and the room details,
+            # the event will be in the "cc_pending" state.
+
+            # Resetting Room Data as per new details
+            event_instance.room_id = 0
+
+            event_instance.save()
+            return UpdateEvent(event=event_instance)        
+        else:
+            raise GraphQLError("Event does not exist.")
+
+        return UpdateEvent(event=event_instance)
+
 class AddRoomDetails(graphene.Mutation):
     class Arguments:
         room_data = RoomDetailsInput(required=True)

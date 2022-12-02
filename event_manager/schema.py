@@ -10,6 +10,7 @@ from event_manager.types import EventDiscussionType, EventType, AvailableRoomTyp
 from event_manager.mutations import (
     AddPocDetails,
     NewEventDescription,
+    UpdateEvent,
     AddRoomDetails,
     ChangePoster,
     DeleteEvent,
@@ -232,6 +233,8 @@ class Query(graphene.ObjectType):
 
 class Mutation(graphene.ObjectType):
     new_event_description = NewEventDescription.Field()
+    update_event = UpdateEvent.Field()
+
     add_room_details = AddRoomDetails.Field()
     add_poc_details = AddPocDetails.Field()
     change_poster = ChangePoster.Field()
