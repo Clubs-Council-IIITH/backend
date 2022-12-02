@@ -15,6 +15,8 @@ from event_manager.mutations import (
     DeleteEvent,
     ProgressEvent,
     BypassBudgetApproval,
+    SLCReminder,
+    SLOReminder,
     SendDiscussionMessage,
 )
 
@@ -241,5 +243,9 @@ class Mutation(graphene.ObjectType):
 
     send_discussion_message = SendDiscussionMessage.Field()
 
+    slc_reminder = SLCReminder.Field()
+    slo_reminder = SLOReminder.Field()
+
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
+

@@ -360,6 +360,74 @@ class BypassBudgetApproval(graphene.Mutation):
         return BypassBudgetApproval(event=event_instance)
 
 
+class SLCReminder(graphene.Mutation):
+    class Arguments:
+        event_data = EventInput(required=True)
+
+    event = graphene.Field(EventType)
+
+    @classmethod
+    @allowed_groups(["clubs_council"])
+    def mutate(cls, _, info, event_data):
+
+        roles = info.context.user.groups
+        if not roles.filter(name="clubs_council").exists():
+            raise GraphQLError(
+                "You do not have permission to access this resource.")
+
+        event_instance = Event.objects.get(pk=event_data.id)
+        if not event_instance:
+            raise GraphQLError("Event does not exist.")
+        
+        if event_instance.budget_approved == False:
+            # construct approval mail notification
+            approval_mail_subject = f"Waiting approval: '{event_instance.name}'"
+            approval_mail_body = f"{event_instance.club.name} wishes to conduct the event '{event_instance.name}' and is waiting for your approval.\n\nRequesting you to kindly log in to clubs.iiit.ac.in to view details and add remarks."
+
+            recipients = User.objects.filter(groups__name="slc").all()
+            mail_notify(
+                subject=approval_mail_subject,
+                body=approval_mail_body,
+                to_recipients=list(map(lambda user: user.email, recipients)),
+            )
+
+        return SLCReminder(event=event_instance)
+
+
+class SLOReminder(graphene.Mutation):
+    class Arguments:
+        event_data = EventInput(required=True)
+
+    event = graphene.Field(EventType)
+
+    @classmethod
+    @allowed_groups(["clubs_council"])
+    def mutate(cls, _, info, event_data):
+
+        roles = info.context.user.groups
+        if not roles.filter(name="clubs_council").exists():
+            raise GraphQLError(
+                "You do not have permission to access this resource.")
+
+        event_instance = Event.objects.get(pk=event_data.id)
+        if not event_instance:
+            raise GraphQLError("Event does not exist.")
+
+        if event_instance.room_approved == False:
+            # construct approval mail notification
+            approval_mail_subject = f"Waiting approval: '{event_instance.name}'"
+            approval_mail_body = f"{event_instance.club.name} wishes to conduct the event '{event_instance.name}' and is waiting for your approval.\n\nRequesting you to kindly log in to clubs.iiit.ac.in to view details and add remarks."
+
+            recipients = User.objects.filter(groups__name="slo").all()
+            mail_notify(
+                subject=approval_mail_subject,
+                body=approval_mail_body,
+                to_recipients=list(map(lambda user: user.email, recipients)),
+            )
+
+        return SLOReminder(event=event_instance)
+
+
 # TODO - Currently no emails to SLC
 class SendDiscussionMessage(graphene.Mutation):
     class Arguments:
