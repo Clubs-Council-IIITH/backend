@@ -11,6 +11,7 @@ from event_manager.types import (
     EventType,
     EventDiscussionType,
     EventInput,
+    AudienceInput,
     RoomDetailsInput,
     ChangePosterInput,
     EventDiscussionInput,
@@ -110,6 +111,7 @@ class UpdateEvent(graphene.Mutation):
 
             # Resetting Room Data as per new details
             event_instance.room_id = 0
+            event_instance.state = EVENT_STATE_DICT["incomplete"]
 
             event_instance.save()
             return UpdateEvent(event=event_instance)
@@ -118,6 +120,38 @@ class UpdateEvent(graphene.Mutation):
 
         return UpdateEvent(event=event_instance)
 
+
+class UpdateAudience(graphene.Mutation):
+    class Arguments:
+        event_data = AudienceInput(required=True)
+
+    event = graphene.Field(EventType)
+
+    @classmethod
+    @allowed_groups(["club"])
+    def mutate(cls, _, info, event_data):
+        user = info.context.user
+        club = Club.objects.get(mail=user.username)
+        event_instance = Event.objects.get(pk=event_data.id)
+
+        if event_instance:
+            # check if event belongs to the requesting club
+            if event_instance.club != club:
+                raise GraphQLError(
+                    "You do not have permission to access this resource.")
+
+            # optional fields
+            if event_data.audience:
+                event_instance.audience = event_data.audience
+
+            event_instance.save()
+            return UpdateAudience(event=event_instance)
+        else:
+            raise GraphQLError("Event does not exist.")
+
+        return UpdateAudience(event=event_instance)
+
+
 class AddRoomDetails(graphene.Mutation):
     class Arguments:
         room_data = RoomDetailsInput(required=True)
@@ -125,14 +159,22 @@ class AddRoomDetails(graphene.Mutation):
     event = graphene.Field(EventType)
 
     @classmethod
-    @allowed_groups(["club"])
+    @allowed_groups(["club", "clubs_council"])
     def mutate(cls, _, info, room_data):
         user = info.context.user
-        club = Club.objects.get(mail=user.username)
         event_instance = Event.objects.get(pk=room_data.event_id)
 
         if not event_instance:
             raise GraphQLError("Event does not exist.")
+        
+        if user.groups.filter(name="clubs_council").exists():
+            if room_data.room:
+                event_instance.room_id = ROOM_DICT[room_data.room]
+            
+            event_instance.save()
+            return AddRoomDetails(event=event_instance)
+
+        club = Club.objects.get(mail=user.username)
 
         # check if event belongs to the requesting club
         if event_instance.club != club:
@@ -235,7 +277,7 @@ class DeleteEvent(graphene.Mutation):
 
         if not event_instance:
             raise GraphQLError("Event does not exist.")
-        
+
         if user.groups.filter(name="clubs_council").exists():
             event_instance.state = EVENT_STATE_DICT["deleted"]
             event_instance.room_approved = False
@@ -245,7 +287,7 @@ class DeleteEvent(graphene.Mutation):
             return DeleteEvent(event=event_instance)
 
         club = Club.objects.get(mail=user.username)
-        
+
         # check if event belongs to the requesting club
         if event_instance.club != club:
             raise GraphQLError(
