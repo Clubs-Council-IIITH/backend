@@ -9,6 +9,7 @@ from event_manager.models import Event, EVENT_STATE_DICT, ROOM_LIST, ROOM_DICT, 
 from event_manager.types import EventDiscussionType, EventType, AvailableRoomType, RoomType, PocType
 from event_manager.mutations import (
     AddPocDetails,
+    ApproveCC,
     NewEventDescription,
     UpdateEvent,
     UpdateAudience,
@@ -245,6 +246,7 @@ class Mutation(graphene.ObjectType):
 
     progress_event = ProgressEvent.Field()
     bypass_budget_approval = BypassBudgetApproval.Field()
+    approve_cc_event = ApproveCC.Field()
 
     send_discussion_message = SendDiscussionMessage.Field()
 

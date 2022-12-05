@@ -8,6 +8,7 @@ from authentication.decorators import allowed_groups
 
 from event_manager.models import Event, EVENT_STATE_DICT, ROOM_DICT, EventDiscussion
 from event_manager.types import (
+    ApproveCCInput,
     EventType,
     EventDiscussionType,
     EventInput,
@@ -166,11 +167,11 @@ class AddRoomDetails(graphene.Mutation):
 
         if not event_instance:
             raise GraphQLError("Event does not exist.")
-        
+
         if user.groups.filter(name="clubs_council").exists():
             if room_data.room:
                 event_instance.room_id = ROOM_DICT[room_data.room]
-            
+
             event_instance.save()
             return AddRoomDetails(event=event_instance)
 
@@ -301,6 +302,38 @@ class DeleteEvent(graphene.Mutation):
         return DeleteEvent(event=event_instance)
 
 
+class ApproveCC(graphene.Mutation):
+    class Arguments:
+        event_data = ApproveCCInput(required=True)
+
+    event = graphene.Field(EventType)
+
+    @classmethod
+    @allowed_groups(["clubs_council"])
+    def mutate(cls, _, info, event_data):
+        user = info.context.user
+        event_instance = Event.objects.get(pk=event_data.id)
+
+        if not event_instance:
+            raise GraphQLError("Event does not exist.")
+        
+        roles = event_data.roles.split(",")
+        if "none" in roles:
+            event_instance.state = EVENT_STATE_DICT["approved"]
+        else:
+            event_instance.state = EVENT_STATE_DICT["room|budget_pending"]
+        
+        event_instance.room_approved = event_instance.budget_approved = True
+
+        if "slo" in roles:
+            event_instance.room_approved = False
+        if "slc" in roles:
+            event_instance.budget_approved = False
+        
+        event_instance.save()
+        return ApproveCC(event=event_instance)
+
+
 class ProgressEvent(graphene.Mutation):
     class Arguments:
         event_data = EventInput(required=True)
@@ -310,7 +343,6 @@ class ProgressEvent(graphene.Mutation):
     @classmethod
     @allowed_groups(["club", "clubs_council", "finance_council", "slo", "slc", "gad"])
     def mutate(cls, _, info, event_data):
-
         event_instance = Event.objects.get(pk=event_data.id)
         if not event_instance:
             raise GraphQLError("Event does not exist.")

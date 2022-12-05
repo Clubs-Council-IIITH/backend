@@ -63,6 +63,11 @@ class AudienceInput(graphene.InputObjectType):
     audience = graphene.String()
 
 
+class ApproveCCInput(graphene.InputObjectType):
+    id = graphene.ID()
+    roles = graphene.String()
+
+
 class RoomDetailsInput(graphene.InputObjectType):
     event_id = graphene.ID()
     room = graphene.String()

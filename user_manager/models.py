@@ -12,6 +12,7 @@ class User(models.Model):
     mail = models.EmailField(blank=False, null=False)
     rollno = models.IntegerField(default=0, blank=False, null=False)
     batch = models.CharField(max_length=25, blank=False, null=False)
+    mobile = models.CharField(max_length=15, blank = True, null=True)
 
 
 class Member(models.Model):
