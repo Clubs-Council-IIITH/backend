@@ -9,10 +9,10 @@ from finance_manager.mutations import CreateBudgetRequirement, DeleteBudgetRequi
 
 class Query(graphene.ObjectType):
     # admin queries
-    admin_event_budget = graphene.List(BudgetRequirementType, eventId=graphene.Int())
+    admin_event_budget = graphene.List(BudgetRequirementType, event_id=graphene.Int())
 
-    def resolve_admin_event_budget(self, info, eventId):
-        return BudgetRequirement.objects.filter(event__pk=eventId)
+    def resolve_admin_event_budget(self, info, event_id):
+        return BudgetRequirement.objects.filter(event__pk=event_id)
 
 
 class Mutation(graphene.ObjectType):

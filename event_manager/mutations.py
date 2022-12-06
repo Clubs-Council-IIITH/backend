@@ -330,6 +330,8 @@ class ApproveCC(graphene.Mutation):
         if "slc" in roles:
             event_instance.budget_approved = False
         
+        # TO ADD MAILING
+        
         event_instance.save()
         return ApproveCC(event=event_instance)
 
