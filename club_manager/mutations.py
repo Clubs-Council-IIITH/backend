@@ -9,6 +9,8 @@ from django.contrib.auth.models import User as AuthUser, Group
 from club_manager.models import Club
 from club_manager.types import ClubType
 
+from event_manager.utils import mail_notify
+
 
 class ClubInput(graphene.InputObjectType):
     id = graphene.ID()
@@ -75,7 +77,17 @@ class AdminCreateClub(graphene.Mutation):
                 club_data.mail, email=club_data.mail, first_name=club_data.name)
         except IntegrityError:
             user = AuthUser.objects.get(username=club_data.mail)
+
         Group.objects.get(name="club").user_set.add(user)
+
+        # construct mail notification
+        mail_subject = f"Club/Student Body created: '{club_data.name}'"
+        mail_body = f"Hi,\nYour club/student body has been successfully created on the website with the name of '{club_data.name}'.\nYou can log in to clubs.iiit.ac.in using your official email id ({club_data.mail}).\n\nFor any issues, please reply on this thread."
+        mail_to_recipients = [club_data.mail,]
+
+        # send mail notification to CC
+        mail_notify(subject=mail_subject, body=mail_body,
+                    to_recipients=mail_to_recipients)
 
         return AdminCreateClub(club=club_instance)
 

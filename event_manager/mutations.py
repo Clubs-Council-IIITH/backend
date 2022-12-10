@@ -316,22 +316,57 @@ class ApproveCC(graphene.Mutation):
 
         if not event_instance:
             raise GraphQLError("Event does not exist.")
-        
+
         roles = event_data.roles.split(",")
         if "none" in roles:
             event_instance.state = EVENT_STATE_DICT["approved"]
         else:
             event_instance.state = EVENT_STATE_DICT["room|budget_pending"]
-        
+
         event_instance.room_approved = event_instance.budget_approved = True
 
+        update_mail_subject = f"Event update: '{event_instance.name}'"
+        update_mail_to_recipients = [event_instance.club.mail]
+        update_mail_body_template = (
+            "has approved the event.\n\nLog in to clubs.iiit.ac.in to view current status."
+        )
+        final_update_body_template = f"Your event '{event_instance.name}' has been completely approved by Clubs Council."
+        approval_mail_subject = f"Event approval request: '{event_instance.name}'"
+        approval_mail_body = f"{event_instance.club.name} wishes to conduct the event '{event_instance.name}' and is waiting for your approval.\n\nLog in to clubs.iiit.ac.in to view details and add remarks."
+
+        recipients = list()
         if "slo" in roles:
             event_instance.room_approved = False
+            recipients += list(map(lambda user: user.email,
+                               User.objects.filter(groups__name="slo").all()))
         if "slc" in roles:
             event_instance.budget_approved = False
-        
-        # TO ADD MAILING
-        
+            recipients += list(map(lambda user: user.email,
+                               User.objects.filter(groups__name="slc").all()))
+
+        if len(recipients) >= 1:
+            # send approval email to respective bodies
+            mail_notify(
+                subject=approval_mail_subject,
+                body=approval_mail_body,
+                to_recipients=recipients,
+            )
+
+            # send update mail to club
+            mail_notify(
+                subject=update_mail_subject,
+                body=f"Clubs Council {update_mail_body_template}",
+                to_recipients=update_mail_to_recipients,
+            )
+            print(1, recipients)
+        else:
+            # send update mail to club
+            mail_notify(
+                subject=update_mail_subject,
+                body=final_update_body_template,
+                to_recipients=update_mail_to_recipients,
+            )
+
         event_instance.save()
         return ApproveCC(event=event_instance)
 
@@ -465,7 +500,8 @@ class ProgressEvent(graphene.Mutation):
             # else, stay at the same state
 
         else:
-            raise GraphQLError("You do not have permission to access this resource.")
+            raise GraphQLError(
+                "You do not have permission to access this resource.")
 
         event_instance.save()
         return ProgressEvent(event=event_instance)
@@ -483,7 +519,8 @@ class BypassBudgetApproval(graphene.Mutation):
 
         roles = info.context.user.groups
         if not roles.filter(name="clubs_council").exists():
-            raise GraphQLError("You do not have permission to access this resource.")
+            raise GraphQLError(
+                "You do not have permission to access this resource.")
 
         event_instance = Event.objects.get(pk=event_data.id)
         if not event_instance:
