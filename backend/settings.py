@@ -21,11 +21,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-dk)$1t3s*rq$v8j!7n5q$202#4!)#$wayk@15&o1w)4)@*_3k+"
+SECRET_KEY = os.environ.get(
+    "DJANGO_SECRET_KEY", "django-insecure-dk)$1t3s*rq$v8j!7n5q$202#4!)#$wayk@15&o1w)4)@*_3k+")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost 127.0.0.1").split()
+DEBUG = os.getenv("DJANGO_DEBUG", 'True').lower() in ('true', '1', 't')
+ALLOWED_HOSTS = os.environ.get(
+    "DJANGO_ALLOWED_HOSTS", "localhost 127.0.0.1").split()
 
 
 # CORS Origin Whitelist
@@ -133,7 +135,8 @@ CAS_SERVER_URL = "https://login.iiit.ac.in/cas/"
 CAS_IGNORE_REFERER = True
 CAS_CHECK_NEXT = False
 CAS_REDIRECT_URL = "/accounts/jwt"
-CAS_CLIENT_URL = os.environ.get("DJANGO_CAS_CLIENT_URL", "http://localhost:3000")
+CAS_CLIENT_URL = os.environ.get(
+    "DJANGO_CAS_CLIENT_URL", "http://localhost:3000")
 CAS_FORCE_CHANGE_USERNAME_CASE = "lower"
 
 

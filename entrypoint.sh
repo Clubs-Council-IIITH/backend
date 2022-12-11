@@ -8,6 +8,11 @@ export PATH="$VIRTUAL_ENV/bin:$PATH"
 # install dependencies
 pip install -r requirements.txt
 
+export DJANGO_SECRET_KEY=$(python SECRET_KEY.py)
+
+# Run checks
+python manage.py check
+
 # apply migrations & start django server
 python manage.py makemigrations --noinput
 python manage.py migrate --noinput
