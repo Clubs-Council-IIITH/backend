@@ -6,7 +6,13 @@ from club_manager.models import Club
 
 
 def run():
-    df = pd.read_csv("scripts/members.csv")
+    try:
+        df = pd.read_csv("scripts/members.csv")
+    except Exception as e:
+        print(e)
+        print("Skipped Member Population")
+        exit(0)
+    
     imgs = list(map(lambda s: int(s[:-4]), os.listdir("scripts/images")))
 
     for idx, row in df.iterrows():
