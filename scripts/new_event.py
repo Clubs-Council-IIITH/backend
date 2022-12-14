@@ -34,6 +34,7 @@ def run():
             data["min1"]), 0, tzinfo=timezone.utc)
         state = data["state"]
         audience = data["audience"]
+        room_approved = budget_approved = int(state > 2 and state != 5)
 
         Event.objects.get_or_create(
             name=name,
@@ -42,6 +43,8 @@ def run():
             datetimeEnd=end,
             audience=audience,
             state=state,
+            room_approved=room_approved,
+            budget_approved=budget_approved
         )
 
         # club = int(input("Club ID:"))
