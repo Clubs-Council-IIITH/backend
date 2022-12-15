@@ -65,7 +65,8 @@ class Query(graphene.ObjectType):
 
         # don't show deleted club's event to the public
         if club.state != "active" and not user.is_superuser:
-            raise GraphQLError("You do not have permission to access this resource.")
+            raise GraphQLError(
+                "You do not have permission to access this resource.")
 
         return event
 
@@ -86,11 +87,13 @@ class Query(graphene.ObjectType):
     admin_gad_pending_events = graphene.List(EventType)
     admin_slo_pending_events = graphene.List(EventType)
     admin_slc_pending_events = graphene.List(EventType)
-    admin_available_rooms = graphene.List(AvailableRoomType, event_id=graphene.Int())
+    admin_available_rooms = graphene.List(
+        AvailableRoomType, event_id=graphene.Int())
     admin_room_by_event_id = graphene.Field(RoomType, event_id=graphene.Int())
     admin_poc_by_event_id = graphene.Field(PocType, event_id=graphene.Int())
 
-    event_discussion_thread = graphene.List(EventDiscussionType, event_id=graphene.Int())
+    event_discussion_thread = graphene.List(
+        EventDiscussionType, event_id=graphene.Int())
 
     @superuser_required
     def resolve_admin_all_events(self, info, **kwargs):
@@ -102,7 +105,8 @@ class Query(graphene.ObjectType):
     @allowed_groups(["club", "clubs_council", "finance_council", "slo", "slc", "gad"])
     def resolve_event_discussion_thread(self, info, event_id):
         event = Event.objects.get(pk=event_id)
-        discussion_thread = EventDiscussion.objects.filter(event=event).order_by("timestamp")
+        discussion_thread = EventDiscussion.objects.filter(
+            event=event).order_by("timestamp")
 
         return discussion_thread
 
@@ -113,9 +117,16 @@ class Query(graphene.ObjectType):
         if user_roles.filter(name="clubs_council").exists():
             admin_level = 1
         if user_roles.filter(name="slc").exists():
-            admin_level = 2
+            # admin_level = 2
+            return Event.objects.filter(
+                state__gt=1).filter(
+                budget_approved=True
+            ).order_by("-datetimeStart")
         if user_roles.filter(name="slo").exists():
-            admin_level = 2
+            # admin_level = 2
+            return Event.objects.filter(
+                room_approved=True
+            ).filter(state__gt=1).order_by("-datetimeStart")
         if user_roles.filter(name="gad").exists():
             admin_level = 2
 
@@ -157,8 +168,8 @@ class Query(graphene.ObjectType):
             state=EVENT_STATE_DICT["room|budget_pending"]
         ).filter(
             room_approved=False
-        # ).exclude(
-        #     room_id=0
+            # ).exclude(
+            #     room_id=0
         ).order_by(
             "datetimeStart"
         )
@@ -221,7 +232,7 @@ class Query(graphene.ObjectType):
             "equipment": event.equipment,
             "additional": event.additional,
         }
-    
+
     @allowed_groups(["club", "clubs_council", "finance_council", "slo", "slc", "gad"])
     def resolve_admin_poc_by_event_id(self, info, event_id):
         event = Event.objects.get(pk=event_id)
@@ -255,4 +266,3 @@ class Mutation(graphene.ObjectType):
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
-
