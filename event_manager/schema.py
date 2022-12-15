@@ -68,7 +68,7 @@ class Query(graphene.ObjectType):
             raise GraphQLError("You do not have permission to access this resource.")
 
         return event
-    
+
     def resolve_room_by_event_id(self, info, event_id):
         event = Event.objects.get(pk=event_id)
 
@@ -157,8 +157,8 @@ class Query(graphene.ObjectType):
             state=EVENT_STATE_DICT["room|budget_pending"]
         ).filter(
             room_approved=False
-        ).exclude(
-            room_id=0
+        # ).exclude(
+        #     room_id=0
         ).order_by(
             "datetimeStart"
         )
