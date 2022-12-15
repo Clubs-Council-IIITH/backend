@@ -1,12 +1,12 @@
 from event_manager.models import Event
 from club_manager.models import Club
 
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 import pandas as pd
-
 
 def run():
     df = pd.read_csv("scripts/events.csv")
+    count = 0
 
     for idx, row in df.iterrows():
         data = {
@@ -29,9 +29,9 @@ def run():
 
         name = data["name"]
         start = datetime(2022, data["month"], data["date"],
-                         data["hour"], data["min"], 0, tzinfo=timezone.utc)
+                         data["hour"], data["min"], 0, tzinfo=timezone.utc) - timedelta(hours=5, minutes=30)
         end = datetime(2022, data["month1"], data["date1"], data["hour1"], int(
-            data["min1"]), 0, tzinfo=timezone.utc)
+            data["min1"]), 0, tzinfo=timezone.utc) - timedelta(hours=5, minutes=30)
         state = data["state"]
         audience = data["audience"]
         room_approved = budget_approved = int(state > 2 and state != 5)
@@ -46,6 +46,8 @@ def run():
             room_approved=room_approved,
             budget_approved=budget_approved
         )
+
+        count += 1
 
         # club = int(input("Club ID:"))
         # club_instance, _ = Club.objects.get_or_create(id=club)
@@ -68,3 +70,5 @@ def run():
         #     audience=audience,
         #     state=state,
         # )
+
+    print("Done Event population. Count:", count)
