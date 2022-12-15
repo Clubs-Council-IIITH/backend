@@ -121,7 +121,7 @@ class Query(graphene.ObjectType):
 
         # print(admin_level)
 
-        return Event.objects.filter(state__gt=admin_level).order_by("datetimeStart")
+        return Event.objects.filter(state__gt=admin_level).order_by("-datetimeStart")
 
     @allowed_groups(["clubs_council"])
     def resolve_admin_cc_pending_events(self, info, **kwargs):
