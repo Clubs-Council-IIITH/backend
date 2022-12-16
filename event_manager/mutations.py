@@ -160,7 +160,7 @@ class AddRoomDetails(graphene.Mutation):
     event = graphene.Field(EventType)
 
     @classmethod
-    @allowed_groups(["club", "clubs_council"])
+    @allowed_groups(["club", "clubs_council", "slo"])
     def mutate(cls, _, info, room_data):
         user = info.context.user
         event_instance = Event.objects.get(pk=room_data.event_id)
@@ -168,7 +168,7 @@ class AddRoomDetails(graphene.Mutation):
         if not event_instance:
             raise GraphQLError("Event does not exist.")
 
-        if user.groups.filter(name="clubs_council").exists():
+        if user.groups.filter(name="clubs_council").exists() or user.groups.filter(name="slo").exists():
             if room_data.room:
                 event_instance.room_id = ROOM_DICT[room_data.room]
 
