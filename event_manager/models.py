@@ -40,17 +40,17 @@ EVENT_MODE_LIST = [
 ]
 
 ROOMS = [
-    "none",
+    "none", # 0 index
     # Himalaya
     "himalaya_101",
     "himalaya_102",
-    "himalaya_103",
+    "himalaya_103", # 3 index
     "himalaya_104",
     "himalaya_201",
-    "himalaya_202",
+    "himalaya_202", # 6 index
     "himalaya_203",
     "himalaya_204",
-    "himalaya_301",
+    "himalaya_301", # 9 index
     "himalaya_302",
     "himalaya_303",
     "himalaya_304",  # 12 Index
@@ -69,9 +69,9 @@ ROOMS = [
     "krb_auditorium",  # 21 Index
     "sm24",
     "sm22",
-    "sm34",
+    "sm34", # 24 index
     "sm32",
-    "other",
+    "other", # 26 index
 ]
 ROOM_LIST = [[idx, room] for idx, room in enumerate(ROOMS)]
 ROOM_DICT = {room: idx for idx, room in enumerate(ROOMS)}
